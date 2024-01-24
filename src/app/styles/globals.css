@@ -21,7 +21,6 @@
 @font-face {
   font-family: "FasterStroker";
   src: url("/fonts/FasterStroker.otf") format("opentype");
-
 }
 
 
@@ -45,7 +44,7 @@ body {
   font-family: 'Asap', sans-serif;
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-duration: 300ms;
 }
 
 a {

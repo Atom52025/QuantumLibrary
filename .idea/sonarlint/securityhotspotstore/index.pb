@@ -64,3 +64,9 @@ C
 src/app/globals.css,d\a\da1d6f21d01d0f36b5501dffcf7fd160ffcb290d
 J
 src/app/styles/globals.css,4\3\437148e33f5e1a7092beef2ed3820973ebd826ee
+N
+public/fonts/FasterStroker.otf,b\6\b6bc20072578f5fecc17084cc66665cdd02dfc0f
+O
+src/app/fonts/FasterStroker.otf,8\6\8671673b1d670c0cf0a7dd0ac82ba7323ac6a402
+?
+next.config.mjs,d\f\df8bd0b91ecb778bf2a1b031c7677390c7442bb4

@@ -11,17 +11,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <title>Quantum Library</title>
       </head>
-      <body className={inter.className + 'h-100 grid grid-rows-10'}>
-        <div className="row-span-2 bg-gray-800 flex gap-5 p-5 items-center align-bottom">
+      <body className={inter.className + ' h-full'}>
+        <div className="h-[9vh] bg-gray-800 flex gap-5 p-5 items-center align-bottom">
           <h1 className="font-faster-stroker text-4xl font-white uppercase"> Quantum Library </h1>
           <h2 className="text-2xl font-white"> Bibliotecas </h2>
         </div>
-        <div className="row-span-8">{children}</div>
+        <div className="h-[91vh] top-20 overflow-hidden overflow-y-scroll">{children}</div>
       </body>
     </html>
   );
