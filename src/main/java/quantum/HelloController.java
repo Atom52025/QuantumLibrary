@@ -13,4 +13,5 @@ public class HelloController {
         return "index"; // Este nombre debe coincidir con el nombre de tu archivo HTML principal en el directorio frontend.
     }
 
+
 }
