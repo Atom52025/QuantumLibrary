@@ -37,8 +37,6 @@ b
 2src/main/java/quantum/web/rest/GameController.java,8\d\8dbc7c592e56869a9e15e7390aeef171c1918f13
 b
 2src/main/java/quantum/dto/game/UpdateGameBody.java,a\f\af9a4e47e62d8c68e520feb6b9eaf9411208f9e7
-g
-7src/main/java/quantum/configuration/SecurityConfig.java,0\c\0c90702e863bc1a46d720a886a6eecbea4f54380
 B
 QuantumLibrary.iml,f\b\fbe97a3b910f47744ce732903ea4d8ea50d68f97
 4
@@ -58,10 +56,6 @@ b
 2src/main/java/quantum/constant/ErrorConstants.java,b\3\b372ce7819e2edd8eac455b015772b9b94b022b8
 B
 tailwind.config.js,0\9\0918cbb76f2c44f223706cec9d31a32cd1177ce4
-F
-src/styles/globals.css,f\4\f451456fbd2ac1cc3825255bfe3cd58d1971e047
-C
-src/app/globals.css,d\a\da1d6f21d01d0f36b5501dffcf7fd160ffcb290d
 J
 src/app/styles/globals.css,4\3\437148e33f5e1a7092beef2ed3820973ebd826ee
 N
