@@ -1,14 +1,18 @@
 ## Tecnologias usadas
 
- - Astro js
- - Astro SPA
- - Prettier
- - Tailwind
- - SonarLint
- - Lombok
- - Spring boot
+- NextJs
+- Prettier
+- Tailwind
+- SonarLint
+- ESLint
+- Lombok
+- Spring boot
+- Next UI
+- Framer Motion
+- Next Auth
 
 ## MEMORIA
+
     - Util Validacion de campos
     - Procesamiento de errores
     - CRUD Tabla Games
