@@ -70,3 +70,5 @@ B
 src/app/layout.jsx,1\e\1ec5ab781b4626d515f5c04631b61883d1ace916
 E
 src/app/providers.jsx,4\6\46fc78fa7cf1951605d27c33c79c25f073bf29c1
+W
+'src/app/api/auth/[...nextauth]/route.js,6\b\6bd959072d46882c1232830f00268b9663621691
