@@ -44,12 +44,8 @@ B
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
-?
-src/app/page.js,8\1\81bad8b6440a0d75bcac083dfaaf1694bd9ce8b8
 7
 HELP.md,1\a\1a273f73b7a477b0745593641bd708a6182c7ad5
-A
-src/app/layout.js,b\7\b7c052a7d21b1daeb1c65f186a3f5898d9c80896
 ;
 .prettierrc,2\0\20137a9e94744624390b6748bc96df5ca1579b71
 b
@@ -64,3 +60,13 @@ O
 src/app/fonts/FasterStroker.otf,8\6\8671673b1d670c0cf0a7dd0ac82ba7323ac6a402
 ?
 next.config.mjs,d\f\df8bd0b91ecb778bf2a1b031c7677390c7442bb4
+N
+src/app/library/games/page.jsx,1\e\1eb17cb66038ba5b4aaa927c8d41c6439c16e541
+P
+ src/app/library/games/layout.jsx,f\8\f8334a8bc4e647f3ee3860b1b9a18338159260d4
+@
+src/app/page.jsx,9\9\99e3aa6b32886dd8bca4eb1ebf663f93d38f4d5e
+B
+src/app/layout.jsx,1\e\1ec5ab781b4626d515f5c04631b61883d1ace916
+E
+src/app/providers.jsx,4\6\46fc78fa7cf1951605d27c33c79c25f073bf29c1
