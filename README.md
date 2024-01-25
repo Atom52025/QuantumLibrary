@@ -1,12 +1,15 @@
 ## Tecnologias usadas
 
-- Astro js
-- Astro SPA
+- NextJs
 - Prettier
 - Tailwind
 - SonarLint
+- ESLint
 - Lombok
 - Spring boot
+- Next UI
+- Framer Motion
+- Next Auth
 
 ## MEMORIA
 
