@@ -29,8 +29,8 @@ buildNumber.properties
 # production
 /build
 
-# intellij
-/.idea/
+# sonarlint
+.sonarlint/
 
 # misc
 .DS_Store
