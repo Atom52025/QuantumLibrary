@@ -70,3 +70,5 @@ B
 src/app/layout.jsx,1\e\1ec5ab781b4626d515f5c04631b61883d1ace916
 E
 src/app/providers.jsx,4\6\46fc78fa7cf1951605d27c33c79c25f073bf29c1
+U
+%src/main/java/quantum/model/User.java,9\4\9437e356ab7a33988d478e1fe51eabecd2747e13
