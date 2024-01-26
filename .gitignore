@@ -30,7 +30,7 @@ buildNumber.properties
 /build
 
 # intellij
-/.idea/sonarlint
+.idea/
 
 # misc
 .DS_Store

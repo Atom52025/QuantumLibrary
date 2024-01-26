@@ -1,109 +1,110 @@
 package quantum.web.api;
 
-import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import quantum.dto.game.DataListResponseGame;
-import quantum.dto.game.DataResponseGame;
-import quantum.dto.game.NewGameBody;
-import quantum.dto.game.UpdateGameBody;
-import quantum.model.Game;
+import quantum.dto.user.DataListResponseUser;
+import quantum.dto.user.DataResponseUser;
+import quantum.dto.user.NewUserBody;
+import quantum.dto.user.UpdateUserBody;
+import quantum.model.User;
 
 /**
- * The api interface for {@link Game} entity.
+ * The api interface for {@link User} entity.
  */
 
 @Validated
-public interface GameApi {
+public interface UserApi {
 
     /**
-     * GET to /api/games to fetch games list.
-     * @param token The token with the authentication information.
+     * GET to /api/users to fetch users list.
      * @param pageable the pageable
-     * @return The list of games
+     * @return The list of users
      */
-    @Operation(summary = "Get games list", description = "Get games list", parameters = {
+    @Operation(summary = "Get users list", description = "Get users list", parameters = {
             @Parameter(name = "page", description = "The page number"),
             @Parameter(name = "size", description = "The page size"),
             @Parameter(name = "sort", description = "The sort order")
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The list of games"),
+            @ApiResponse(responseCode = "200", description = "The list of users"),
             @ApiResponse(responseCode = "400", description = "Invalid page or page size value"),
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(value = "/api/games", produces = "application/json")
-    ResponseEntity<DataListResponseGame> getGames(
+    @GetMapping(value = "/api/users", produces = "application/json")
+    ResponseEntity<DataListResponseUser> getUsers(
             @RequestHeader("Authorization")
                 String token,
             @PageableDefault
-                Pageable pageable
+            Pageable pageable
     );
 
     /**
-     * POST to /api/games to create a game.
-     * @param body The game body.
-     * @return The new game.
+     * POST to /api/users to create a user.
+     * @param body The user body.
+     * @return The new user.
      */
-    @Operation(summary = "Get games list", description = "Get games list", parameters = {
+    @Operation(summary = "Get users list", description = "Get users list", parameters = {
             @Parameter(name = "page", description = "The page number"),
             @Parameter(name = "size", description = "The page size"),
             @Parameter(name = "sort", description = "The sort order")
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The list of games"),
+            @ApiResponse(responseCode = "200", description = "The list of users"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/api/games", produces = "application/json")
-    ResponseEntity<DataResponseGame> postGame(
+    @PostMapping(value = "/api/users", produces = "application/json")
+    ResponseEntity<DataResponseUser> postUser(
             @RequestHeader("Authorization")
                 String token,
             @Valid @RequestBody
-                NewGameBody body
+                NewUserBody body
     );
 
     /**
-     * PATCH to /api/games/{game_id} to edit a game.
-     * @param gameId The game id.
-     * @param body The game body.
-     * @return The edited game.
+     * PATCH to /api/users/{user_id} to edit a user.
+     * @param userId The user id.
+     * @param body The user body.
+     * @return The edited user.
      */
-    @Operation(summary = "Edit a game", description = "Edit a game", parameters = {
+    @Operation(summary = "Edit a user", description = "Edit a user", parameters = {
             @Parameter(name = "page", description = "The page number"),
             @Parameter(name = "size", description = "The page size"),
             @Parameter(name = "sort", description = "The sort order")
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The list of games"),
+            @ApiResponse(responseCode = "200", description = "The list of users"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping(value = "/api/games/{game_id}", produces = "application/json")
-    ResponseEntity<DataResponseGame> patchGame(
+    @PatchMapping(value = "/api/users/{user_id}", produces = "application/json")
+    ResponseEntity<DataResponseUser> patchUser(
             @RequestHeader("Authorization")
                 String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The game id")
-            @PathVariable("game_id")
-                Long gameId,
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")
+            @PathVariable("user_id")
+                Long userId,
             @Valid @RequestBody
-                UpdateGameBody body
+                UpdateUserBody body
     );
 
     /**
-     * DELETE to /api/games/{game_id} to delete a game.
-     * @param gameId The game id
+     * DELETE to /api/users/{user_id} to delete a user.
+     * @param userId The user id
      */
-    @Operation(summary = "Delete a game", description = "Delete a game", parameters = {
+    @Operation(summary = "Delete a user", description = "Delete a user", parameters = {
             @Parameter(name = "page", description = "The page number"),
             @Parameter(name = "size", description = "The page size"),
             @Parameter(name = "sort", description = "The sort order")
@@ -114,12 +115,12 @@ public interface GameApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping(value = "/api/games/{game_id}", produces = "application/json")
-    ResponseEntity<Void> deleteGame(
+    @DeleteMapping(value = "/api/users/{user_id}", produces = "application/json")
+    ResponseEntity<Void> deleteUser(
             @RequestHeader("Authorization")
                 String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The game id")
-            @PathVariable("game_id")
-                Long gameId
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")
+            @PathVariable("user_id")
+                Long userId
     );
 }

@@ -30,7 +30,7 @@ public class GameController implements GameApi {
      * @return The list of games
      */
     @Override
-    public ResponseEntity<DataListResponseGame> getGames(Pageable pageable) {
+    public ResponseEntity<DataListResponseGame> getGames(String token, Pageable pageable) {
         log.info("[CONTROLLER] - Searching games");
         DataListResponseGame result = gameService.getGames(pageable);
         log.info("[CONTROLLER RESULT] - The following games were found: {}", result);
@@ -43,7 +43,7 @@ public class GameController implements GameApi {
      * @return The new game.
      */
     @Override
-    public ResponseEntity<DataResponseGame> postGame(NewGameBody body) {
+    public ResponseEntity<DataResponseGame> postGame(String token, NewGameBody body) {
         log.info("[CONTROLLER] - Creating game");
         DataResponseGame result = gameService.postGame(body);
         log.info("[CONTROLLER RESULT] - The following game was created: {}", result);
@@ -57,7 +57,7 @@ public class GameController implements GameApi {
      * @return The updated game.
      */
     @Override
-    public ResponseEntity<DataResponseGame> patchGame(Long id, UpdateGameBody body) {
+    public ResponseEntity<DataResponseGame> patchGame(String token, Long id, UpdateGameBody body) {
         log.info("[CONTROLLER] - Updating game with id '{}'", id);
         DataResponseGame result = gameService.updateGame(id, body);
         log.info("[CONTROLLER RESULT] - The game with id '{}', was updated: {}", id, result);
@@ -70,7 +70,7 @@ public class GameController implements GameApi {
      * @return The deleted game.
      */
     @Override
-    public ResponseEntity<Void> deleteGame(Long id) {
+    public ResponseEntity<Void> deleteGame(String token, Long id) {
         log.info("[CONTROLLER] - Deleting game with id '{}'", id);
         gameService.deleteGame(id);
         log.info("[CONTROLLER RESULT] - The game with id '{}' was deleted", id);

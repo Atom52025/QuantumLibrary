@@ -21,12 +21,15 @@ public class User {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "USERNAME")
-    private String name;
+    private String username;
+
+    @Column(name = "EMAIL")
+    private String email;
 
     @Column(name = "PASSWORD", length = 60)
-    private String description;
+    private String password;
 }
