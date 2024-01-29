@@ -10,6 +10,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import quantum.dto.user.DataListResponseUser;
 import quantum.dto.user.DataResponseUser;
@@ -59,9 +64,14 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException();
         }
 
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        User userDetails = (User) authentication.getPrincipal();
+
         // Map entity to response and return
         return DataListResponseUser.builder()
                 .users(result.get().map(mapper::map).toList())
+                .username(userDetails.getUsername())
                 .build();
     }
 
@@ -128,11 +138,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+    }
+
     /**
      * Make sure a user exists.
      * @param id The id of the user to validate.
      */
-    public Long validateUser(Long id) {
+    private Long validateUser(Long id) {
         boolean exists;
         try {
             exists = userRepository.existsById(id);

@@ -22,4 +22,6 @@ public class DataListResponseUser {
 
     @Schema(description = "List of users.")
     private List<DataResponseUser> users;
+
+    private String username;
 }

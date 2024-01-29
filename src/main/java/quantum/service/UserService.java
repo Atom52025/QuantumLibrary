@@ -1,6 +1,7 @@
 package quantum.service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import quantum.dto.user.DataListResponseUser;
 import quantum.dto.user.DataResponseUser;
 import quantum.dto.user.NewUserBody;
@@ -37,5 +38,12 @@ public interface UserService {
          * @param id the id
          */
         void deleteUser(Long id);
+
+        /**
+         * Gets user.
+         * @param username The user username.
+         * @return The user
+         */
+        UserDetails loadUserByUsername(String username);
 
 }

@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import static quantum.util.SecurityUtils.decodeToken;
+import static quantum.security.jwt.JwtUtil.decodeToken;
 
 @Slf4j
 @Configuration
@@ -19,8 +19,6 @@ public class QuantumLibraryApplication {
 	public static void main(String[] args) {
 
 		SpringApplication.run(QuantumLibraryApplication.class, args);
-
-		decodeToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJhZWxkdW5nIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.qH7Zj_m3kY69kxhaQXTa-ivIpytKXXjZc1ZSmapZnGE");
 
 		log.info("""
 				
