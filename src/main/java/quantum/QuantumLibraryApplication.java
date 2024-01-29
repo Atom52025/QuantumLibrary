@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import static quantum.security.jwt.JwtUtil.decodeToken;
+
 @Slf4j
 @Configuration
 @SpringBootApplication

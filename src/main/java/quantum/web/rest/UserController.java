@@ -1,0 +1,80 @@
+package quantum.web.rest;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+import quantum.dto.user.DataListResponseUser;
+import quantum.dto.user.DataResponseUser;
+import quantum.dto.user.NewUserBody;
+import quantum.dto.user.UpdateUserBody;
+import quantum.model.User;
+import quantum.service.UserService;
+import quantum.web.api.UserApi;
+
+/**
+ * Controller for {@link User} entity.
+ */
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+public class UserController implements UserApi {
+
+    private  final UserService userService;
+
+    /**
+     * GET to /api/users to fetch users list.
+     * @param pageable the pageable
+     * @return The list of users
+     */
+    @Override
+    public ResponseEntity<DataListResponseUser> getUsers(String token, Pageable pageable) {
+        log.info("[CONTROLLER] - Searching users");
+        DataListResponseUser result = userService.getUsers(pageable);
+        log.info("[CONTROLLER RESULT] - The following users were found: {}", result);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * POST to /api/users to create a user.
+     * @param body The user body.
+     * @return The new user.
+     */
+    @Override
+    public ResponseEntity<DataResponseUser> postUser(String token, NewUserBody body) {
+        log.info("[CONTROLLER] - Creating user");
+        DataResponseUser result = userService.postUser(body);
+        log.info("[CONTROLLER RESULT] - The following user was created: {}", result);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * PUT to /api/users/{id} to update a user.
+     * @param id The id of the user to update.
+     * @param body The user body.
+     * @return The updated user.
+     */
+    @Override
+    public ResponseEntity<DataResponseUser> patchUser(String token, Long id, UpdateUserBody body) {
+        log.info("[CONTROLLER] - Updating user with id '{}'", id);
+        DataResponseUser result = userService.updateUser(id, body);
+        log.info("[CONTROLLER RESULT] - The user with id '{}', was updated: {}", id, result);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * DELETE to /api/users/{id} to delete a user.
+     * @param id The id of the user to delete.
+     * @return The deleted user.
+     */
+    @Override
+    public ResponseEntity<Void> deleteUser(String token, Long id) {
+        log.info("[CONTROLLER] - Deleting user with id '{}'", id);
+        userService.deleteUser(id);
+        log.info("[CONTROLLER RESULT] - The user with id '{}' was deleted", id);
+        return ResponseEntity.noContent().build();
+    }
+
+}
