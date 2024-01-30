@@ -140,3 +140,11 @@ d
 0src/main/java/quantum/dto/user/UserResponse.java,e\a\ea884d81f4872193a22783bbafaa91db39465fb8
 d
 4src/main/java/quantum/dto/user/UserListResponse.java,c\6\c6234e2b9b2c7f0ee1c4010e239ef726443d144b
+Q
+!src/app/components/ButtonAuth.jsx,0\4\0425b098186c8ac9847e4bf077e4130297293689
+W
+'src/app/api/auth/[...nextauth]/route.js,6\b\6bd959072d46882c1232830f00268b9663621691
+_
+/src/app/api/auth/[...nextauth]/configuration.js,7\e\7e98b77316575b84147be2300b241b51a96c5e4f
+]
+-src/app/api/auth/[...nextauth]/authOptions.js,7\f\7f146e0b7dbd6629e6780f27dce290816bce484d

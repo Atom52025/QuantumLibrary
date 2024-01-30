@@ -1,29 +1,25 @@
-'use client';
-
 import { Checkbox, CheckboxGroup } from '@nextui-org/react';
-import { signIn, useSession } from 'next-auth/react';
 
 import Image from 'next/image';
 
+import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
 import { Button } from '@nextui-org/button';
+import { getServerSession } from 'next-auth/next';
 
 async function getData(category) {
-  const { data: session } = useSession();
-  if (session?.accessToken) {
-    const url = 'http://localhost:8080/api/games' + (category != null ? '?category=' + category : '');
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`,
-      },
-      cache: 'no-store',
-    });
-    if (!res.ok) {
-      throw new Error('Failed to fetch data');
-    }
-    return res.json();
-  } else {
-    signIn();
+  const session = await getServerSession(authOptions);
+  console.log(session.user.token);
+  const url = 'http://localhost:8080/api/games' + (category != null ? '?category=' + category : '');
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${session.user.token}`,
+    },
+    cache: 'no-store',
+  });
+  if (!res.ok) {
+    throw new Error('Failed to fetch data');
   }
+  return res.json();
 }
 
 export default async function Page({ searchParams }) {
@@ -40,7 +36,7 @@ export default async function Page({ searchParams }) {
       </div>
       <main className="min-h-full w-full ">
         <div className="p-10 grid grid-cols-6 gap-3">
-          {data.games.map((game) => (
+          {data?.games.map((game) => (
             <div key={game.id} className={gridClass}>
               <div className="z-10 w-full h-full relative">
                 <Image src={game.image} alt={game.image} fill priority={true}></Image>

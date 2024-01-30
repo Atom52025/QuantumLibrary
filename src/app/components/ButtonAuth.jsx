@@ -18,7 +18,7 @@ export default function ButtonAuth() {
     return (
       <>
         Signed in as {session.user?.email} <br />
-        Signed in as {session.accessToken} <br />
+        Signed in as {session.user?.token} <br />
         <Button onClick={() => signOut()} className="btn btn-danger">
           Sign out
         </Button>
