@@ -9,9 +9,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import quantum.dto.auth.AuthResponse;
 import quantum.dto.auth.LogInBody;
 import quantum.dto.auth.SignUpBody;
-import quantum.dto.user.DataResponseUser;
 import quantum.model.User;
 
 /**
@@ -23,6 +23,7 @@ import quantum.model.User;
 public interface AuthApi {
     /**
      * POST to /api/auth/login to log in.
+     *
      * @return The user that logged in
      */
     @Operation(summary = "Log in service", description = "Log in service")
@@ -33,13 +34,14 @@ public interface AuthApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value = "/login", produces = "application/json")
-    ResponseEntity<DataResponseUser> logIn(
+    ResponseEntity<AuthResponse> logIn(
         @Valid @RequestBody
             LogInBody body
     );
 
     /**
      * POST to /api/auth/login to sign up.
+     *
      * @return The user that signed up
      */
     @Operation(summary = "Sing up service", description = "Sing up service")
@@ -49,8 +51,8 @@ public interface AuthApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/signUp", produces = "application/json")
-    ResponseEntity<DataResponseUser> signUp(
+    @PostMapping(value = "/signup", produces = "application/json")
+    ResponseEntity<AuthResponse> signUp(
         @Valid @RequestBody
         SignUpBody body
     );

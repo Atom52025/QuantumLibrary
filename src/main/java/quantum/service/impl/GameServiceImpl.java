@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
-import quantum.dto.game.DataListResponseGame;
+import quantum.dto.game.GameListResponse;
 import quantum.dto.game.DataResponseGame;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
@@ -45,7 +45,7 @@ public class GameServiceImpl implements GameService {
      * @return the games
      */
     @Override
-    public DataListResponseGame getGames(Pageable pageable) {
+    public GameListResponse getGames(Pageable pageable) {
         Page<Game> result;
 
         try {
@@ -60,7 +60,7 @@ public class GameServiceImpl implements GameService {
         }
 
         // Map entity to response and return
-        return DataListResponseGame.builder()
+        return GameListResponse.builder()
                 .games(result.get().map(mapper::map).toList())
                 .build();
     }

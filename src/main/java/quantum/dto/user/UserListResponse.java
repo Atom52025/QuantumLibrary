@@ -1,4 +1,4 @@
-package quantum.dto.game;
+package quantum.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -17,9 +17,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Data transfer object for Games entity.")
-public class DataListResponseGame {
+@Schema(description = "Data transfer object for Users entity.")
+public class UserListResponse {
 
-    @Schema(description = "List of games.")
-    private List<DataResponseGame> games;
+    @Schema(description = "List of users.")
+    private List<UserResponse> users;
 }

@@ -16,8 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import quantum.dto.user.DataListResponseUser;
-import quantum.dto.user.DataResponseUser;
+import quantum.dto.user.UserListResponse;
+import quantum.dto.user.UserResponse;
 import quantum.dto.user.NewUserBody;
 import quantum.dto.user.UpdateUserBody;
 import quantum.exceptions.DatabaseConnectionException;
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
      * @return the users
      */
     @Override
-    public DataListResponseUser getUsers(Pageable pageable) {
+    public UserListResponse getUsers(Pageable pageable) {
         Page<User> result;
 
         try {
@@ -69,9 +69,8 @@ public class UserServiceImpl implements UserService {
         User userDetails = (User) authentication.getPrincipal();
 
         // Map entity to response and return
-        return DataListResponseUser.builder()
+        return UserListResponse.builder()
                 .users(result.get().map(mapper::map).toList())
-                .username(userDetails.getUsername())
                 .build();
     }
 
@@ -81,7 +80,7 @@ public class UserServiceImpl implements UserService {
      * @return the user
      */
     @Override
-    public DataResponseUser postUser(NewUserBody body) {
+    public UserResponse postUser(NewUserBody body) {
 
         // Generate new user
         User newUser = generateNewUser(body);
@@ -106,7 +105,7 @@ public class UserServiceImpl implements UserService {
      * @return the user
      */
     @Override
-    public DataResponseUser updateUser(Long id, UpdateUserBody body) {
+    public UserResponse updateUser(Long id, UpdateUserBody body) {
 
         // Find the user
         User userToUpdate = findUserById(id);
@@ -169,7 +168,7 @@ public class UserServiceImpl implements UserService {
      */
     private User generateNewUser(NewUserBody body) {
         return User.builder()
-                .username(body.getName())
+                .username(body.getUsername())
                 .email(body.getEmail())
                 .build();
     }
@@ -180,8 +179,8 @@ public class UserServiceImpl implements UserService {
      * @param body the body
      */
     private void updateUserContent(UpdateUserBody body, User userToUpdate) {
-        if (body.getName() != null) {
-            userToUpdate.setUsername(body.getName());
+        if (body.getUsername() != null) {
+            userToUpdate.setUsername(body.getUsername());
         }
         if (body.getEmail() != null) {
             userToUpdate.setEmail(body.getEmail());

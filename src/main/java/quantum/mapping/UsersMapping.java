@@ -1,7 +1,8 @@
 package quantum.mapping;
 
 import org.mapstruct.Mapper;
-import quantum.dto.user.DataResponseUser;
+import quantum.dto.auth.AuthResponse;
+import quantum.dto.user.UserResponse;
 import quantum.model.User;
 
 /**
@@ -11,9 +12,16 @@ import quantum.model.User;
 public interface UsersMapping {
 
     /**
-     * Map {@link User} to {@link DataResponseUser}.
+     * Map {@link User} to {@link UserResponse}.
      * @param entity The element to convert.
      * @return The converted element.
      */
-    DataResponseUser map(User entity);
+    UserResponse map(User entity);
+
+    /**
+     * Map {@link User} to {@link AuthResponse}.
+     * @param entity The element to convert.
+     * @return The converted element.
+     */
+    AuthResponse authMap(User entity);
 }
