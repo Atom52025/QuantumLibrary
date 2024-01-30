@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Data transfer object for Games entity.")
-public class DataListResponseGame {
+public class GameListResponse {
 
     @Schema(description = "List of games.")
     private List<DataResponseGame> games;

@@ -17,8 +17,8 @@ import quantum.validation.Alphanumeric;
 @Validated
 public class NewUserBody {
     @Schema(example = "Game User", description = "Name of the user.")
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("username")
+    private String username;
 
     @Schema(example = "User Mail", description = "Mail of the user.")
     @Alphanumeric(allowedChars = "._-@")

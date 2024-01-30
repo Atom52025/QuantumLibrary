@@ -1,7 +1,7 @@
 package quantum.service;
 
 import org.springframework.data.domain.Pageable;
-import quantum.dto.game.DataListResponseGame;
+import quantum.dto.game.GameListResponse;
 import quantum.dto.game.DataResponseGame;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
@@ -17,7 +17,7 @@ public interface GameService {
         * @param pageable the pageable
         * @return the games
         */
-        DataListResponseGame getGames(Pageable pageable);
+        GameListResponse getGames(Pageable pageable);
 
         /**
          * Post game.

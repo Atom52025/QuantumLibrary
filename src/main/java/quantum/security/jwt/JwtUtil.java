@@ -1,52 +1,54 @@
-package quantum.util;
+package quantum.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.SecretKey;
 import java.util.Base64;
 
 @UtilityClass
-public class SecurityUtils {
-
-    private static final String SECRET_KEY = "tu-secreto"; // Reemplaza con tu secreto
+public class JwtUtil {
+    private static final String SECRET_KEY = "DAF5B3D55AEC35B676E41B599B31B275237456SDJHFGS32654234FDS";
+    SecretKey key = Jwts.SIG.HS256.key().build();
 
     public static TokenPayload decodeToken(String token){
         String[] chunks = token.split("\\.");
 
         Base64.Decoder decoder = Base64.getUrlDecoder();
 
-        String header = new String(decoder.decode(chunks[0]));
-        TokenPayload payload = TokenPayload.fromJsonString( new String(decoder.decode(chunks[1])));
-        return payload;
+        return TokenPayload.fromJsonString( new String(decoder.decode(chunks[1])));
     }
 
-    public void verifyToken(String token) throws Exception {
-        String secretKey = "tu_clave_secreta_aqui";
+    public String getUserNameFromJwtToken(String jwt) {
+        //decodeToken(token).getName();
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload().getSubject();
+    }
 
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "HS256");
+    public String generateJwtToken(UserDetails userDetails) {
+        return Jwts.builder()
+                .subject(userDetails.getUsername())
+                .signWith(key)
+                .compact();
+    }
 
-        JwtParser jwtParser = Jwts.parser()
-                .verifyWith(secretKeySpec)
-                .build();
+    public boolean verifyToken(String jwt) throws Exception {
+        //SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
         try {
-            jwtParser.parse(token);
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt);
+            return true;
         } catch (Exception e) {
             throw new Exception("Could not verify JWT token integrity!", e);
         }
     }
 
-    public static String extractToken(String authorizationHeader) {
-        // Extract token from authorization header (format "Bearer <token>")
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7);
-        }
-        return null;
-    }
 
+    @Getter
     public class TokenPayload {
         @JsonProperty("sub")
         private String sub;

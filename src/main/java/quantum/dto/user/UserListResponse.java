@@ -18,8 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Data transfer object for Users entity.")
-public class DataListResponseUser {
+public class UserListResponse {
 
     @Schema(description = "List of users.")
-    private List<DataResponseUser> users;
+    private List<UserResponse> users;
 }

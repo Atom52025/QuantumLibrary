@@ -1,4 +1,4 @@
-package quantum.dto.user;
+package quantum.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,18 +19,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Data transfer object for Users entity.")
-public class DataResponseUser {
+public class AuthResponse {
 
     @Schema(example = "1", description = "Id of the user.")
     @JsonProperty("id")
     private Long id;
 
     @Schema(example = "User Name", description = "Name of the game.")
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("username")
+    private String username;
 
     @Schema(example = "User Mail", description = "Mail of the user.")
-    @Alphanumeric(allowedChars = "._-@")
     @JsonProperty("email")
     private String email;
+
+    @Schema(example = "JWT Token", description = "JWT Authentication Token.")
+    @JsonProperty("token")
+    private String token;
 }

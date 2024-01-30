@@ -10,9 +10,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import quantum.dto.user.DataListResponseUser;
-import quantum.dto.user.DataResponseUser;
+import quantum.dto.user.UserListResponse;
+import quantum.dto.user.UserResponse;
 import quantum.dto.user.NewUserBody;
 import quantum.dto.user.UpdateUserBody;
 import quantum.exceptions.DatabaseConnectionException;
@@ -45,7 +50,7 @@ public class UserServiceImpl implements UserService {
      * @return the users
      */
     @Override
-    public DataListResponseUser getUsers(Pageable pageable) {
+    public UserListResponse getUsers(Pageable pageable) {
         Page<User> result;
 
         try {
@@ -59,8 +64,12 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException();
         }
 
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        User userDetails = (User) authentication.getPrincipal();
+
         // Map entity to response and return
-        return DataListResponseUser.builder()
+        return UserListResponse.builder()
                 .users(result.get().map(mapper::map).toList())
                 .build();
     }
@@ -71,7 +80,7 @@ public class UserServiceImpl implements UserService {
      * @return the user
      */
     @Override
-    public DataResponseUser postUser(NewUserBody body) {
+    public UserResponse postUser(NewUserBody body) {
 
         // Generate new user
         User newUser = generateNewUser(body);
@@ -96,7 +105,7 @@ public class UserServiceImpl implements UserService {
      * @return the user
      */
     @Override
-    public DataResponseUser updateUser(Long id, UpdateUserBody body) {
+    public UserResponse updateUser(Long id, UpdateUserBody body) {
 
         // Find the user
         User userToUpdate = findUserById(id);
@@ -128,11 +137,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+    }
+
     /**
      * Make sure a user exists.
      * @param id The id of the user to validate.
      */
-    public Long validateUser(Long id) {
+    private Long validateUser(Long id) {
         boolean exists;
         try {
             exists = userRepository.existsById(id);
@@ -153,7 +168,7 @@ public class UserServiceImpl implements UserService {
      */
     private User generateNewUser(NewUserBody body) {
         return User.builder()
-                .username(body.getName())
+                .username(body.getUsername())
                 .email(body.getEmail())
                 .build();
     }
@@ -164,8 +179,8 @@ public class UserServiceImpl implements UserService {
      * @param body the body
      */
     private void updateUserContent(UpdateUserBody body, User userToUpdate) {
-        if (body.getName() != null) {
-            userToUpdate.setUsername(body.getName());
+        if (body.getUsername() != null) {
+            userToUpdate.setUsername(body.getUsername());
         }
         if (body.getEmail() != null) {
             userToUpdate.setEmail(body.getEmail());

@@ -9,7 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import quantum.dto.game.DataListResponseGame;
+import quantum.dto.game.GameListResponse;
 import quantum.dto.game.DataResponseGame;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
@@ -40,7 +40,7 @@ public interface GameApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/api/games", produces = "application/json")
-    ResponseEntity<DataListResponseGame> getGames(
+    ResponseEntity<GameListResponse> getGames(
             @RequestHeader("Authorization")
                 String token,
             @PageableDefault
