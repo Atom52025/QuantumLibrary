@@ -148,3 +148,7 @@ _
 /src/app/api/auth/[...nextauth]/configuration.js,7\e\7e98b77316575b84147be2300b241b51a96c5e4f
 ]
 -src/app/api/auth/[...nextauth]/authOptions.js,7\f\7f146e0b7dbd6629e6780f27dce290816bce484d
+=
+middleware.js,1\0\105b73f6271f2d6d0fbd122a393171d7b07f7cd3
+A
+src/middleware.js,9\c\9c187273be23a05b388863e26f6b7bb0568487fb

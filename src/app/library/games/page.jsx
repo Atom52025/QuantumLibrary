@@ -1,4 +1,5 @@
 import { Checkbox, CheckboxGroup } from '@nextui-org/react';
+import { signIn } from 'next-auth/react';
 
 import Image from 'next/image';
 
@@ -8,7 +9,6 @@ import { getServerSession } from 'next-auth/next';
 
 async function getData(category) {
   const session = await getServerSession(authOptions);
-  console.log(session.user.token);
   const url = 'http://localhost:8080/api/games' + (category != null ? '?category=' + category : '');
   const res = await fetch(url, {
     headers: {
@@ -17,7 +17,7 @@ async function getData(category) {
     cache: 'no-store',
   });
   if (!res.ok) {
-    throw new Error('Failed to fetch data');
+    console.log('Failed to fetch data');
   }
   return res.json();
 }

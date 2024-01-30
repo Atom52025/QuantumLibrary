@@ -1,4 +1,5 @@
 import { Inter } from 'next/font/google';
+import Link from 'next/link';
 
 import { Providers } from './providers';
 import './styles/globals.css';
@@ -21,11 +22,15 @@ export default function RootLayout({ children, session }) {
       <body className={inter.className + ' h-full dark font-russo'} lang="es">
         <Providers>
           <div className="h-[9vh] bg-gray-800 flex gap-5 p-5 items-center align-bottom font-russo">
-            <h1 className="font-faster-stroker text-4xl font-white uppercase "> Quantum Library </h1>
+            <Link href="/" className="font-faster-stroker text-4xl font-white uppercase ">
+              Quantum Library
+            </Link>
             <h2 className="text-2xl font-white"> | </h2>
             <h2 className="text-2xl font-white "> Explorar </h2>
             <h2 className="text-2xl font-white"> | </h2>
-            <h2 className="text-2xl font-white "> Biblioteca </h2>
+            <Link href="/library/games" className="text-2xl font-white ">
+              Biblioteca
+            </Link>
           </div>
           <div className="h-[91vh] overflow-hidden overflow-y-scroll bg-gray-900 font-russo">{children}</div>
         </Providers>
