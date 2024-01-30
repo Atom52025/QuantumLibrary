@@ -33,7 +33,6 @@ public class UserController implements UserApi {
     public ResponseEntity<UserListResponse> getUsers(String token, Pageable pageable) {
         log.info("[CONTROLLER] - Searching users");
         UserListResponse result = userService.getUsers(pageable);
-        log.info("[CONTROLLER RESULT] - The following users were found: {}", result);
         return ResponseEntity.ok(result);
     }
 
@@ -46,7 +45,6 @@ public class UserController implements UserApi {
     public ResponseEntity<UserResponse> postUser(String token, NewUserBody body) {
         log.info("[CONTROLLER] - Creating user");
         UserResponse result = userService.postUser(body);
-        log.info("[CONTROLLER RESULT] - The following user was created: {}", result);
         return ResponseEntity.ok(result);
     }
 
@@ -58,9 +56,8 @@ public class UserController implements UserApi {
      */
     @Override
     public ResponseEntity<UserResponse> patchUser(String token, Long id, UpdateUserBody body) {
-        log.info("[CONTROLLER] - Updating user with id '{}'", id);
+        log.info("[CONTROLLER] - Updating user");
         UserResponse result = userService.updateUser(id, body);
-        log.info("[CONTROLLER RESULT] - The user with id '{}', was updated: {}", id, result);
         return ResponseEntity.ok(result);
     }
 
@@ -71,9 +68,8 @@ public class UserController implements UserApi {
      */
     @Override
     public ResponseEntity<Void> deleteUser(String token, Long id) {
-        log.info("[CONTROLLER] - Deleting user with id '{}'", id);
+        log.info("[CONTROLLER] - Deleting user");
         userService.deleteUser(id);
-        log.info("[CONTROLLER RESULT] - The user with id '{}' was deleted", id);
         return ResponseEntity.noContent().build();
     }
 

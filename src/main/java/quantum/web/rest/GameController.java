@@ -33,7 +33,6 @@ public class GameController implements GameApi {
     public ResponseEntity<GameListResponse> getGames(String token, Pageable pageable) {
         log.info("[CONTROLLER] - Searching games");
         GameListResponse result = gameService.getGames(pageable);
-        log.info("[CONTROLLER RESULT] - The following games were found: {}", result);
         return ResponseEntity.ok(result);
     }
 
@@ -46,7 +45,6 @@ public class GameController implements GameApi {
     public ResponseEntity<DataResponseGame> postGame(String token, NewGameBody body) {
         log.info("[CONTROLLER] - Creating game");
         DataResponseGame result = gameService.postGame(body);
-        log.info("[CONTROLLER RESULT] - The following game was created: {}", result);
         return ResponseEntity.ok(result);
     }
 
@@ -58,9 +56,8 @@ public class GameController implements GameApi {
      */
     @Override
     public ResponseEntity<DataResponseGame> patchGame(String token, Long id, UpdateGameBody body) {
-        log.info("[CONTROLLER] - Updating game with id '{}'", id);
+        log.info("[CONTROLLER] - Updating game");
         DataResponseGame result = gameService.updateGame(id, body);
-        log.info("[CONTROLLER RESULT] - The game with id '{}', was updated: {}", id, result);
         return ResponseEntity.ok(result);
     }
 
@@ -71,9 +68,8 @@ public class GameController implements GameApi {
      */
     @Override
     public ResponseEntity<Void> deleteGame(String token, Long id) {
-        log.info("[CONTROLLER] - Deleting game with id '{}'", id);
+        log.info("[CONTROLLER] - Deleting game");
         gameService.deleteGame(id);
-        log.info("[CONTROLLER RESULT] - The game with id '{}' was deleted", id);
         return ResponseEntity.noContent().build();
     }
 
