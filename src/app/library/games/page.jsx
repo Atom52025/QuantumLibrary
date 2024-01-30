@@ -1,16 +1,29 @@
+'use client';
+
 import { Checkbox, CheckboxGroup } from '@nextui-org/react';
+import { signIn, useSession } from 'next-auth/react';
 
 import Image from 'next/image';
 
 import { Button } from '@nextui-org/button';
 
 async function getData(category) {
-  const url = 'http://localhost:8080/api/games' + (category != null ? '?category=' + category : '');
-  const res = await fetch(url, { cache: 'no-store' });
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
+  const { data: session } = useSession();
+  if (session?.accessToken) {
+    const url = 'http://localhost:8080/api/games' + (category != null ? '?category=' + category : '');
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      cache: 'no-store',
+    });
+    if (!res.ok) {
+      throw new Error('Failed to fetch data');
+    }
+    return res.json();
+  } else {
+    signIn();
   }
-  return res.json();
 }
 
 export default async function Page({ searchParams }) {

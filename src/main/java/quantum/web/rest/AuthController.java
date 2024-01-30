@@ -26,7 +26,6 @@ public class AuthController implements AuthApi {
     public ResponseEntity<DataResponseUser> logIn(LogInBody body) {
         log.info("[CONTROLLER] - Logging in");
         DataResponseUser user = authService.logIn(body);
-        log.info("[CONTROLLER RESULT] - The user with id '{}' was deleted", user.getId());
         return ResponseEntity.ok(user);
     }
 
@@ -34,7 +33,6 @@ public class AuthController implements AuthApi {
     public ResponseEntity<DataResponseUser> signUp(SignUpBody body) {
         log.info("[CONTROLLER] - Singing Up");
         DataResponseUser user = authService.signUp(body);
-        log.info("[CONTROLLER RESULT] - The user with id '{}' was deleted", user.getId());
         return ResponseEntity.ok(user);
     }
 }

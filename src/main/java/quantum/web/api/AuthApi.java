@@ -49,7 +49,7 @@ public interface AuthApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/signUp", produces = "application/json")
+    @PostMapping(value = "/signup", produces = "application/json")
     ResponseEntity<DataResponseUser> signUp(
         @Valid @RequestBody
         SignUpBody body

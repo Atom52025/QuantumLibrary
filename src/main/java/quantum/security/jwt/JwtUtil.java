@@ -15,7 +15,7 @@ import java.util.Base64;
 
 @UtilityClass
 public class JwtUtil {
-    private static final String SECRET_KEY = "DAF5B3D55AEC35B676E41B599B31B275237456SDJHFGS32654234FDS";
+    private static final String SECRET_KEY = "c";
 
     public static TokenPayload decodeToken(String token){
         String[] chunks = token.split("\\.");

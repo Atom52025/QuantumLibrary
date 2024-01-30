@@ -1,6 +1,5 @@
 import { Inter } from 'next/font/google';
 
-
 import { Providers } from './providers';
 import './styles/globals.css';
 
@@ -20,17 +19,16 @@ export default function RootLayout({ children, session }) {
       </head>
 
       <body className={inter.className + ' h-full dark font-russo'} lang="es">
-        <div className="h-[9vh] bg-gray-800 flex gap-5 p-5 items-center align-bottom font-russo">
-          <h1 className="font-faster-stroker text-4xl font-white uppercase "> Quantum Library </h1>
-          <h2 className="text-2xl font-white"> | </h2>
-          <h2 className="text-2xl font-white "> Explorar </h2>
-          <h2 className="text-2xl font-white"> | </h2>
-          <h2 className="text-2xl font-white "> Biblioteca </h2>
-        </div>
-        <div className="h-[91vh] overflow-hidden overflow-y-scroll bg-gray-900 font-russo">
-          <Providers>{children}</Providers>
-        </div>
-        </SessionProvider >
+        <Providers>
+          <div className="h-[9vh] bg-gray-800 flex gap-5 p-5 items-center align-bottom font-russo">
+            <h1 className="font-faster-stroker text-4xl font-white uppercase "> Quantum Library </h1>
+            <h2 className="text-2xl font-white"> | </h2>
+            <h2 className="text-2xl font-white "> Explorar </h2>
+            <h2 className="text-2xl font-white"> | </h2>
+            <h2 className="text-2xl font-white "> Biblioteca </h2>
+          </div>
+          <div className="h-[91vh] overflow-hidden overflow-y-scroll bg-gray-900 font-russo">{children}</div>
+        </Providers>
       </body>
     </html>
   );
