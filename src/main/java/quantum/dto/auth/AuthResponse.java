@@ -1,4 +1,4 @@
-package quantum.dto.user;
+package quantum.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import quantum.model.User;
 import quantum.validation.Alphanumeric;
 
+import java.util.List;
+
 /**
  * Data transfer object for {@link User} entity.
  */
@@ -17,7 +19,7 @@ import quantum.validation.Alphanumeric;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Data transfer object for Users entity.")
-public class DataResponseUser {
+public class AuthResponse {
 
     @Schema(example = "1", description = "Id of the user.")
     @JsonProperty("id")
@@ -28,7 +30,10 @@ public class DataResponseUser {
     private String username;
 
     @Schema(example = "User Mail", description = "Mail of the user.")
-    @Alphanumeric(allowedChars = "._-@")
     @JsonProperty("email")
     private String email;
+
+    @Schema(example = "JWT Token", description = "JWT Authentication Token.")
+    @JsonProperty("token")
+    private String token;
 }

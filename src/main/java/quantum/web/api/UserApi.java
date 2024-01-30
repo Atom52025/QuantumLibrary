@@ -11,8 +11,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import quantum.dto.user.DataListResponseUser;
-import quantum.dto.user.DataResponseUser;
+import quantum.dto.user.UserListResponse;
+import quantum.dto.user.UserResponse;
 import quantum.dto.user.NewUserBody;
 import quantum.dto.user.UpdateUserBody;
 import quantum.model.User;
@@ -41,7 +41,7 @@ public interface UserApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/api/users", produces = "application/json")
-    ResponseEntity<DataListResponseUser> getUsers(
+    ResponseEntity<UserListResponse> getUsers(
             @RequestHeader("Authorization")
                 String token,
             @PageableDefault
@@ -65,7 +65,7 @@ public interface UserApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value = "/api/users", produces = "application/json")
-    ResponseEntity<DataResponseUser> postUser(
+    ResponseEntity<UserResponse> postUser(
             @RequestHeader("Authorization")
                 String token,
             @Valid @RequestBody
@@ -90,7 +90,7 @@ public interface UserApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping(value = "/api/users/{user_id}", produces = "application/json")
-    ResponseEntity<DataResponseUser> patchUser(
+    ResponseEntity<UserResponse> patchUser(
             @RequestHeader("Authorization")
                 String token,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")

@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import quantum.dto.user.DataListResponseUser;
-import quantum.dto.user.DataResponseUser;
+import quantum.dto.user.UserListResponse;
+import quantum.dto.user.UserResponse;
 import quantum.dto.user.NewUserBody;
 import quantum.dto.user.UpdateUserBody;
 import quantum.model.User;
@@ -30,9 +30,9 @@ public class UserController implements UserApi {
      * @return The list of users
      */
     @Override
-    public ResponseEntity<DataListResponseUser> getUsers(String token, Pageable pageable) {
+    public ResponseEntity<UserListResponse> getUsers(String token, Pageable pageable) {
         log.info("[CONTROLLER] - Searching users");
-        DataListResponseUser result = userService.getUsers(pageable);
+        UserListResponse result = userService.getUsers(pageable);
         log.info("[CONTROLLER RESULT] - The following users were found: {}", result);
         return ResponseEntity.ok(result);
     }
@@ -43,9 +43,9 @@ public class UserController implements UserApi {
      * @return The new user.
      */
     @Override
-    public ResponseEntity<DataResponseUser> postUser(String token, NewUserBody body) {
+    public ResponseEntity<UserResponse> postUser(String token, NewUserBody body) {
         log.info("[CONTROLLER] - Creating user");
-        DataResponseUser result = userService.postUser(body);
+        UserResponse result = userService.postUser(body);
         log.info("[CONTROLLER RESULT] - The following user was created: {}", result);
         return ResponseEntity.ok(result);
     }
@@ -57,9 +57,9 @@ public class UserController implements UserApi {
      * @return The updated user.
      */
     @Override
-    public ResponseEntity<DataResponseUser> patchUser(String token, Long id, UpdateUserBody body) {
+    public ResponseEntity<UserResponse> patchUser(String token, Long id, UpdateUserBody body) {
         log.info("[CONTROLLER] - Updating user with id '{}'", id);
-        DataResponseUser result = userService.updateUser(id, body);
+        UserResponse result = userService.updateUser(id, body);
         log.info("[CONTROLLER RESULT] - The user with id '{}', was updated: {}", id, result);
         return ResponseEntity.ok(result);
     }

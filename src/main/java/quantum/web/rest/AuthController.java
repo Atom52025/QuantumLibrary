@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import quantum.dto.auth.AuthResponse;
 import quantum.dto.auth.LogInBody;
 import quantum.dto.auth.SignUpBody;
-import quantum.dto.user.DataResponseUser;
+import quantum.dto.user.UserResponse;
 import quantum.model.User;
 import quantum.service.AuthService;
 import quantum.web.api.AuthApi;
@@ -23,16 +24,19 @@ public class AuthController implements AuthApi {
     private  final AuthService authService;
 
     @Override
-    public ResponseEntity<DataResponseUser> logIn(LogInBody body) {
+    public ResponseEntity<AuthResponse> logIn(LogInBody body) {
         log.info("[CONTROLLER] - Logging in");
-        DataResponseUser user = authService.logIn(body);
+        AuthResponse user = authService.logIn(body);
         return ResponseEntity.ok(user);
     }
 
     @Override
-    public ResponseEntity<DataResponseUser> signUp(SignUpBody body) {
+    public ResponseEntity<AuthResponse> signUp(SignUpBody body) {
         log.info("[CONTROLLER] - Singing Up");
-        DataResponseUser user = authService.signUp(body);
+        AuthResponse user = authService.signUp(body);
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(user);
     }
 }

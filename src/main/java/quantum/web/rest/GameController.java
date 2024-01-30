@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import quantum.dto.game.DataListResponseGame;
+import quantum.dto.game.GameListResponse;
 import quantum.dto.game.DataResponseGame;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
@@ -30,9 +30,9 @@ public class GameController implements GameApi {
      * @return The list of games
      */
     @Override
-    public ResponseEntity<DataListResponseGame> getGames(String token, Pageable pageable) {
+    public ResponseEntity<GameListResponse> getGames(String token, Pageable pageable) {
         log.info("[CONTROLLER] - Searching games");
-        DataListResponseGame result = gameService.getGames(pageable);
+        GameListResponse result = gameService.getGames(pageable);
         log.info("[CONTROLLER RESULT] - The following games were found: {}", result);
         return ResponseEntity.ok(result);
     }
