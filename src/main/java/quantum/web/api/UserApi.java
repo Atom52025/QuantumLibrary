@@ -73,8 +73,8 @@ public interface UserApi {
     );
 
     /**
-     * PATCH to /api/users/{user_id} to edit a user.
-     * @param userId The user id.
+     * PATCH to /api/users/{username} to edit a user.
+     * @param username The user id.
      * @param body The user body.
      * @return The edited user.
      */
@@ -89,20 +89,20 @@ public interface UserApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping(value = "/api/users/{user_id}", produces = "application/json")
+    @PatchMapping(value = "/api/users/{username}", produces = "application/json")
     ResponseEntity<UserResponse> patchUser(
             @RequestHeader("Authorization")
                 String token,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")
-            @PathVariable("user_id")
-                Long userId,
+            @PathVariable("username")
+                String username,
             @Valid @RequestBody
                 UpdateUserBody body
     );
 
     /**
-     * DELETE to /api/users/{user_id} to delete a user.
-     * @param userId The user id
+     * DELETE to /api/users/{username} to delete a user.
+     * @param username The user id
      */
     @Operation(summary = "Delete a user", description = "Delete a user", parameters = {
             @Parameter(name = "page", description = "The page number"),
@@ -115,12 +115,12 @@ public interface UserApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping(value = "/api/users/{user_id}", produces = "application/json")
+    @DeleteMapping(value = "/api/users/{username}", produces = "application/json")
     ResponseEntity<Void> deleteUser(
             @RequestHeader("Authorization")
                 String token,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")
-            @PathVariable("user_id")
-                Long userId
+            @PathVariable("username")
+                String username
     );
 }

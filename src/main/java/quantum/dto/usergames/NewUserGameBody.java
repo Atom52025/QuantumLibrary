@@ -1,4 +1,4 @@
-package quantum.dto.user;
+package quantum.dto.usergames;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,14 +13,11 @@ import quantum.validation.Alphanumeric;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "Body object at endpoint update user.")
+@Schema(description = "Body object at endpoint new game.")
 @Validated
-public class UpdateUserBody {
-    @Schema(example = "User Name", description = "Name of the user.")
-    @JsonProperty("username")
-    private String username;
+public class NewUserGameBody {
 
-    @Schema(example = "User Mail", description = "Mail of the user.")
-    @JsonProperty("email")
-    private String email;
+    @Schema(example = "Time played", description = "Time played on the game.")
+    @JsonProperty("timePlayed")
+    private Integer timePlayed;
 }

@@ -38,4 +38,11 @@ public interface GameService {
          */
         void deleteGame(Long id);
 
+        /**
+         * Find a game by id.
+         * @param id The id of the game to find.
+         * @return The game.
+         */
+        Game findGameById(Long id);
+
 }

@@ -185,7 +185,7 @@ public class GameServiceImpl implements GameService {
      * @param id The id of the game to find.
      * @return The game.
      */
-    private Game findGameById(Long id) {
+    public Game findGameById(Long id) {
         Optional<Game> game;
         try{
             game = gameRepository.findById(id);

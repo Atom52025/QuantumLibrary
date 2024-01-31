@@ -33,7 +33,6 @@ public class UserController implements UserApi {
     public ResponseEntity<UserListResponse> getUsers(String token, Pageable pageable) {
         log.info("[CONTROLLER] - Searching users");
         UserListResponse result = userService.getUsers(pageable);
-        log.info("[CONTROLLER RESULT] - The following users were found: {}", result);
         return ResponseEntity.ok(result);
     }
 
@@ -46,34 +45,31 @@ public class UserController implements UserApi {
     public ResponseEntity<UserResponse> postUser(String token, NewUserBody body) {
         log.info("[CONTROLLER] - Creating user");
         UserResponse result = userService.postUser(body);
-        log.info("[CONTROLLER RESULT] - The following user was created: {}", result);
         return ResponseEntity.ok(result);
     }
 
     /**
-     * PUT to /api/users/{id} to update a user.
-     * @param id The id of the user to update.
+     * PUT to /api/users/{username} to update a user.
+     * @param username The username of the user to update.
      * @param body The user body.
      * @return The updated user.
      */
     @Override
-    public ResponseEntity<UserResponse> patchUser(String token, Long id, UpdateUserBody body) {
-        log.info("[CONTROLLER] - Updating user with id '{}'", id);
-        UserResponse result = userService.updateUser(id, body);
-        log.info("[CONTROLLER RESULT] - The user with id '{}', was updated: {}", id, result);
+    public ResponseEntity<UserResponse> patchUser(String token, String username, UpdateUserBody body) {
+        log.info("[CONTROLLER] - Updating user");
+        UserResponse result = userService.updateUser(username, body);
         return ResponseEntity.ok(result);
     }
 
     /**
-     * DELETE to /api/users/{id} to delete a user.
-     * @param id The id of the user to delete.
+     * DELETE to /api/users/{username} to delete a user.
+     * @param username The username of the user to delete.
      * @return The deleted user.
      */
     @Override
-    public ResponseEntity<Void> deleteUser(String token, Long id) {
-        log.info("[CONTROLLER] - Deleting user with id '{}'", id);
-        userService.deleteUser(id);
-        log.info("[CONTROLLER RESULT] - The user with id '{}' was deleted", id);
+    public ResponseEntity<Void> deleteUser(String token, String username) {
+        log.info("[CONTROLLER] - Deleting user");
+        userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
 
