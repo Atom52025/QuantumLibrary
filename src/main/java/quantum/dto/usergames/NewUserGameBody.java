@@ -19,5 +19,5 @@ public class NewUserGameBody {
 
     @Schema(example = "Time played", description = "Time played on the game.")
     @JsonProperty("timePlayed")
-    private int timePlayed;
+    private Integer timePlayed;
 }

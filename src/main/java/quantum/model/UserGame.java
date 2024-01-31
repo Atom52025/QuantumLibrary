@@ -33,6 +33,6 @@ public class UserGame {
     private Game game;
 
     @Column(name = "TIME_PLAYED")
-    private int timePlayed;
+    private Integer timePlayed;
 
 }

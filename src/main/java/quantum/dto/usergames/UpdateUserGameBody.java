@@ -18,5 +18,5 @@ import quantum.validation.Alphanumeric;
 public class UpdateUserGameBody {
     @Schema(example = "Time played", description = "Time played on the game.")
     @JsonProperty("timePlayed")
-    private int timePlayed;
+    private Integer timePlayed;
 }

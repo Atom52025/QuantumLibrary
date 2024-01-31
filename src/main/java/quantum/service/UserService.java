@@ -15,8 +15,8 @@ public interface UserService {
 
         /**
         * Gets users.
-        * @param pageable the pageable
-        * @return the users
+        * @param pageable The pageable.
+        * @return The users.
         */
         UserListResponse getUsers(Pageable pageable);
 
@@ -28,20 +28,27 @@ public interface UserService {
 
         /**
          * Patch user.
-         * @param id the id
-         * @param body the body
+         * @param username The username of the user.
+         * @param body The body,
          */
-        UserResponse updateUser(Long id, UpdateUserBody body);
+        UserResponse updateUser(String username, UpdateUserBody body);
 
         /**
          * Delete user.
-         * @param id the id
+         * @param username The username of the user.
          */
-        void deleteUser(Long id);
+        void deleteUser(String username);
+
+        /**
+         * Find a user by username.
+         * @param username The username of the user to find.
+         * @return The user.
+         */
+        User findUser(String username);
 
         /**
          * Gets user.
-         * @param username The user username.
+         * @param username The username of the user.
          * @return The user
          */
         UserDetails loadUserByUsername(String username);

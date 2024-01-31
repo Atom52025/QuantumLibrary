@@ -49,27 +49,27 @@ public class UserController implements UserApi {
     }
 
     /**
-     * PUT to /api/users/{id} to update a user.
-     * @param id The id of the user to update.
+     * PUT to /api/users/{username} to update a user.
+     * @param username The username of the user to update.
      * @param body The user body.
      * @return The updated user.
      */
     @Override
-    public ResponseEntity<UserResponse> patchUser(String token, Long id, UpdateUserBody body) {
+    public ResponseEntity<UserResponse> patchUser(String token, String username, UpdateUserBody body) {
         log.info("[CONTROLLER] - Updating user");
-        UserResponse result = userService.updateUser(id, body);
+        UserResponse result = userService.updateUser(username, body);
         return ResponseEntity.ok(result);
     }
 
     /**
-     * DELETE to /api/users/{id} to delete a user.
-     * @param id The id of the user to delete.
+     * DELETE to /api/users/{username} to delete a user.
+     * @param username The username of the user to delete.
      * @return The deleted user.
      */
     @Override
-    public ResponseEntity<Void> deleteUser(String token, Long id) {
+    public ResponseEntity<Void> deleteUser(String token, String username) {
         log.info("[CONTROLLER] - Deleting user");
-        userService.deleteUser(id);
+        userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
 

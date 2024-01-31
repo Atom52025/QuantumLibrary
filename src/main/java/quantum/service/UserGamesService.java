@@ -1,8 +1,6 @@
 package quantum.service;
 
 import org.springframework.data.domain.Pageable;
-import quantum.dto.game.NewGameBody;
-import quantum.dto.game.UpdateGameBody;
 import quantum.dto.usergames.NewUserGameBody;
 import quantum.dto.usergames.UpdateUserGameBody;
 import quantum.dto.usergames.UserGameResponse;
@@ -16,32 +14,33 @@ public interface UserGamesService {
 
         /**
         * Gets user games.
-         * @param userId The user id.
+         * @param username The username.
          * @param pageable the pageable
         * @return the games
         */
-        UserGamesListResponse getUserGames(Long userId, Pageable pageable);
+        UserGamesListResponse getUserGames(String username, Pageable pageable);
 
         /**
          * Add game to a user.
-         * @param userId The user id.
+         * @param username The username.
+         * @param gameId The game id.
          * @param body the body
          */
-        UserGameResponse postUserGame(Long userId, NewUserGameBody body);
+        UserGameResponse postUserGame(NewUserGameBody body, String username, Long gameId);
 
         /**
          * Patch a game from a user.
-         * @param userId The user id.
+         * @param username The username.
          * @param gameId The game id.
          * @param body The body.
          */
-        UserGameResponse updateUserGame(Long userId, Long gameId, UpdateUserGameBody body);
+        UserGameResponse updateUserGame(String username, Long gameId, UpdateUserGameBody body);
 
         /**
          * Delete game from a user.
-         * @param userId The user id.
+         * @param username The username.
          * @param gameId The game id.
          */
-        void deleteUserGame(Long userId, Long gameId);
+        void deleteUserGame(String username, Long gameId);
 
 }

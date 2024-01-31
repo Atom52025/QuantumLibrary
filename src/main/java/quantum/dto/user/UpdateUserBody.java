@@ -21,7 +21,6 @@ public class UpdateUserBody {
     private String username;
 
     @Schema(example = "User Mail", description = "Mail of the user.")
-    @Alphanumeric(allowedChars = "._-@")
     @JsonProperty("email")
     private String email;
 }

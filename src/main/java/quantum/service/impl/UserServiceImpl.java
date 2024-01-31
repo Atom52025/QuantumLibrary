@@ -10,16 +10,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import quantum.dto.user.UserListResponse;
-import quantum.dto.user.UserResponse;
 import quantum.dto.user.NewUserBody;
 import quantum.dto.user.UpdateUserBody;
+import quantum.dto.user.UserListResponse;
+import quantum.dto.user.UserResponse;
 import quantum.exceptions.DatabaseConnectionException;
 import quantum.mapping.UsersMapping;
 import quantum.model.User;
@@ -29,7 +26,6 @@ import quantum.service.UserService;
 import java.util.Optional;
 
 import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
-import static quantum.constant.ErrorConstants.ENTITY_NOT_FOUND_ERROR;
 
 /**
  * Service implementation for {@link User} entity.
@@ -41,8 +37,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UsersMapping mapper;
-
-    // TODO: Manual id generation
 
     /**
      * Retrieve Users.
@@ -64,10 +58,6 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException();
         }
 
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        User userDetails = (User) authentication.getPrincipal();
-
         // Map entity to response and return
         return UserListResponse.builder()
                 .users(result.get().map(mapper::map).toList())
@@ -76,8 +66,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Create a new user.
-     * @param body the body
-     * @return the user
+     * @param body The body
+     * @return The user
      */
     @Override
     public UserResponse postUser(NewUserBody body) {
@@ -100,15 +90,15 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Update a user.
-     * @param id the id
-     * @param body the body
-     * @return the user
+     * @param username The username of the user.
+     * @param body The body
+     * @return The user
      */
     @Override
-    public UserResponse updateUser(Long id, UpdateUserBody body) {
+    public UserResponse updateUser(String username, UpdateUserBody body) {
 
         // Find the user
-        User userToUpdate = findUserById(id);
+        User userToUpdate = findUser(username);
 
         // Update the user content
         updateUserContent(body, userToUpdate);
@@ -126,12 +116,12 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Delete a user.
-     * @param id the id
+     * @param username The username
      */
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(String username) {
         try {
-            userRepository.deleteById(validateUser(id));
+            userRepository.delete(findUser(username));
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -143,28 +133,11 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
     }
 
-    /**
-     * Make sure a user exists.
-     * @param id The id of the user to validate.
-     */
-    private Long validateUser(Long id) {
-        boolean exists;
-        try {
-            exists = userRepository.existsById(id);
-        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
-            throw new DatabaseConnectionException(ex);
-        }
-
-        if (!exists) {
-            throw new EntityNotFoundException(ENTITY_NOT_FOUND_ERROR);
-        }
-        return id;
-    }
 
     /**
      * Generate a new user.
-     * @param body the body
-     * @return the user
+     * @param body The body
+     * @return The user
      */
     private User generateNewUser(NewUserBody body) {
         return User.builder()
@@ -175,8 +148,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Update a user.
-     *
-     * @param body the body
+     * @param userToUpdate The user to update.
+     * @param body The body
      */
     private void updateUserContent(UpdateUserBody body, User userToUpdate) {
         if (body.getUsername() != null) {
@@ -188,14 +161,14 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Find a user by id.
-     * @param id The id of the user to find.
+     * Find a user by username.
+     * @param username The username of the user to find.
      * @return The user.
      */
-    private User findUserById(Long id) {
+    public User findUser(String username) {
         Optional<User> user;
         try{
-            user = userRepository.findById(id);
+            user = userRepository.findByUsername(username);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
