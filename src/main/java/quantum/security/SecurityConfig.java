@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.reactive.function.client.WebClient;
 import quantum.filter.AuthTokenFilter;
 import quantum.repository.UserRepository;
 import quantum.security.jwt.AuthEntryPointJwt;
@@ -57,7 +58,7 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable)
+        return http.csrf(AbstractHttpConfigurer::disable)
             .exceptionHandling(ex -> ex.authenticationEntryPoint(authEntryPointJwt))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
@@ -71,5 +72,10 @@ public class SecurityConfig{
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
     }
 }

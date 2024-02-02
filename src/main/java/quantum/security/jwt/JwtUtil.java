@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import javax.crypto.SecretKey;
 import java.util.Base64;
 
 @UtilityClass
+@Slf4j
 public class JwtUtil {
     private static final String SECRET_KEY = "DAF5B3D55AEC35B676E41B599B31B275237456SDJHFGS32654234FDS";
     SecretKey key = Jwts.SIG.HS256.key().build();
@@ -38,7 +40,7 @@ public class JwtUtil {
     }
 
     public boolean verifyToken(String jwt) throws Exception {
-        //SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
+        log.info("Verifying JWT token integrity: {}", jwt);
         try {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt);
             return true;

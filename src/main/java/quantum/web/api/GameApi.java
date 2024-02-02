@@ -20,6 +20,7 @@ import quantum.model.Game;
  */
 
 @Validated
+@RequestMapping("/api")
 public interface GameApi {
 
     /**
@@ -39,7 +40,7 @@ public interface GameApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(value = "/api/games", produces = "application/json")
+    @GetMapping(value = "/games", produces = "application/json")
     ResponseEntity<GameListResponse> getGames(
             @RequestHeader("Authorization")
                 String token,
@@ -63,7 +64,7 @@ public interface GameApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/api/games", produces = "application/json")
+    @PostMapping(value = "/games", produces = "application/json")
     ResponseEntity<DataResponseGame> postGame(
             @RequestHeader("Authorization")
                 String token,
@@ -88,7 +89,7 @@ public interface GameApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping(value = "/api/games/{game_id}", produces = "application/json")
+    @PatchMapping(value = "/games/{game_id}", produces = "application/json")
     ResponseEntity<DataResponseGame> patchGame(
             @RequestHeader("Authorization")
                 String token,
@@ -114,7 +115,7 @@ public interface GameApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping(value = "/api/games/{game_id}", produces = "application/json")
+    @DeleteMapping(value = "/games/{game_id}", produces = "application/json")
     ResponseEntity<Void> deleteGame(
             @RequestHeader("Authorization")
                 String token,
