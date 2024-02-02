@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import Image from 'next/image';
 
+import SearchBar from '@/app/components/SearchBar';
 import { Button } from '@nextui-org/button';
 import { getToken } from 'next-auth/jwt';
 
@@ -38,6 +39,7 @@ export default function ContentFiltering({ data, tags }) {
             </Checkbox>
           ))}
         </CheckboxGroup>
+        <SearchBar />
       </div>
       <main className="min-h-full w-full ">
         <div className="p-10 grid grid-cols-6 gap-3">

@@ -8,9 +8,10 @@ const nextConfig = {
                 hostname: 'cdn2.steamgriddb.com',
                 port: '',
                 pathname: '/grid/**',
-            },
+            }
         ],
     },
+
 };
 
 export default nextConfig;
