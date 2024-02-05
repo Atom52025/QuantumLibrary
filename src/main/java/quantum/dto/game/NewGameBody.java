@@ -20,10 +20,6 @@ public class NewGameBody {
     @JsonProperty("name")
     private String name;
 
-    @Schema(example = "Game Description", description = "Description of the game.")
-    @JsonProperty("description")
-    private String description;
-
     @Schema(example = "Game Image", description = "Image of the game.")
     @JsonProperty("image")
     private String image;
@@ -32,4 +28,8 @@ public class NewGameBody {
     @Alphanumeric(allowedChars = ",")
     @JsonProperty("tags")
     private String tags;
+
+    @Schema(example = "Steam Grid DB Id", description = "The id of the game in the Steam Grid DB.")
+    @JsonProperty("sgbdId")
+    private Long sgbdId;
 }

@@ -2,7 +2,7 @@ package quantum.service;
 
 import org.springframework.data.domain.Pageable;
 import quantum.dto.game.GameListResponse;
-import quantum.dto.game.DataResponseGame;
+import quantum.dto.game.GameResponse;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
 import quantum.model.Game;
@@ -21,16 +21,17 @@ public interface GameService {
 
         /**
          * Post game.
+         *
          * @param body the body
          */
-        DataResponseGame postGame(NewGameBody body);
+        Game postGame(NewGameBody body);
 
         /**
          * Patch game.
          * @param id the id
          * @param body the body
          */
-        DataResponseGame updateGame(Long id, UpdateGameBody body);
+        GameResponse updateGame(Long id, UpdateGameBody body);
 
         /**
          * Delete game.
@@ -44,5 +45,12 @@ public interface GameService {
          * @return The game.
          */
         Game findGameById(Long id);
+
+        /**
+         * Find a game by id.
+         * @param sgbdId The sgbd id of the game to find.
+         * @return The game.
+         */
+        Game findGameBySgbdId(Long sgbdId) ;
 
 }

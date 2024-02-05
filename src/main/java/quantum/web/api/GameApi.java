@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import quantum.dto.game.GameListResponse;
-import quantum.dto.game.DataResponseGame;
+import quantum.dto.game.GameResponse;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
 import quantum.model.Game;
@@ -20,6 +20,7 @@ import quantum.model.Game;
  */
 
 @Validated
+@RequestMapping("/api")
 public interface GameApi {
 
     /**
@@ -39,7 +40,7 @@ public interface GameApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(value = "/api/games", produces = "application/json")
+    @GetMapping(value = "/games", produces = "application/json")
     ResponseEntity<GameListResponse> getGames(
             @RequestHeader("Authorization")
                 String token,
@@ -63,8 +64,8 @@ public interface GameApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/api/games", produces = "application/json")
-    ResponseEntity<DataResponseGame> postGame(
+    @PostMapping(value = "/games", produces = "application/json")
+    ResponseEntity<GameResponse> postGame(
             @RequestHeader("Authorization")
                 String token,
             @Valid @RequestBody
@@ -88,8 +89,8 @@ public interface GameApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping(value = "/api/games/{game_id}", produces = "application/json")
-    ResponseEntity<DataResponseGame> patchGame(
+    @PatchMapping(value = "/games/{game_id}", produces = "application/json")
+    ResponseEntity<GameResponse> patchGame(
             @RequestHeader("Authorization")
                 String token,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The game id")
@@ -114,7 +115,7 @@ public interface GameApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping(value = "/api/games/{game_id}", produces = "application/json")
+    @DeleteMapping(value = "/games/{game_id}", produces = "application/json")
     ResponseEntity<Void> deleteGame(
             @RequestHeader("Authorization")
                 String token,

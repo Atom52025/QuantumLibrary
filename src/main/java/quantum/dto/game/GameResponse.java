@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Data transfer object for Games entity.")
-public class DataResponseGame {
+public class GameResponse {
 
     @Schema(example = "1", description = "Id of the game.")
     @JsonProperty("id")
@@ -39,5 +39,9 @@ public class DataResponseGame {
     @Schema(example = "Game Tags", description = "Tags of the game.")
     @JsonProperty("tags")
     private List<String> tags;
+
+    @Schema(example = "Steam Grid DB Id", description = "The id of the game in the Steam Grid DB.")
+    @JsonProperty("sgbdId")
+    private Long sgbdId;
 
 }

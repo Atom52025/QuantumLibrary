@@ -30,7 +30,7 @@ public class UserGamesController implements UserGamesApi {
     /**
      * GET to /api/user/{user_id}/games to fetch a user game list.
      * @param token The token with the authentication information.
-     * @param username The user id.
+     * @param username The username.
      * @param pageable the pageable
      * @return The list of games
      */
@@ -44,43 +44,43 @@ public class UserGamesController implements UserGamesApi {
     /**
      * POST to /api/user/{user_id}/games add a game to a user
      * @param token The token with the authentication information.
-     * @param username The user id.
-     * @param gameId The game id.
+     * @param username The username.
+     * @param gameSgbdId The sgbd game id.
      * @param body The user game body.
      * @return The new user game.
      */
     @Override
-    public ResponseEntity<UserGameResponse> postUserGame(String token, String username, Long gameId, NewUserGameBody body) {
+    public ResponseEntity<UserGameResponse> postUserGame(String token, String username, Long gameSgbdId, NewUserGameBody body) {
         log.info("[CONTROLLER] - Adding game to user");
-        UserGameResponse result = userGamesService.postUserGame( body, username, gameId);
+        UserGameResponse result = userGamesService.postUserGame( body, username, gameSgbdId);
         return ResponseEntity.ok(result);
     }
 
     /**
      * PATCH to /api/user/{user_id}/games/{game_id} to edit a game from a user.
      * @param token The token with the authentication information.
-     * @param username The user id.
-     * @param gameId The game id.
+     * @param username The username.
+     * @param gameSgbdId The sgbd game id.
      * @param body The user game body.
      * @return The edited user game.
      */
     @Override
-    public ResponseEntity<UserGameResponse> patchUserGame(String token, String username, Long gameId, UpdateUserGameBody body) {
+    public ResponseEntity<UserGameResponse> patchUserGame(String token, String username, Long gameSgbdId, UpdateUserGameBody body) {
         log.info("[CONTROLLER] - Editing game from user");
-        UserGameResponse result = userGamesService.updateUserGame(username, gameId, body);
+        UserGameResponse result = userGamesService.updateUserGame(username, gameSgbdId, body);
         return ResponseEntity.ok(result);
     }
 
     /**
      * DELETE to /api/user/{user_id}/games/{game_id} to delete a game from a user.
      * @param token The token with the authentication information.
-     * @param username The user id.
-     * @param gameId The game id.
+     * @param username The username.
+     * @param gameSgbdId The game sgbd id.
      */
     @Override
-    public ResponseEntity<Void> deleteUserGame(String token, String username, Long gameId) {
+    public ResponseEntity<Void> deleteUserGame(String token, String username, Long gameSgbdId) {
         log.info("[CONTROLLER] - Deleting game from user");
-        userGamesService.deleteUserGame(username, gameId);
+        userGamesService.deleteUserGame(username, gameSgbdId);
         return ResponseEntity.noContent().build();
     }
 }

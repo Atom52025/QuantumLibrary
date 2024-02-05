@@ -27,13 +27,13 @@ public class Game {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "DESCRIPTION")
-    private String description;
-
     @Column(name = "IMAGE")
     private String image;
 
     @Column(name = "TAGS")
     private String tags;
+
+    @Column(name = "SGBD_ID")
+    private Long sgbdId;
 
 }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
+import quantum.dto.game.NewGameBody;
 import quantum.dto.usergames.NewUserGameBody;
 import quantum.dto.usergames.UpdateUserGameBody;
 import quantum.dto.usergames.UserGameResponse;
@@ -74,13 +75,28 @@ public class UserGamesServiceImpl implements UserGamesService {
     /**
      * Add game to a user.
      * @param username The username.
+     * @param gameSgbdId The game sgbd id.
      * @param body the body
      */
     @Override
-    public UserGameResponse postUserGame(NewUserGameBody body, String username, Long gameId) {
+    public UserGameResponse postUserGame(NewUserGameBody body, String username, Long gameSgbdId) {
 
-        // Generate new game
-        UserGame newUserGame = generateNewGame(body, username, gameId);
+        // Search if game is in the database
+        Game game = gameService.findGameBySgbdId(gameSgbdId);
+
+        // If game is not in the database, create it
+        if (game == null){
+            game = gameService.postGame(
+                    NewGameBody.builder()
+                    .name(body.getName())
+                    .image(body.getImage())
+                    .tags("")
+                    .sgbdId(gameSgbdId)
+                    .build());
+        }
+
+        // Generate new user game
+        UserGame newUserGame = generateNewGame(body, username, game);
 
         try {
             log.debug("[USER GAME CREATION] - Saving user game: {}", newUserGame);
@@ -160,13 +176,12 @@ public class UserGamesServiceImpl implements UserGamesService {
     /**
      * Generate a new game.
      * @param username The username.
-     * @param gameId The game id.
+     * @param game The game.
      * @param body the body
      * @return the game
      */
-    private UserGame generateNewGame(NewUserGameBody body, String username, Long gameId) {
+    private UserGame generateNewGame(NewUserGameBody body, String username, Game game) {
         User user = userService.findUser(username);
-        Game game = gameService.findGameById(gameId);
         if (user == null || game == null) throw new EntityNotFoundException();
         return UserGame.builder()
                 .user(user)
