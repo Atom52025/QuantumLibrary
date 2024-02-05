@@ -2,6 +2,8 @@ package quantum.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import quantum.dto.user.NewUserBody;
+import quantum.dto.usergames.NewUserGameBody;
 import quantum.dto.usergames.UserGameResponse;
 import quantum.model.Game;
 import quantum.model.UserGame;
@@ -19,4 +21,5 @@ public interface UserGamesMapping {
      */
     @Mapping(source = "entity.game", target = "game")
     UserGameResponse map(UserGame entity);
+
 }

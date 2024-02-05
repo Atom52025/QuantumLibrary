@@ -23,10 +23,10 @@ public interface UserGamesService {
         /**
          * Add game to a user.
          * @param username The username.
-         * @param gameId The game id.
+         * @param gameSgbdId The game sgbd id.
          * @param body the body
          */
-        UserGameResponse postUserGame(NewUserGameBody body, String username, Long gameId);
+        UserGameResponse postUserGame(NewUserGameBody body, String username, Long gameSgbdId);
 
         /**
          * Patch a game from a user.

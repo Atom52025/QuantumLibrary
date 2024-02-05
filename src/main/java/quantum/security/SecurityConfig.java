@@ -62,8 +62,9 @@ public class SecurityConfig{
             .exceptionHandling(ex -> ex.authenticationEntryPoint(authEntryPointJwt))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
-            .requestMatchers("/api/test/**").permitAll()
-            .anyRequest().authenticated())
+                    .requestMatchers("/h2-console/**").permitAll()
+                    .requestMatchers("/api/test/**").permitAll()
+                    .anyRequest().authenticated())
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
             .build();

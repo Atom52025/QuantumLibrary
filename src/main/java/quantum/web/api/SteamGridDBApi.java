@@ -23,40 +23,24 @@ import reactor.core.publisher.Mono;
 
 @Validated
 @RequestMapping("/api/sgdb")
-@RestController
-@Slf4j
-public class SteamGridDBApi {
-    private final String externalApiUrl = "https://www.steamgriddb.com/api/v2/search/autocomplete/";
-    private final String authToken = "1a8c79dc9eff0c11128e1a230c8abdae";
-    private final WebClient webClient;
-
-    public SteamGridDBApi(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl(externalApiUrl).build();
-    }
+public interface SteamGridDBApi {
 
     /**
-     * GET to /api/auth/login to log in.
-     *
-     * @return The user that logged in
+     * GET to /api/sgbd/search to search in sgbd by term.
+     * @param term The term to search for
+     * @return The games founded.
      */
-    @Operation(summary = "Log in service", description = "Log in service")
+    @Operation(summary = "Search in SGDB for a name by its name", description = "Search in SGDB for a name by its name")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The user info that logged in"),
+            @ApiResponse(responseCode = "200", description = "The games founded"),
             @ApiResponse(responseCode = "400", description = "Invalid page or page size value"),
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/search", produces = "application/json")
-    public ResponseEntity<String> fetchData(@RequestParam(value = "term", required = false) String term) {
-        String apiUrl = externalApiUrl + term;
-        Mono<String> result = webClient.get()
-                .uri(apiUrl)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
-                .retrieve()
-                .bodyToMono(String.class);
-        log.info(result.block());
-        return ResponseEntity.ok(result.block());
-    }
+    ResponseEntity<String> searchByTerm(
+            @RequestParam(value = "term", required = false)
+                String term);
 
 };
 

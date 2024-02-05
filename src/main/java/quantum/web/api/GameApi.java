@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import quantum.dto.game.GameListResponse;
-import quantum.dto.game.DataResponseGame;
+import quantum.dto.game.GameResponse;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
 import quantum.model.Game;
@@ -65,7 +65,7 @@ public interface GameApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value = "/games", produces = "application/json")
-    ResponseEntity<DataResponseGame> postGame(
+    ResponseEntity<GameResponse> postGame(
             @RequestHeader("Authorization")
                 String token,
             @Valid @RequestBody
@@ -90,7 +90,7 @@ public interface GameApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping(value = "/games/{game_id}", produces = "application/json")
-    ResponseEntity<DataResponseGame> patchGame(
+    ResponseEntity<GameResponse> patchGame(
             @RequestHeader("Authorization")
                 String token,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The game id")

@@ -46,7 +46,7 @@ public interface UserGamesApi {
     ResponseEntity<UserGamesListResponse> getUserGames(
             @RequestHeader("Authorization")
                 String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The user game id")
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
             @PathVariable("username")
                 String username,
             @PageableDefault
@@ -57,7 +57,7 @@ public interface UserGamesApi {
      * POST to /api/user/{username}/games add a game to a user
      * @param token The token with the authentication information.
      * @param username The username.
-     * @param gameId The game id.
+     * @param gameSgbdId The game id.
      * @param body The user game body.
      * @return The new user game.
      */
@@ -72,24 +72,24 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/api/user/{username}/games/{game_id}", produces = "application/json")
+    @PostMapping(value = "/api/user/{username}/games/{game_sgbd_id}", produces = "application/json")
     ResponseEntity<UserGameResponse> postUserGame(
             @RequestHeader("Authorization")
                 String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The user game id")
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
             @PathVariable("username")
                 String username,
-            @PathVariable("game_id")
-                Long gameId,
+            @PathVariable("game_sgbd_id")
+                Long gameSgbdId,
             @Valid @RequestBody
                 NewUserGameBody body
     );
 
     /**
-     * PATCH to /api/user/{username}/games/{game_id} to edit a game from a user.
+     * PATCH to /api/user/{username}/games/{game_sgbd_id} to edit a game from a user.
      * @param token The token with the authentication information.
      * @param username The username.
-     * @param gameId The game id.
+     * @param gameSgbdId The game id.
      * @param body The user game body.
      * @return The edited user game.
      */
@@ -104,25 +104,25 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping(value = "/api/user/{username}/games/{game_id}", produces = "application/json")
+    @PatchMapping(value = "/api/user/{username}/games/{game_sgbd_id}", produces = "application/json")
     ResponseEntity<UserGameResponse> patchUserGame(
             @RequestHeader("Authorization")
                 String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The user game id")
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
             @PathVariable("username")
                 String username,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The user game id")
-            @PathVariable("game_id")
-                Long gameId,
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The sgbd game id")
+            @PathVariable("game_sgbd_id")
+                Long gameSgbdId,
             @Valid @RequestBody
                 UpdateUserGameBody body
     );
 
     /**
-     * DELETE to /api/user/{username}/games/{game_id} to delete a game from a user.
+     * DELETE to /api/user/{username}/games/{game_sgbd_id} to delete a game from a user.
      * @param token The token with the authentication information.
      * @param username The username.
-     * @param gameId The game id.
+     * @param gameSgbdId The game id.
      */
     @Operation(summary = "Delete a user game", description = "Delete a user game", parameters = {
             @Parameter(name = "page", description = "The page number"),
@@ -135,15 +135,15 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping(value = "/api/user/{username}/games/{game_id}", produces = "application/json")
+    @DeleteMapping(value = "/api/user/{username}/games/{game_sgbd_id}", produces = "application/json")
     ResponseEntity<Void> deleteUserGame(
             @RequestHeader("Authorization")
                 String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The user game id")
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
             @PathVariable("username")
                 String username,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The user game id")
-            @PathVariable("game_id")
-                Long gameId
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The sgbd game id")
+            @PathVariable("game_sgbd_id")
+                Long gameSgbdId
     );
 }

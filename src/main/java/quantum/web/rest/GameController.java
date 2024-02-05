@@ -6,9 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import quantum.dto.game.GameListResponse;
-import quantum.dto.game.DataResponseGame;
+import quantum.dto.game.GameResponse;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
+import quantum.mapping.GamesMapping;
 import quantum.model.Game;
 import quantum.service.GameService;
 import quantum.web.api.GameApi;
@@ -23,6 +24,7 @@ import quantum.web.api.GameApi;
 public class GameController implements GameApi {
 
     private  final GameService gameService;
+    private final GamesMapping mapper;
 
     /**
      * GET to /api/games to fetch games list.
@@ -42,10 +44,10 @@ public class GameController implements GameApi {
      * @return The new game.
      */
     @Override
-    public ResponseEntity<DataResponseGame> postGame(String token, NewGameBody body) {
+    public ResponseEntity<GameResponse> postGame(String token, NewGameBody body) {
         log.info("[CONTROLLER] - Creating game");
-        DataResponseGame result = gameService.postGame(body);
-        return ResponseEntity.ok(result);
+        Game result = gameService.postGame(body);
+        return ResponseEntity.ok(mapper.map(result));
     }
 
     /**
@@ -55,9 +57,9 @@ public class GameController implements GameApi {
      * @return The updated game.
      */
     @Override
-    public ResponseEntity<DataResponseGame> patchGame(String token, Long id, UpdateGameBody body) {
+    public ResponseEntity<GameResponse> patchGame(String token, Long id, UpdateGameBody body) {
         log.info("[CONTROLLER] - Updating game");
-        DataResponseGame result = gameService.updateGame(id, body);
+        GameResponse result = gameService.updateGame(id, body);
         return ResponseEntity.ok(result);
     }
 

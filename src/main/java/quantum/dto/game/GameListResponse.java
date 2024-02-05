@@ -21,5 +21,5 @@ import java.util.List;
 public class GameListResponse {
 
     @Schema(description = "List of games.")
-    private List<DataResponseGame> games;
+    private List<GameResponse> games;
 }
