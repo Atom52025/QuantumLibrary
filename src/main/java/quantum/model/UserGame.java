@@ -35,4 +35,10 @@ public class UserGame {
     @Column(name = "TIME_PLAYED")
     private Integer timePlayed;
 
+    @Column(name = "TAGS")
+    private Integer tags;
+
+    @Column(name = "IMAGE")
+    private String image;
+
 }

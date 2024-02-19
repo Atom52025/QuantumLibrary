@@ -19,4 +19,11 @@ public interface SteamGridBDService {
      */
     String getById(Long id);
 
+    /**
+     * Get game grids in steam grid db by id.
+     * @param id The id to search for
+     * @return The game grids found.
+     */
+    String getGridsById(Long id);
+
 }

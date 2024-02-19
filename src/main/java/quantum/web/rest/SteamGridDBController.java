@@ -27,4 +27,14 @@ public class SteamGridDBController implements SteamGridDBApi {
     public ResponseEntity<String> searchByTerm(String term) {
         return ResponseEntity.ok(steamGridBDService.searchByTerm(term));
     }
+
+    /**
+     * GET to /api/sgbd/getGrids to search in sgbd by term.
+     * @param gameSgbdId The SGBD game id.
+     * @return The games founded.
+     */
+    @Override
+    public ResponseEntity<String> getGrids(Long gameSgbdId) {
+        return ResponseEntity.ok(steamGridBDService.getGridsById(gameSgbdId));
+    }
 }
