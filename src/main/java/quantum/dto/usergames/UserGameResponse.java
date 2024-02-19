@@ -2,6 +2,7 @@ package quantum.dto.usergames;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +28,8 @@ public class UserGameResponse {
     @Schema(example = "Time played", description = "Time played on the game.")
     @JsonProperty("timePlayed")
     private Integer timePlayed;
+
+    @Column(name = "IMAGE")
+    @JsonProperty("image")
+    private String image;
 }

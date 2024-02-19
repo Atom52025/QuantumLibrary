@@ -42,6 +42,23 @@ public interface SteamGridDBApi {
             @RequestParam(value = "term", required = false)
                 String term);
 
+    /**
+     * GET to /api/sgbd/getGrids to search in sgbd by term.
+     * @param gameSgbdId The SGBD game id.
+     * @return The games founded.
+     */
+    @Operation(summary = "Search in SGDB for a name by its name", description = "Search in SGDB for a name by its name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The games founded"),
+            @ApiResponse(responseCode = "400", description = "Invalid page or page size value"),
+            @ApiResponse(responseCode = "404", description = "No results found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping(value = "/getGrids/{game_sgbd_id}", produces = "application/json")
+    ResponseEntity<String> getGrids(
+            @PathVariable("game_sgbd_id")
+            Long gameSgbdId);
+
 };
 
 

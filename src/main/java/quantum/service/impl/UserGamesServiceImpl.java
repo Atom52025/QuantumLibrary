@@ -90,7 +90,7 @@ public class UserGamesServiceImpl implements UserGamesService {
                     NewGameBody.builder()
                     .name(body.getName())
                     .image(body.getImage())
-                    .tags("")
+                    .tags(body.getTags())
                     .sgbdId(gameSgbdId)
                     .build());
         }

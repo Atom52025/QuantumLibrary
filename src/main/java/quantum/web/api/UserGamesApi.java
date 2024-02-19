@@ -54,10 +54,10 @@ public interface UserGamesApi {
     );
 
     /**
-     * POST to /api/user/{username}/games add a game to a user
+     * POST to /api/user/{username}/games/{game_sgbd_id} add a game to a user
      * @param token The token with the authentication information.
      * @param username The username.
-     * @param gameSgbdId The game id.
+     * @param gameSgbdId The SGBD game id.
      * @param body The user game body.
      * @return The new user game.
      */

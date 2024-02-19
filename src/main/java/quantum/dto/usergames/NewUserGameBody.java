@@ -28,4 +28,8 @@ public class NewUserGameBody {
     @Schema(example = "Game name", description = "Game name.")
     @JsonProperty("name")
     private String name;
+
+    @Schema(example = "Tags", description = "Tags.")
+    @JsonProperty("tags")
+    private String tags;
 }

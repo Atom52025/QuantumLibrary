@@ -30,18 +30,44 @@ public class SteamGridBDServiceImpl implements SteamGridBDService {
     @Override
     public String searchByTerm(String term) {
         String apiUrl = EXTERNAL_API_URL + "search/autocomplete/" + term;
+        String response = webClient.get()
+                            .uri(apiUrl)
+                            .header("Authorization", "Bearer " + AUTH_TOKEN)
+                            .retrieve()
+                            .bodyToMono(String.class)
+                            .block();
+        // Return empty array if response is null
+        if (response == null) {
+            log.error("Error getting response from steam grid db");
+            return "{\"data\":[]}";
+        }
+        return response;
+    }
+
+    /**
+     * Get game in steam grid db by id.
+     * @param id The id to search for
+     * @return The game found.
+     */
+    @Override
+    public String getById(Long id) {
+        String apiUrl = EXTERNAL_API_URL + "games/id/" + id;
         return webClient.get()
                 .uri(apiUrl)
                 .header("Authorization", "Bearer " + AUTH_TOKEN)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
     }
 
+    /**
+     * Get game grids in steam grid db by id.
+     * @param id The id to search for
+     * @return The game grids found.
+     */
     @Override
-    public String getById(Long id) {
-        String apiUrl = EXTERNAL_API_URL + "games/id/" + id;
+    public String getGridsById(Long id) {
+        String apiUrl = EXTERNAL_API_URL + "grids/game/" + id;
         return webClient.get()
                 .uri(apiUrl)
                 .header("Authorization", "Bearer " + AUTH_TOKEN)
