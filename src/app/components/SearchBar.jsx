@@ -5,8 +5,6 @@ import { useAsyncList } from '@react-stately/data';
 import { useSession } from 'next-auth/react';
 
 import { GET } from '@/app/api/signalRequest';
-import {useState} from "react";
-import {POST} from "@/app/api/postRequest";
 
 export default function SearchBar({ setGame, setGrids}) {
   // Get Session
