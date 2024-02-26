@@ -26,7 +26,8 @@ import quantum.service.GameService;
 import quantum.service.UserGamesService;
 import quantum.service.UserService;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
 import static quantum.constant.ErrorConstants.ENTITY_NOT_FOUND_ERROR;
@@ -61,11 +62,6 @@ public class UserGamesServiceImpl implements UserGamesService {
             throw new DatabaseConnectionException(ex);
         }
 
-        // Check if there is any result
-        if (result.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-
         // Map entity to response and return
         return UserGamesListResponse.builder()
                 .games(result.stream().map(mapper::map).toList())
@@ -96,7 +92,7 @@ public class UserGamesServiceImpl implements UserGamesService {
         }
 
         // Generate new user game
-        UserGame newUserGame = generateNewGame(body, username, game);
+        UserGame newUserGame = generateNewUserGame(body, username, game);
 
         try {
             log.debug("[USER GAME CREATION] - Saving user game: {}", newUserGame);
@@ -180,24 +176,39 @@ public class UserGamesServiceImpl implements UserGamesService {
      * @param body the body
      * @return the game
      */
-    private UserGame generateNewGame(NewUserGameBody body, String username, Game game) {
+    private UserGame generateNewUserGame(NewUserGameBody body, String username, Game game) {
         User user = userService.findUser(username);
         if (user == null || game == null) throw new EntityNotFoundException();
+        String allTags = body.getTags() + ", " + game.getTags();
+        String uniqueTags = Arrays.stream(allTags.split(", "))
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .distinct()
+                .collect(Collectors.joining(", "));
+
         return UserGame.builder()
                 .user(user)
                 .game(game)
                 .timePlayed(body.getTimePlayed())
+                .tags(uniqueTags)
                 .build();
     }
 
     /**
-     * Update a game.
-     *
+     * Update a user game.
      * @param body the body
      */
     private void updateUserGameContent(UpdateUserGameBody body, UserGame userGameToUpdate) {
         if (body.getTimePlayed() != null) {
             userGameToUpdate.setTimePlayed(body.getTimePlayed());
+        }
+
+        if (body.getTags() != null) {
+            userGameToUpdate.setTags(body.getTags());
+        }
+
+        if (body.getImage() != null) {
+            userGameToUpdate.setImage(body.getImage());
         }
     }
 }
