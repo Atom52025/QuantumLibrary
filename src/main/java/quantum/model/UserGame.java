@@ -36,7 +36,7 @@ public class UserGame {
     private Integer timePlayed;
 
     @Column(name = "TAGS")
-    private Integer tags;
+    private String tags;
 
     @Column(name = "IMAGE")
     private String image;
