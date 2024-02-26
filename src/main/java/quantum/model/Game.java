@@ -36,4 +36,6 @@ public class Game {
     @Column(name = "SGBD_ID")
     private Long sgbdId;
 
+
+
 }

@@ -32,4 +32,25 @@ public class NewUserGameBody {
     @Schema(example = "Tags", description = "Tags.")
     @JsonProperty("tags")
     private String tags;
+
+    @Schema(example = "Achivements", description = "Achivements.")
+    @JsonProperty("achivements")
+    private Integer achivements;
+
+    @Schema(example = "Total achivements", description = "Total achivements.")
+    @JsonProperty("totalAchivements")
+    private Integer totalAchivements;
+
+    @Schema(example = "Finished", description = "Finished.")
+    @JsonProperty("finished")
+    private Boolean finished;
+
+    @Schema(example = "Favorite", description = "Favorite.")
+    @JsonProperty("favorite")
+    private Boolean favorite;
+
+    @Schema(example = "Category", description = "Category.")
+    @JsonProperty("category")
+    private String category;
+
 }
