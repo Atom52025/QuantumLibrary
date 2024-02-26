@@ -57,6 +57,7 @@ public class UserGamesServiceImpl implements UserGamesService {
         Page<UserGame> result;
 
         try {
+            log.debug("[USER GAME FETCHING] - Searching games of a user with username: {}", username);
             result = userGamesRepository.findByUser_Username(username, pageable);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
@@ -123,7 +124,7 @@ public class UserGamesServiceImpl implements UserGamesService {
         updateUserGameContent(body, userGameToUpdate);
 
         try {
-            log.debug("[GAME UPDATE] - Saving game: {}", userGameToUpdate);
+            log.debug("[USER GAME UPDATE] - Saving user game: {}", userGameToUpdate);
             userGameToUpdate = userGamesRepository.save(userGameToUpdate);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
@@ -141,6 +142,7 @@ public class UserGamesServiceImpl implements UserGamesService {
     @Override
     public void deleteUserGame(String username, Long gameId) {
         try {
+            log.debug("[USER GAME DELETE] - Deleting user game: {} of user with username: {}", gameId, username);
             userGamesRepository.delete(findUserGame(gameId, username));
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
@@ -191,6 +193,11 @@ public class UserGamesServiceImpl implements UserGamesService {
                 .game(game)
                 .timePlayed(body.getTimePlayed())
                 .tags(uniqueTags)
+                .achivements(body.getAchivements())
+                .totalAchivements(body.getTotalAchivements())
+                .finished(body.getFinished())
+                .favorite(body.getFavorite())
+                .category(body.getCategory())
                 .build();
     }
 
@@ -209,6 +216,26 @@ public class UserGamesServiceImpl implements UserGamesService {
 
         if (body.getImage() != null) {
             userGameToUpdate.setImage(body.getImage());
+        }
+
+        if (body.getAchivements() != null) {
+            userGameToUpdate.setAchivements(body.getAchivements());
+        }
+
+        if (body.getTotalAchivements() != null) {
+            userGameToUpdate.setTotalAchivements(body.getTotalAchivements());
+        }
+
+        if (body.getFinished() != null) {
+            userGameToUpdate.setFinished(body.getFinished());
+        }
+
+        if (body.getFavorite() != null) {
+            userGameToUpdate.setFavorite(body.getFavorite());
+        }
+
+        if (body.getCategory() != null) {
+            userGameToUpdate.setCategory(body.getCategory());
         }
     }
 }

@@ -41,4 +41,19 @@ public class UserGame {
     @Column(name = "IMAGE")
     private String image;
 
+    @Column(name = "ACHIVEMENTS")
+    private Integer achivements;
+
+    @Column(name = "TOTAL_ACHIVEMENTS")
+    private Integer totalAchivements;
+
+    @Column(name = "FINISHED")
+    private Boolean finished;
+
+    @Column(name = "FAVORITE")
+    private Boolean favorite;
+
+    @Column(name = "CATEGORY")
+    private String category;
+
 }
