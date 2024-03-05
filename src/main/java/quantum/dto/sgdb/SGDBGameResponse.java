@@ -1,5 +1,6 @@
 package quantum.dto.sgdb;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,10 +16,11 @@ import java.util.List;
 @Builder
 @Schema(description = "Body object at endpoint search game by id in sgbd.")
 @Validated
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SGDBGameResponse {
-    private long id;
+    private Long id;
     private String name;
-    private long release_date;
+    private Long release_date;
     private List<String> types;
-    private boolean verified;
+    private Boolean verified;
 }

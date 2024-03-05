@@ -17,6 +17,8 @@ import quantum.dto.usergames.UserGamesListResponse;
 import quantum.dto.usergames.UserGameResponse;
 import quantum.model.UserGame;
 
+import java.util.List;
+
 /**
  * The api interface for {@link UserGame} entity.
  */
@@ -28,7 +30,8 @@ public interface UserGamesApi {
      * GET to /api/user/{username}/games to fetch a user game list.
      * @param token The token with the authentication information.
      * @param username The username.
-     * @param pageable the pageable
+     * @param category The category.
+     * @param pageable The pageable.
      * @return The list of games
      */
     @Operation(summary = "Get games list", description = "Get games list", parameters = {
@@ -49,6 +52,8 @@ public interface UserGamesApi {
             @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
             @PathVariable("username")
                 String username,
+            @RequestParam(value = "category", required = false, defaultValue = "all")
+                String category,
             @PageableDefault
                 Pageable pageable
     );
@@ -61,7 +66,7 @@ public interface UserGamesApi {
      * @param body The user game body.
      * @return The new user game.
      */
-    @Operation(summary = "Get games list", description = "Get games list", parameters = {
+    @Operation(summary = "Create user game", description = "Create user game", parameters = {
             @Parameter(name = "page", description = "The page number"),
             @Parameter(name = "size", description = "The page size"),
             @Parameter(name = "sort", description = "The sort order")

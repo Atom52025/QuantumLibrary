@@ -5,8 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import quantum.model.Game;
 import quantum.service.SteamGridBDService;
 
+/**
+ * Service implementation for Steam Grid DB API.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -58,6 +63,26 @@ public class SteamGridBDServiceImpl implements SteamGridBDService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+    }
+
+    /**
+     * Get game in steam grid db by id.
+     * @param id The id to search for
+     * @return The game found.
+     */
+    @Override
+    public String getBySteamId(Long id) {
+        String apiUrl = EXTERNAL_API_URL + "games/steam/" + id;
+        try {
+            return webClient.get()
+                    .uri(apiUrl)
+                    .header("Authorization", "Bearer " + AUTH_TOKEN)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException.NotFound ex) {
+            return null;
+        }
     }
 
     /**

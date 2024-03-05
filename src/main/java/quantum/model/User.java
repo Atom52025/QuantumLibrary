@@ -37,6 +37,9 @@ public class User implements UserDetails {
     @Column(name = "PASSWORD", length = 60)
     private String password;
 
+    @Column(name = "Role")
+    private String role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

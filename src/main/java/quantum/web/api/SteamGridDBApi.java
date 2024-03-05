@@ -18,7 +18,7 @@ import quantum.model.User;
 import reactor.core.publisher.Mono;
 
 /**
- * The api interface for {@link User} entity.
+ * The api interface for sgbd request.
  */
 
 @Validated

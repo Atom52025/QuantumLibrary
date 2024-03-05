@@ -27,6 +27,7 @@ import quantum.service.UserGamesService;
 import quantum.service.UserService;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
@@ -49,16 +50,25 @@ public class UserGamesServiceImpl implements UserGamesService {
     /**
      * Gets user games.
      * @param username The username.
-     * @param pageable the pageable
+     * @param category The category.
+     * @param pageable The pageable.
      * @return the games
      */
     @Override
-    public UserGamesListResponse getUserGames(String username, Pageable pageable) {
+    public UserGamesListResponse getUserGames(String username, String category, Pageable pageable) {
         Page<UserGame> result;
 
         try {
-            log.debug("[USER GAME FETCHING] - Searching games of a user with username: {}", username);
-            result = userGamesRepository.findByUser_Username(username, pageable);
+            log.debug("[USER GAME FETCHING] - Searching games of a user with username: {} and category: {}", username, category);
+            switch (category) {
+                case "backlog1" -> result = userGamesRepository.findByUser_UsernameAndBacklog(username, 1, pageable);
+                case "backlog2" -> result = userGamesRepository.findByUser_UsernameAndBacklog(username, 2, pageable);
+                case "backlog3" -> result = userGamesRepository.findByUser_UsernameAndBacklog(username, 3, pageable);
+                case "favorite" -> result = userGamesRepository.findByUser_UsernameAndFavorite(username, true, pageable);
+                case "finished" -> result = userGamesRepository.findByUser_UsernameAndFinished(username, true, pageable);
+                case "completed" -> result = userGamesRepository.findByUser_UsernameAndCompleted(username, pageable);
+                default -> result = userGamesRepository.findByUser_Username(username, pageable);
+            }
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -77,6 +87,12 @@ public class UserGamesServiceImpl implements UserGamesService {
      */
     @Override
     public UserGameResponse postUserGame(NewUserGameBody body, String username, Long gameSgbdId) {
+
+        // Check if game is already added
+        Optional<UserGame> userGame = userGamesRepository.findByUser_UsernameAndGame_SgbdId(username, gameSgbdId);
+        if (userGame.isPresent()) {
+            throw new DataIntegrityViolationException(DATA_INTEGRITY_ERROR);
+        }
 
         // Search if game is in the database
         Game game = gameService.findGameBySgbdId(gameSgbdId);
@@ -197,7 +213,7 @@ public class UserGamesServiceImpl implements UserGamesService {
                 .totalAchivements(body.getTotalAchivements())
                 .finished(body.getFinished())
                 .favorite(body.getFavorite())
-                .category(body.getCategory())
+                .backlog(body.getBacklog())
                 .build();
     }
 
@@ -234,8 +250,8 @@ public class UserGamesServiceImpl implements UserGamesService {
             userGameToUpdate.setFavorite(body.getFavorite());
         }
 
-        if (body.getCategory() != null) {
-            userGameToUpdate.setCategory(body.getCategory());
+        if (body.getBacklog() != null) {
+            userGameToUpdate.setBacklog(body.getBacklog());
         }
     }
 }

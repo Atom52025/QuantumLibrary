@@ -53,7 +53,7 @@ public class UserGame {
     @Column(name = "FAVORITE")
     private Boolean favorite;
 
-    @Column(name = "CATEGORY")
-    private String category;
+    @Column(name = "BACKLOG")
+    private Integer backlog;
 
 }

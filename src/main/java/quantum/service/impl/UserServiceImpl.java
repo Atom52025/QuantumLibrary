@@ -143,6 +143,7 @@ public class UserServiceImpl implements UserService {
         return User.builder()
                 .username(body.getUsername())
                 .email(body.getEmail())
+                .role("USER")
                 .build();
     }
 

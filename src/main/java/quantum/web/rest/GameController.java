@@ -32,7 +32,7 @@ public class GameController implements GameApi {
      * @return The list of games
      */
     @Override
-    public ResponseEntity<GameListResponse> getGames(String token, Pageable pageable) {
+    public ResponseEntity<GameListResponse> getGames(Pageable pageable) {
         log.info("[CONTROLLER] - Searching games");
         GameListResponse result = gameService.getGames(pageable);
         return ResponseEntity.ok(result);
@@ -44,7 +44,7 @@ public class GameController implements GameApi {
      * @return The new game.
      */
     @Override
-    public ResponseEntity<GameResponse> postGame(String token, NewGameBody body) {
+    public ResponseEntity<GameResponse> postGame(NewGameBody body) {
         log.info("[CONTROLLER] - Creating game");
         Game result = gameService.postGame(body);
         return ResponseEntity.ok(mapper.map(result));
@@ -57,7 +57,7 @@ public class GameController implements GameApi {
      * @return The updated game.
      */
     @Override
-    public ResponseEntity<GameResponse> patchGame(String token, Long id, UpdateGameBody body) {
+    public ResponseEntity<GameResponse> patchGame(Long id, UpdateGameBody body) {
         log.info("[CONTROLLER] - Updating game");
         GameResponse result = gameService.updateGame(id, body);
         return ResponseEntity.ok(result);
@@ -69,7 +69,7 @@ public class GameController implements GameApi {
      * @return The deleted game.
      */
     @Override
-    public ResponseEntity<Void> deleteGame(String token, Long id) {
+    public ResponseEntity<Void> deleteGame(Long id) {
         log.info("[CONTROLLER] - Deleting game");
         gameService.deleteGame(id);
         return ResponseEntity.noContent().build();

@@ -20,6 +20,7 @@ public interface UserGamesMapping {
      * @return The converted element.
      */
     @Mapping(source = "entity.game", target = "game")
+    @Mapping(expression = "java(java.util.Arrays.asList(entity.getTags().split(\",\")))", target = "tags")
     UserGameResponse map(UserGame entity);
 
 }

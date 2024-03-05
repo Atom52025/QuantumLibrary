@@ -38,8 +38,6 @@ public class GameServiceImpl implements GameService {
     private final GamesMapping mapper;
     private final SteamGridBDService steamGridBDService;
 
-    // TODO: Manual id generation
-
     /**
      * Retrieve Games.
      * @param pageable the pageable
@@ -88,7 +86,7 @@ public class GameServiceImpl implements GameService {
     }
 
     /**
-     * Find a game by id.
+     * Find a game by sgbdId.
      * @param sgbdId The sgbd id of the game to find.
      * @return The game.
      */
@@ -116,18 +114,6 @@ public class GameServiceImpl implements GameService {
      */
     @Override
     public Game postGame(NewGameBody body) {
-
-        /*
-        String gameJson = steamGridBDService.getById(body.getSgbdId());
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            SGBDGameSuccessResponse game = objectMapper.readValue(gameJson, SGBDGameSuccessResponse.class);
-            log.info(String.valueOf(game));
-            return null;
-        } catch (Exception e) {
-            log.error("Error while parsing game from SteamGridDB", e);
-        }
-            */
 
         // Generate new game
         Game newGame = generateNewGame(body);
