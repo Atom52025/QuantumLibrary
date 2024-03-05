@@ -15,10 +15,11 @@ public interface UserGamesService {
         /**
         * Gets user games.
          * @param username The username.
-         * @param pageable the pageable
+         * @param category The category.
+         * @param pageable The pageable.
         * @return the games
         */
-        UserGamesListResponse getUserGames(String username, Pageable pageable);
+        UserGamesListResponse getUserGames(String username, String category, Pageable pageable);
 
         /**
          * Add game to a user.

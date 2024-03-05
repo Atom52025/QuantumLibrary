@@ -33,6 +33,10 @@ public class AuthResponse {
     @JsonProperty("email")
     private String email;
 
+    @Schema(example = "User Role", description = "Role of the user.")
+    @JsonProperty("role")
+    private String role;
+
     @Schema(example = "JWT Token", description = "JWT Authentication Token.")
     @JsonProperty("token")
     private String token;

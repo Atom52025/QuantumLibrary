@@ -16,6 +16,8 @@ import quantum.service.UserGamesService;
 import quantum.service.UserService;
 import quantum.web.api.UserGamesApi;
 
+import java.util.List;
+
 /**
  * Controller for {@link UserGame} entity.
  */
@@ -31,13 +33,14 @@ public class UserGamesController implements UserGamesApi {
      * GET to /api/user/{user_id}/games to fetch a user game list.
      * @param token The token with the authentication information.
      * @param username The username.
-     * @param pageable the pageable
+     * @param category The category.
+     * @param pageable The pageable.
      * @return The list of games
      */
     @Override
-    public ResponseEntity<UserGamesListResponse> getUserGames(String token, String username, Pageable pageable) {
+    public ResponseEntity<UserGamesListResponse> getUserGames(String token, String username, String category, Pageable pageable) {
         log.info("[CONTROLLER] - Searching user games");
-        UserGamesListResponse result = userGamesService.getUserGames(username, pageable);
+        UserGamesListResponse result = userGamesService.getUserGames(username, category, pageable);
         return ResponseEntity.ok(result);
     }
 

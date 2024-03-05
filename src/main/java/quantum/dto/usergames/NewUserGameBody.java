@@ -49,8 +49,8 @@ public class NewUserGameBody {
     @JsonProperty("favorite")
     private Boolean favorite;
 
-    @Schema(example = "Category", description = "Category.")
-    @JsonProperty("category")
-    private String category;
+    @Schema(example = "Backlog", description = "Backlog.")
+    @JsonProperty("backlog")
+    private Integer backlog;
 
 }

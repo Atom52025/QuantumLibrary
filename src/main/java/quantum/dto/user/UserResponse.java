@@ -31,4 +31,9 @@ public class UserResponse {
     @Alphanumeric(allowedChars = "._-@")
     @JsonProperty("email")
     private String email;
+
+    @Schema(example = "User Role", description = "Role of the user.")
+    @Alphanumeric()
+    @JsonProperty("role")
+    private String role;
 }

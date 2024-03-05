@@ -1,6 +1,7 @@
-package quantum.dto.sgdb;
+package quantum.dto.steam;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +13,10 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "Body object at endpoint search game by id in sgbd.")
+@Schema(description = "Body object at endpoint games in steam.")
 @Validated
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SGBDGameSuccessResponse {
-    private Boolean success;
-    private SGDBGameResponse data;
+public class SteamResponse {
+    @JsonProperty("response")
+    private SteamGameResponse response;
 }

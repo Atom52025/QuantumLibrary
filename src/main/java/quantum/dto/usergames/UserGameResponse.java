@@ -11,6 +11,8 @@ import quantum.model.Game;
 import quantum.model.User;
 import quantum.validation.Alphanumeric;
 
+import java.util.List;
+
 /**
  * Data transfer object for {@link User} entity.
  */
@@ -35,7 +37,7 @@ public class UserGameResponse {
 
     @Schema(example = "mmo, shooter", description = "Tags for the game.")
     @JsonProperty("tags")
-    private String tags;
+    private List<String> tags;
 
     @Schema(example = "Achivements", description = "Achivements.")
     @JsonProperty("achivements")
@@ -53,7 +55,8 @@ public class UserGameResponse {
     @JsonProperty("favorite")
     private Boolean favorite;
 
-    @Schema(example = "Category", description = "Category.")
-    @JsonProperty("category")
-    private String category;
+    @Schema(example = "Backlog", description = "Backlog.")
+    @JsonProperty("backlog")
+    private Integer backlog;
+
 }

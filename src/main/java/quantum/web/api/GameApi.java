@@ -25,7 +25,6 @@ public interface GameApi {
 
     /**
      * GET to /api/games to fetch games list.
-     * @param token The token with the authentication information.
      * @param pageable the pageable
      * @return The list of games
      */
@@ -42,8 +41,6 @@ public interface GameApi {
     })
     @GetMapping(value = "/games", produces = "application/json")
     ResponseEntity<GameListResponse> getGames(
-            @RequestHeader("Authorization")
-                String token,
             @PageableDefault
                 Pageable pageable
     );
@@ -66,8 +63,6 @@ public interface GameApi {
     })
     @PostMapping(value = "/games", produces = "application/json")
     ResponseEntity<GameResponse> postGame(
-            @RequestHeader("Authorization")
-                String token,
             @Valid @RequestBody
                 NewGameBody body
     );
@@ -91,8 +86,6 @@ public interface GameApi {
     })
     @PatchMapping(value = "/games/{game_id}", produces = "application/json")
     ResponseEntity<GameResponse> patchGame(
-            @RequestHeader("Authorization")
-                String token,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The game id")
             @PathVariable("game_id")
                 Long gameId,
@@ -117,8 +110,6 @@ public interface GameApi {
     })
     @DeleteMapping(value = "/games/{game_id}", produces = "application/json")
     ResponseEntity<Void> deleteGame(
-            @RequestHeader("Authorization")
-                String token,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The game id")
             @PathVariable("game_id")
                 Long gameId

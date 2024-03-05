@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 @Schema(description = "Body object at endpoint search game by id in sgbd.")
 @Validated
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SGBDGameSuccessResponse {
+public class SGBDGridSuccessResponse {
     private Boolean success;
-    private SGDBGameResponse data;
+    private List<SGDBGridResponse> data;
 }
