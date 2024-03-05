@@ -1,19 +1,20 @@
 'use client';
 
-import { Checkbox, CheckboxGroup } from '@nextui-org/react';
+import { Button, Checkbox, CheckboxGroup } from '@nextui-org/react';
 import React, { useEffect, useState } from 'react';
 import { FaRandom } from 'react-icons/fa';
 
-import GameCard from '@/app/components/GameCard';
 import SortBy from '@/app/components/SortBy';
+import UserGameCard from '@/app/components/UserGameCard';
 import FilterBar from '@/app/components/inputs/FilterBar';
 import AddGameModal from '@/app/components/modals/AddGameModal';
+import SteamImportModal from '@/app/components/modals/SteamImportModal';
 
 export default function UserContentFiltering({ data }) {
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [games, setGames] = useState(data);
-  const [filteredGames, setFilteredGames] = useState(games.sort((a, b) => a.name.localeCompare(b.name)));
+  const [filteredGames, setFilteredGames] = useState(games.sort((a, b) => a.game.name.localeCompare(b.game.name)));
   const [searchParam, setSearchParam] = useState('');
   const [random, setRandom] = useState(-1);
 
@@ -34,30 +35,36 @@ export default function UserContentFiltering({ data }) {
   const orderBy = (order) => {
     switch (order) {
       case 'nameDown':
-        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => a.name.localeCompare(b.name)));
+        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => a.game.name.localeCompare(b.game.name)));
         break;
       case 'nameUp':
-        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => b.name.localeCompare(a.name)));
+        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => b.game.name.localeCompare(a.game.name)));
+        break;
+      case 'hoursDown':
+        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => a.timePlayed - b.timePlayed));
+        break;
+      case 'hoursUp':
+        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => b.timePlayed - a.timePlayed));
         break;
     }
   };
 
   const filterGames = () => {
     if (selectedTags.length === 0) {
-      setFilteredGames(games.filter(({ name }) => name.toLowerCase().includes(searchParam.toLowerCase())));
+      setFilteredGames(games.filter(({ game }) => game.name.toLowerCase().includes(searchParam.toLowerCase())));
     } else {
       setFilteredGames(
         games
           .filter(({ tags }) => selectedTags.every((tag) => tags.map((tag) => tag.trim()).includes(tag)))
-          .filter(({ name }) => name.toLowerCase().includes(searchParam.toLowerCase()))
-          .sort((a, b) => a.name.localeCompare(b.name)),
+          .filter(({ game }) => game.name.toLowerCase().includes(searchParam.toLowerCase()))
+          .sort((a, b) => a.game.name.localeCompare(b.game.name)),
       );
     }
   };
 
   const randomGame = () => {
     const random = Math.floor(Math.random() * filteredGames.length);
-    setRandom(filteredGames[random].id);
+    setRandom(filteredGames[random].game.id);
     console.log(random);
   };
 
@@ -84,14 +91,20 @@ export default function UserContentFiltering({ data }) {
         <div className="flex flex-col ">
           <div className=" px-10 pt-5 flex justify-between">
             <FilterBar searchParam={searchParam} setSearchParam={setSearchParam} />
-            <SortBy orderBy={orderBy} />
+            <div className="flex flex-row gap-5">
+              <SteamImportModal />
+              <SortBy orderBy={orderBy} />
+            </div>
           </div>
           <div className="px-10 py-5 grid grid-cols-6 gap-3">
             {filteredGames?.map((entry) => (
-              <div key={entry.id} className="aspect-[6/9] bg-gray-600 rounded-xl overflow-hidden">
-                <GameCard entry={entry} setGames={setGames} random={random} />
+              <div key={entry.game.id} className="aspect-[6/9] bg-gray-600 rounded-xl overflow-hidden">
+                <UserGameCard entry={entry} setGames={setGames} random={random} />
               </div>
             ))}
+            <div className="aspect-[6/9] bg-gray-600 rounded-md overflow-hidden group border border-dashed border-gray-400 flex justify-center items-center">
+              <AddGameModal setGames={setGames} />
+            </div>
           </div>
         </div>
       </main>

@@ -10,6 +10,7 @@
 - Next UI
 - Framer Motion
 - Next Auth
+- React Icons
 
 ## MEMORIA
 

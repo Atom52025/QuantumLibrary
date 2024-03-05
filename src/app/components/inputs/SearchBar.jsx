@@ -6,17 +6,15 @@ import { useSession } from 'next-auth/react';
 
 import { GET } from '@/app/api/signalRequest';
 
-export default function SearchBar({ setGame, setGrids}) {
+export default function SearchBar({ setGame, setGrids }) {
   // Get Session
   const { data: session } = useSession();
 
   const getGrids = async (key) => {
     const formURL = `api/sgdb/getGrids/${key}`;
     let res = await GET(formURL, session.user.token);
-    console.log(res.data)
-    setGrids(res.data
-        .filter(item => item.width === 600 && item.height === 900)
-        .map(item => item.url));
+    console.log(res.data);
+    setGrids(res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url));
   };
 
   let list = useAsyncList({
@@ -33,21 +31,20 @@ export default function SearchBar({ setGame, setGrids}) {
   });
 
   const handleSelection = async (key) => {
-    setGame({ key: key, name: list.filterText});
+    setGame({ key: key, name: list.filterText });
     await getGrids(key);
   };
 
   return (
     <Autocomplete
-        placeholder="Search a game"
-        aria-label="search"
-        className="w-full"
-        inputValue={list.filterText}
-        isLoading={list.isLoading}
-        items={list.items}
-        onInputChange={list.setFilterText}
-        onSelectionChange={(key) => handleSelection(key)}
-        >
+      placeholder="Search a game"
+      aria-label="search"
+      className="w-full"
+      inputValue={list.filterText}
+      isLoading={list.isLoading}
+      items={list.items}
+      onInputChange={list.setFilterText}
+      onSelectionChange={(key) => handleSelection(key)}>
       {(item) => (
         <AutocompleteItem key={item.key} className="capitalize">
           {item.name}

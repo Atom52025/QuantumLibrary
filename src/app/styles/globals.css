@@ -22,10 +22,9 @@
 }
 
 @font-face {
-  font-family: "FasterStroker";
-  src: url("/fonts/FasterStroker.otf") format("opentype");
+  font-family: 'FasterStroker';
+  src: url('/fonts/FasterStroker.otf') format('opentype');
 }
-
 
 @media (prefers-color-scheme: dark) {
   :root {
