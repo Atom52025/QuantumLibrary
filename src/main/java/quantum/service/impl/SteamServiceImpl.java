@@ -11,8 +11,8 @@ import quantum.dto.sgdb.SGBDGameSuccessResponse;
 import quantum.dto.sgdb.SGBDGridSuccessResponse;
 import quantum.dto.steam.SteamGame;
 import quantum.dto.steam.SteamResponse;
-import quantum.dto.usergames.UserGameImportResponse;
-import quantum.dto.usergames.UserGamesImportListResponse;
+import quantum.dto.userGames.steamImport.UserGameImport;
+import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.service.SteamGridBDService;
 import quantum.service.SteamService;
 
@@ -66,7 +66,7 @@ public class SteamServiceImpl implements SteamService {
      * @return The games found.
      */
     @Override
-    public UserGamesImportListResponse getGames(String steamId) {
+    public UserGamesImportList getGames(String steamId) {
         String apiUrl = EXTERNAL_API_URL + "IPlayerService/GetOwnedGames/v0001/?key=" + KEY + "&steamid=" + steamId;
         String response = webClient.get()
                                 .uri(apiUrl)
@@ -74,7 +74,7 @@ public class SteamServiceImpl implements SteamService {
                                 .bodyToMono(String.class)
                                 .block();
 
-        List<UserGameImportResponse> userGames = new ArrayList<>();
+        List<UserGameImport> userGames = new ArrayList<>();
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -94,7 +94,7 @@ public class SteamServiceImpl implements SteamService {
                 if (!sgdbGridResponse.getData().isEmpty()) {
                     imageUrl = sgdbGridResponse.getData().get(0).getUrl();
                 }
-                UserGameImportResponse newUserGame = UserGameImportResponse.builder()
+                UserGameImport newUserGame = UserGameImport.builder()
                         .name(sgbdResponse.getData().getName())
                         .timePlayed(game.getPlaytime())
                         .image(imageUrl)
@@ -107,7 +107,7 @@ public class SteamServiceImpl implements SteamService {
             throw new RuntimeException(e);
         }
 
-        return UserGamesImportListResponse.builder()
+        return UserGamesImportList.builder()
                 .games(userGames)
                 .build();
     }

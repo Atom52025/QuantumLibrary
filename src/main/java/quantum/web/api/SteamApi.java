@@ -8,9 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import quantum.dto.usergames.UserGamesImportListResponse;
-import quantum.model.User;
+import quantum.dto.userGames.steamImport.UserGamesImportList;
 
 /**
  * The api interface for steam request.
@@ -50,7 +48,7 @@ public interface SteamApi {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/games/{steam_id}", produces = "application/json")
-    ResponseEntity<UserGamesImportListResponse> getGames(
+    ResponseEntity<UserGamesImportList> getGames(
             @PathVariable("steam_id")
                 String steamId);
 

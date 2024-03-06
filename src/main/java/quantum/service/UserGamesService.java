@@ -1,10 +1,11 @@
 package quantum.service;
 
 import org.springframework.data.domain.Pageable;
-import quantum.dto.usergames.NewUserGameBody;
-import quantum.dto.usergames.UpdateUserGameBody;
-import quantum.dto.usergames.UserGameResponse;
-import quantum.dto.usergames.UserGamesListResponse;
+import quantum.dto.userGames.NewUserGameBody;
+import quantum.dto.userGames.UpdateUserGameBody;
+import quantum.dto.userGames.UserGameResponse;
+import quantum.dto.userGames.UserGamesListResponse;
+import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.model.Game;
 
 /**
@@ -23,24 +24,31 @@ public interface UserGamesService {
 
         /**
          * Add game to a user.
-         * @param username The username.
+         * @param username   The username.
          * @param gameSgbdId The game sgbd id.
-         * @param body the body
+         * @param body       The body
          */
-        UserGameResponse postUserGame(NewUserGameBody body, String username, Long gameSgbdId);
+        UserGameResponse postUserGame(String username, Long gameSgbdId, NewUserGameBody body);
+
+        /**
+         * Add game to a user.
+         * @param username The username.
+         * @param body     The body
+         */
+        UserGamesListResponse importUserGames( String username, UserGamesImportList body);
 
         /**
          * Patch a game from a user.
          * @param username The username.
-         * @param gameId The game id.
-         * @param body The body.
+         * @param gameId   The game id.
+         * @param body     The body.
          */
         UserGameResponse updateUserGame(String username, Long gameId, UpdateUserGameBody body);
 
         /**
          * Delete game from a user.
          * @param username The username.
-         * @param gameId The game id.
+         * @param gameId   The game id.
          */
         void deleteUserGame(String username, Long gameId);
 

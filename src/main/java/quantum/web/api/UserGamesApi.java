@@ -11,13 +11,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import quantum.dto.usergames.NewUserGameBody;
-import quantum.dto.usergames.UpdateUserGameBody;
-import quantum.dto.usergames.UserGamesListResponse;
-import quantum.dto.usergames.UserGameResponse;
+import quantum.dto.userGames.*;
+import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.model.UserGame;
-
-import java.util.List;
 
 /**
  * The api interface for {@link UserGame} entity.
@@ -54,7 +50,7 @@ public interface UserGamesApi {
                 String username,
             @RequestParam(value = "category", required = false, defaultValue = "all")
                 String category,
-            @PageableDefault
+            @PageableDefault(value = Integer.MAX_VALUE)
                 Pageable pageable
     );
 
@@ -88,6 +84,35 @@ public interface UserGamesApi {
                 Long gameSgbdId,
             @Valid @RequestBody
                 NewUserGameBody body
+    );
+
+    /**
+     * POST to /api/user/{username}/games/import to import a list of games to a user.
+     * @param token The token with the authentication information.
+     * @param username The username.
+     * @param body Import list body.
+     * @return The new user games.
+     */
+    @Operation(summary = "Import user games", description = "Import user games", parameters = {
+            @Parameter(name = "page", description = "The page number"),
+            @Parameter(name = "size", description = "The page size"),
+            @Parameter(name = "sort", description = "The sort order")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The list of games imported"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "No results found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PostMapping(value = "/api/user/{username}/games/import", produces = "application/json")
+    ResponseEntity<UserGamesListResponse> importUserGames(
+            @RequestHeader("Authorization")
+            String token,
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
+            @PathVariable("username")
+            String username,
+            @Valid @RequestBody
+            UserGamesImportList body
     );
 
     /**

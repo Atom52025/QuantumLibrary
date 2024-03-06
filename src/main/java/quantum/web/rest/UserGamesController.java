@@ -4,19 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import quantum.dto.user.UserListResponse;
-import quantum.dto.user.UserResponse;
-import quantum.dto.usergames.NewUserGameBody;
-import quantum.dto.usergames.UpdateUserGameBody;
-import quantum.dto.usergames.UserGamesListResponse;
-import quantum.dto.usergames.UserGameResponse;
+import org.springframework.web.bind.annotation.*;
+import quantum.dto.userGames.NewUserGameBody;
+import quantum.dto.userGames.UpdateUserGameBody;
+import quantum.dto.userGames.UserGamesListResponse;
+import quantum.dto.userGames.UserGameResponse;
+import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.model.UserGame;
 import quantum.service.UserGamesService;
-import quantum.service.UserService;
 import quantum.web.api.UserGamesApi;
-
-import java.util.List;
 
 /**
  * Controller for {@link UserGame} entity.
@@ -55,9 +51,24 @@ public class UserGamesController implements UserGamesApi {
     @Override
     public ResponseEntity<UserGameResponse> postUserGame(String token, String username, Long gameSgbdId, NewUserGameBody body) {
         log.info("[CONTROLLER] - Adding game to user");
-        UserGameResponse result = userGamesService.postUserGame( body, username, gameSgbdId);
+        UserGameResponse result = userGamesService.postUserGame(username, gameSgbdId, body);
         return ResponseEntity.ok(result);
     }
+
+    /**
+     * POST to /api/user/{username}/games/import to import a list of games to a user.
+     * @param token The token with the authentication information.
+     * @param username The username.
+     * @param body Import list body.
+     * @return The new user games.
+     */
+    @Override
+    public ResponseEntity<UserGamesListResponse> importUserGames( String token, String username, UserGamesImportList body){
+        log.info("[CONTROLLER] - Importing games to user");
+        UserGamesListResponse result = userGamesService.importUserGames(username, body);
+        return ResponseEntity.ok(result);
+    }
+
 
     /**
      * PATCH to /api/user/{user_id}/games/{game_id} to edit a game from a user.

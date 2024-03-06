@@ -41,7 +41,7 @@ public interface GameApi {
     })
     @GetMapping(value = "/games", produces = "application/json")
     ResponseEntity<GameListResponse> getGames(
-            @PageableDefault
+            @PageableDefault(value = Integer.MAX_VALUE)
                 Pageable pageable
     );
 

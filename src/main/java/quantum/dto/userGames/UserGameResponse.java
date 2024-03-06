@@ -1,15 +1,13 @@
-package quantum.dto.usergames;
+package quantum.dto.userGames;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import quantum.model.Game;
 import quantum.model.User;
-import quantum.validation.Alphanumeric;
 
 import java.util.List;
 

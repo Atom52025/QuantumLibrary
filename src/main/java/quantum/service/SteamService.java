@@ -1,6 +1,6 @@
 package quantum.service;
 
-import quantum.dto.usergames.UserGamesImportListResponse;
+import quantum.dto.userGames.steamImport.UserGamesImportList;
 
 /**
  * Service for Steam Grid DB Petitions.
@@ -19,7 +19,7 @@ public interface SteamService {
      * @param steamId The steam id to search for
      * @return The games found.
      */
-    UserGamesImportListResponse getGames(String steamId);
+    UserGamesImportList getGames(String steamId);
 
 
 }
