@@ -7,7 +7,7 @@ import { FaRandom } from 'react-icons/fa';
 import GameCard from '@/app/components/GameCard';
 import SortBy from '@/app/components/SortBy';
 import FilterBar from '@/app/components/inputs/FilterBar';
-import AddGameModal from '@/app/components/modals/AddGameModal';
+import AddUserGameModal from '@/app/components/modals/AddUserGameModal';
 
 export default function UserContentFiltering({ data }) {
   const [tags, setTags] = useState([]);
@@ -86,7 +86,7 @@ export default function UserContentFiltering({ data }) {
             <FilterBar searchParam={searchParam} setSearchParam={setSearchParam} />
             <SortBy orderBy={orderBy} />
           </div>
-          <div className="px-10 py-5 grid grid-cols-6 gap-3">
+          <div className="px-10 py-5 grid grid-cols-9 gap-3">
             {filteredGames?.map((entry) => (
               <div key={entry.id} className="aspect-[6/9] bg-gray-600 rounded-xl overflow-hidden">
                 <GameCard entry={entry} setGames={setGames} random={random} />

@@ -10,7 +10,7 @@ import ImageInput from '@/app/components/inputs/ImageInput';
 import SearchBar from '@/app/components/inputs/SearchBar';
 import TagInput from '@/app/components/inputs/TagInput';
 
-export default function AddGameModal({ setGames }) {
+export default function AddUserGameModal({ setGames }) {
   // Get Session
   const { data: session } = useSession();
 
@@ -45,11 +45,11 @@ export default function AddGameModal({ setGames }) {
 
     try {
       let game = await POST(formURL, session.user.token, requestBody);
-      setResultModal('success');
+      setResultModal('Game added successfully');
       setGames((prevGames) => [...prevGames, game]);
       onClose();
     } catch (error) {
-      setResultModal('error');
+      setResultModal('Error adding game');
     }
   };
 

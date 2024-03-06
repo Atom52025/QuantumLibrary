@@ -1,9 +1,20 @@
+'use client';
+
 import { Card, CardBody } from '@nextui-org/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function InfoPopups({ resultModal, setResultModal }) {
+  const [popupColor, setPopupColor] = useState('bg-green-500');
+
   useEffect(() => {
-    console.log(resultModal);
+    if (resultModal.toLowerCase().includes('error')) {
+      setPopupColor('bg-red-600');
+    } else if (resultModal.toLowerCase().includes('warning')) {
+      setPopupColor('bg-amber-500');
+    } else {
+      setPopupColor('bg-green-500');
+    }
+
     const timer = setTimeout(() => {
       setResultModal('closed');
     }, 5000);
@@ -13,31 +24,10 @@ export default function InfoPopups({ resultModal, setResultModal }) {
 
   return (
     <>
-      {resultModal === 'success' && (
-        <Card className="bg-green-500 text-gray-900 text-3xl absolute bottom-3 right-3 z-50">
+      {resultModal !== 'closed' && (
+        <Card className={`text-gray-900 text-3xl absolute bottom-3 right-3 z-50 ${popupColor}`}>
           <CardBody>
-            <p>Game added correctly.</p>
-          </CardBody>
-        </Card>
-      )}
-      {resultModal === 'error' && (
-        <Card className="bg-red-600 text-gray-900 text-3xl absolute bottom-3 right-3 z-50">
-          <CardBody>
-            <p>Error.</p>
-          </CardBody>
-        </Card>
-      )}
-      {resultModal === 'successDelete' && (
-        <Card className="bg-green-500 text-gray-900 text-3xl absolute bottom-3 right-3 z-50">
-          <CardBody>
-            <p>Game deleted correctly.</p>
-          </CardBody>
-        </Card>
-      )}
-      {resultModal === 'successEdit' && (
-        <Card className="bg-green-500 text-gray-900 text-3xl absolute bottom-3 right-3 z-50">
-          <CardBody>
-            <p>Game edited correctly.</p>
+            <p>{resultModal}</p>
           </CardBody>
         </Card>
       )}

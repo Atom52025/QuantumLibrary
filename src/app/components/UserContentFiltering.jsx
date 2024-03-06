@@ -7,7 +7,7 @@ import { FaRandom } from 'react-icons/fa';
 import SortBy from '@/app/components/SortBy';
 import UserGameCard from '@/app/components/UserGameCard';
 import FilterBar from '@/app/components/inputs/FilterBar';
-import AddGameModal from '@/app/components/modals/AddGameModal';
+import AddUserGameModal from '@/app/components/modals/AddUserGameModal';
 import SteamImportModal from '@/app/components/modals/SteamImportModal';
 
 export default function UserContentFiltering({ data }) {
@@ -87,12 +87,12 @@ export default function UserContentFiltering({ data }) {
           ))}
         </CheckboxGroup>
       </div>
-      <main className="min-h-full w-full shadow-inner">
+      <main className="max-h-full w-full shadow-inner overflow-y-scroll">
         <div className="flex flex-col ">
           <div className=" px-10 pt-5 flex justify-between">
             <FilterBar searchParam={searchParam} setSearchParam={setSearchParam} />
             <div className="flex flex-row gap-5">
-              <SteamImportModal />
+              <SteamImportModal setGames={setGames} />
               <SortBy orderBy={orderBy} />
             </div>
           </div>
@@ -103,7 +103,7 @@ export default function UserContentFiltering({ data }) {
               </div>
             ))}
             <div className="aspect-[6/9] bg-gray-600 rounded-md overflow-hidden group border border-dashed border-gray-400 flex justify-center items-center">
-              <AddGameModal setGames={setGames} />
+              <AddUserGameModal setGames={setGames} />
             </div>
           </div>
         </div>

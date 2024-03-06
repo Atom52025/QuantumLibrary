@@ -6,10 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import quantum.model.Game;
-import quantum.model.User;
-
-import java.util.List;
 
 /**
  * Data transfer object for user game imports.
@@ -19,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Data transfer object for user game imports.")
-public class UserGameImportResponse {
+public class UserGameImport {
 
     @Schema(example = "Portal2", description = "Game name.")
     @JsonProperty("name")

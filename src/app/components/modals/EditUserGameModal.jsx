@@ -22,7 +22,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
   const [customImage, setCustomImage] = useState('');
   const [tags, setTags] = useState(userGame.tags);
   const [isFavorite, setIsFavorite] = useState(userGame.favorite);
-  const [isFinished, setIsFinished] = useState(false);
+  const [isFinished, setIsFinished] = useState(userGame.finished);
   const [achievements, setAchievements] = useState(userGame.achivements);
   const [totalAchievements, setTotalAchievements] = useState(userGame.totalAchivements);
   const [backlog, setBacklog] = useState(new Set([]));
@@ -35,17 +35,14 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
     console.log(formURL);
 
     try {
-      setGames((prevGames) => {
-        const newGames = [...prevGames];
-        newGames.pop(userGame);
-        return newGames;
-      });
       await DELETE(formURL, session.user.token);
-      setResultModal('successDelete');
 
+      setGames((prevGames) => prevGames.filter((game) => game !== userGame));
+
+      setResultModal('Game erased successfully');
       onClose();
     } catch (error) {
-      setResultModal('error');
+      setResultModal('Error erasing game');
     }
   };
 
@@ -68,10 +65,10 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
 
       setGames((prevGames) => prevGames.map((game) => (game.game.id === res.game.id ? res : game)));
 
-      setResultModal('successEdit');
+      setResultModal('Game edited successfully');
       onClose();
     } catch (error) {
-      setResultModal('error');
+      setResultModal('Error editing game');
     }
   };
 

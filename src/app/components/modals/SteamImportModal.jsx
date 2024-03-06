@@ -1,14 +1,12 @@
-import { Button, Card, CardBody, CardHeader, Checkbox, CheckboxGroup, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, User, cn, useDisclosure } from '@nextui-org/react';
+import { Button, Card, CardHeader, Checkbox, CheckboxGroup, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, User, useDisclosure } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PiArrowBendDownRightBold } from 'react-icons/pi';
 
-import Image from 'next/image';
-
-import { GET } from '@/app/api/tokenRequest';
+import { GET, POST } from '@/app/api/tokenRequest';
 import InfoPopups from '@/app/components/InfoPopups';
 
-export default function SteamImportModal() {
+export default function SteamImportModal({ setGames }) {
   // Get Session
   const { data: session } = useSession({ required: true });
 
@@ -20,33 +18,64 @@ export default function SteamImportModal() {
 
   const [userId, setUserId] = useState('');
   const [user, setUser] = useState(null);
-  const [games, setGames] = useState([]);
+  const [foundGames, setFoundGames] = useState([]);
   const [groupSelected, setGroupSelected] = React.useState([]);
-  const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [importLoading, setImportLoading] = useState(false);
 
   const searchUser = async () => {
     const formURL = `api/steam/user/${userId}`;
     try {
       const res = await GET(formURL, session.user.token);
-      console.log(res.response.players[0].personaname);
       setUser(res.response.players[0]);
     } catch (error) {
-      setResultModal('error');
+      setResultModal('Error searching user');
     }
   };
 
   const searchGames = async () => {
     const formURL = `api/steam/games/${userId}`;
     try {
-      setLoading(true);
+      setSearchLoading(true);
+
       const res = await GET(formURL, session.user.token);
-      console.log(res.games);
-      setGames(res.games);
-      setLoading(false);
+      setFoundGames(res.games);
+
+      setSearchLoading(false);
     } catch (error) {
-      setResultModal('error');
+      setResultModal('Error searching games');
     }
   };
+
+  const importGames = async (onClose) => {
+    if (groupSelected.length === 0) {
+      setResultModal('Warning - No games selected');
+      return;
+    }
+
+    const formURL = `api/user/${session.user.username}/games/import`;
+
+    const requestBody = {
+      games: groupSelected,
+    };
+
+    try {
+      setImportLoading(true);
+
+      const res = await POST(formURL, session.user.token, requestBody);
+      setGames((prevGames) => [...prevGames, ...res.games]);
+
+      setImportLoading(false);
+      setResultModal('Games imported successfully');
+      onClose();
+    } catch (error) {
+      setResultModal('Error importing games');
+    }
+  };
+
+  useEffect(() => {
+    setGroupSelected(foundGames);
+  }, [foundGames]);
 
   const renderModalContent = (onClose) => (
     <>
@@ -80,11 +109,11 @@ export default function SteamImportModal() {
               }}
             />
             <Button color="warning" onPress={() => searchGames()}>
-              {loading ? <Spinner /> : 'Search games'}
+              {searchLoading ? <Spinner /> : 'Search games'}
             </Button>
           </div>
         )}
-        {games.length !== 0 && (
+        {foundGames.length !== 0 && (
           <CheckboxGroup
             label="Select games to import"
             value={groupSelected}
@@ -92,7 +121,7 @@ export default function SteamImportModal() {
             classNames={{
               base: 'w-full',
             }}>
-            {games.map((game) => (
+            {foundGames.map((game) => (
               <Checkbox
                 aria-label={game.name}
                 classNames={{
@@ -117,8 +146,8 @@ export default function SteamImportModal() {
         <Button color="danger" onPress={onClose}>
           Cancel
         </Button>
-        <Button color="primary" onPress={onClose}>
-          Import
+        <Button color="primary" onPress={() => importGames(onClose)}>
+          {importLoading ? <Spinner color="default" /> : 'Import'}
         </Button>
       </ModalFooter>
     </>
@@ -126,7 +155,7 @@ export default function SteamImportModal() {
 
   return (
     <>
-      <Button onClick={onOpen}> Import from STEAM </Button>
+      <Button onClick={onOpen}> Importar desde STEAM </Button>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center" scrollBehavior="inside">
         <ModalContent>{(onClose) => renderModalContent(onClose)}</ModalContent>
       </Modal>

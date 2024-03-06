@@ -22,22 +22,21 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
   // Grid Images
   const [grids, setGrids] = useState([]);
 
+  // Admin
+  const [isAdmin, setIsAdmin] = useState(session.user.role === 'ADMIN');
+
   const eraseForm = async (onClose) => {
     const formURL = `api/games/${game.id}`;
     console.log(formURL);
 
     try {
-      setGames((prevGames) => {
-        const newGames = [...prevGames];
-        newGames.pop(game);
-        return newGames;
-      });
+      setGames((prevGames) => prevGames.filter((game) => game !== userGame));
       await DELETE(formURL);
-      setResultModal('successDelete');
+      setResultModal('Game erased successfully');
 
       onClose();
     } catch (error) {
-      setResultModal('error');
+      setResultModal('Error erasing game');
     }
   };
 
@@ -54,10 +53,10 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
 
       console.log(res);
 
-      setResultModal('successEdit');
+      setResultModal('Game edited successfully');
       onClose();
     } catch (error) {
-      setResultModal('error');
+      setResultModal('Error editing game');
     }
   };
 
@@ -85,14 +84,14 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
       else setCustomImage(game.image);
     });
   }, [isOpen]);
-  console.log(session.user.role);
+
   const renderModalContent = (onClose) => (
     <>
       <ModalHeader className="uppercase text-3xl">{game.name}</ModalHeader>
       <ModalBody className="grid grid-cols-2">
         <div className="space-y-4">
           {/* GAME IMAGE */}
-          <ImageInput customImage={customImage} setCustomImage={setCustomImage} imageKey={imageKey} setImageKey={setImageKey} grids={grids} />
+          <ImageInput customImage={customImage} setCustomImage={setCustomImage} imageKey={imageKey} setImageKey={setImageKey} grids={grids} viewOnly={isAdmin} />
         </div>
         <div className="flex flex-col gap-4 w-full">
           {/* TAGS */}
@@ -100,7 +99,7 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
         </div>
       </ModalBody>
       <ModalFooter>
-        {session.user.role === 'ADMIN' && (
+        {isAdmin && (
           <>
             <Button color="danger" onPress={() => eraseForm(onClose)}>
               Erase

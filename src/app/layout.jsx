@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
 
       <body className={inter.className + ' h-full dark font-russo'} lang="es">
         <Providers>
-          <div className="justify-between h-[9vh] bg-gray-800 items-center align-bottom font-russo flex flex-row p-5">
+          <div className="justify-between h-[9vh] bg-gray-800 items-center align-bottom font-russo flex flex-row p-5 ">
             <div className="flex flex-row items-center align-bottom h-full gap-5 ">
               <Link href="/" className="font-faster-stroker text-4xl font-white uppercase ">
                 Quantum Library
@@ -39,7 +39,7 @@ export default function RootLayout({ children }) {
             <UserMenu />
           </div>
 
-          <div className="h-[91vh] overflow-hidden overflow-y-scroll bg-gray-900 font-russo">{children}</div>
+          <div className="h-[91vh] overflow-hidden bg-gray-900 font-russo">{children}</div>
         </Providers>
       </body>
     </html>

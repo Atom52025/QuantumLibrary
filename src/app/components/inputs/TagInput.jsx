@@ -2,7 +2,7 @@ import { Button, Chip, Input } from '@nextui-org/react';
 import { useState } from 'react';
 import { PiArrowBendDownRightBold } from 'react-icons/pi';
 
-export default function TagInput({ tags, setTags }) {
+export default function TagInput({ tags, setTags, viewOnly }) {
   // Tag input
   const [tagInput, setTagInput] = useState('');
 
@@ -18,26 +18,28 @@ export default function TagInput({ tags, setTags }) {
 
   return (
     <>
-      <Input
-        label="Tags"
-        placeholder="Introduzca un tag"
-        type="text"
-        variant="bordered"
-        required
-        value={tagInput}
-        onValueChange={setTagInput}
-        endContent={
-          <Button isIconOnly onClick={addTag} className="h-full">
-            <PiArrowBendDownRightBold />
-          </Button>
-        }
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            addTag();
-            setTagInput('');
+      {!viewOnly && (
+        <Input
+          label="Tags"
+          placeholder="Introduzca un tag"
+          type="text"
+          variant="bordered"
+          required
+          value={tagInput}
+          onValueChange={setTagInput}
+          endContent={
+            <Button isIconOnly onClick={addTag} className="h-full">
+              <PiArrowBendDownRightBold />
+            </Button>
           }
-        }}
-      />
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              addTag();
+              setTagInput('');
+            }
+          }}
+        />
+      )}
       <div className={'flex flex-row gap-4'}>
         {tags.map((tag) => (
           <Chip onClose={() => removeTag(tag)} key={tag}>
