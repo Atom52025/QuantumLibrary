@@ -12,10 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import quantum.dto.game.NewGameBody;
-import quantum.dto.usergames.NewUserGameBody;
-import quantum.dto.usergames.UpdateUserGameBody;
-import quantum.dto.usergames.UserGameResponse;
-import quantum.dto.usergames.UserGamesListResponse;
+import quantum.dto.userGames.NewUserGameBody;
+import quantum.dto.userGames.UpdateUserGameBody;
+import quantum.dto.userGames.UserGameResponse;
+import quantum.dto.userGames.UserGamesListResponse;
+import quantum.dto.userGames.steamImport.UserGameImport;
+import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.exceptions.DatabaseConnectionException;
 import quantum.mapping.UserGamesMapping;
 import quantum.model.Game;
@@ -26,6 +28,7 @@ import quantum.service.GameService;
 import quantum.service.UserGamesService;
 import quantum.service.UserService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,7 +55,7 @@ public class UserGamesServiceImpl implements UserGamesService {
      * @param username The username.
      * @param category The category.
      * @param pageable The pageable.
-     * @return the games
+     * @return The games.
      */
     @Override
     public UserGamesListResponse getUserGames(String username, String category, Pageable pageable) {
@@ -81,12 +84,12 @@ public class UserGamesServiceImpl implements UserGamesService {
 
     /**
      * Add game to a user.
-     * @param username The username.
+     * @param username   The username.
      * @param gameSgbdId The game sgbd id.
-     * @param body the body
+     * @param body       The body.
      */
     @Override
-    public UserGameResponse postUserGame(NewUserGameBody body, String username, Long gameSgbdId) {
+    public UserGameResponse postUserGame(String username, Long gameSgbdId, NewUserGameBody body) {
 
         // Check if game is already added
         Optional<UserGame> userGame = userGamesRepository.findByUser_UsernameAndGame_SgbdId(username, gameSgbdId);
@@ -125,10 +128,34 @@ public class UserGamesServiceImpl implements UserGamesService {
     }
 
     /**
+     * Add game to a user.
+     * @param username The username.
+     * @param body     The body
+     */
+    @Override
+    public UserGamesListResponse importUserGames( String username, UserGamesImportList body){
+        UserGamesListResponse response = UserGamesListResponse.builder().games(new ArrayList<>()).build();
+        for (UserGameImport game : body.getGames()) {
+            NewUserGameBody newUserGameBody = NewUserGameBody.builder()
+                    .name(game.getName())
+                    .timePlayed(game.getTimePlayed())
+                    .image(game.getImage())
+                    .tags("imported")
+                    .build();
+            try {
+                response.getGames().add(postUserGame(username, game.getSgbdId(), newUserGameBody));
+            } catch (DataIntegrityViolationException ex) {
+                log.debug("[USER GAME IMPORT] - Game already exists: {}", game.getName());
+            }
+        }
+        return response;
+    }
+
+    /**
      * Patch a game from a user.
      * @param username The username.
-     * @param gameId The game id.
-     * @param body The body.
+     * @param gameId   The game id.
+     * @param body     The body.
      */
     @Override
     public UserGameResponse updateUserGame(String username, Long gameId, UpdateUserGameBody body) {
@@ -153,7 +180,7 @@ public class UserGamesServiceImpl implements UserGamesService {
     /**
      * Delete game from a user.
      * @param username The username.
-     * @param gameId The game id.
+     * @param gameId   The game id.
      */
     @Override
     public void deleteUserGame(String username, Long gameId) {
@@ -166,7 +193,7 @@ public class UserGamesServiceImpl implements UserGamesService {
     }
     /**
      * Find a user game by game id and username.
-     * @param gameId The game id.
+     * @param gameId   The game id.
      * @param username The username.
      */
     private UserGame findUserGame(Long gameId, String username) {
@@ -190,9 +217,9 @@ public class UserGamesServiceImpl implements UserGamesService {
     /**
      * Generate a new game.
      * @param username The username.
-     * @param game The game.
-     * @param body the body
-     * @return the game
+     * @param game     The game.
+     * @param body     The body
+     * @return The game.
      */
     private UserGame generateNewUserGame(NewUserGameBody body, String username, Game game) {
         User user = userService.findUser(username);
@@ -219,7 +246,7 @@ public class UserGamesServiceImpl implements UserGamesService {
 
     /**
      * Update a user game.
-     * @param body the body
+     * @param body The body
      */
     private void updateUserGameContent(UpdateUserGameBody body, UserGame userGameToUpdate) {
         if (body.getTimePlayed() != null) {

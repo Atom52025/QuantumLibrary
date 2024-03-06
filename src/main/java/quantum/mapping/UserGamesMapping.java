@@ -2,9 +2,7 @@ package quantum.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import quantum.dto.user.NewUserBody;
-import quantum.dto.usergames.NewUserGameBody;
-import quantum.dto.usergames.UserGameResponse;
+import quantum.dto.userGames.UserGameResponse;
 import quantum.model.Game;
 import quantum.model.UserGame;
 

@@ -19,5 +19,5 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SGBDGridSuccessResponse {
     private Boolean success;
-    private List<SGDBGridResponse> data;
+    private List<SGDBGrid> data;
 }

@@ -17,7 +17,7 @@ import java.util.List;
 @Schema(description = "Body object at endpoint search game by id in sgbd.")
 @Validated
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SGDBGameResponse {
+public class SGDBGame {
     private Long id;
     private String name;
     private Long release_date;

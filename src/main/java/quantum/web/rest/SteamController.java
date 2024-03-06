@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import quantum.dto.usergames.UserGamesImportListResponse;
-import quantum.service.SteamGridBDService;
+import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.service.SteamService;
 import quantum.web.api.SteamApi;
-import quantum.web.api.SteamGridDBApi;
 
 /**
  * Controller for Steam Grid DB Petitions.
@@ -37,7 +35,7 @@ public class SteamController implements SteamApi {
      * @return The games founded.
      */
     @Override
-    public ResponseEntity<UserGamesImportListResponse> getGames(String steamId) {
+    public ResponseEntity<UserGamesImportList> getGames(String steamId) {
         return ResponseEntity.ok(steamService.getGames(steamId));
     }
 }

@@ -17,5 +17,5 @@ import org.springframework.validation.annotation.Validated;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SGBDGameSuccessResponse {
     private Boolean success;
-    private SGDBGameResponse data;
+    private SGDBGame data;
 }
