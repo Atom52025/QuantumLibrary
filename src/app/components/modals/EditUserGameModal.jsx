@@ -90,7 +90,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
     }
 
     // Fetch grids
-    getGrids(userGame.game.sgbdId).then((filteredGrids) => {
+    getGrids(userGame.game.sgdbId).then((filteredGrids) => {
       let index = filteredGrids.findIndex((grid) => grid === (userGame.image == null ? userGame.game.image : userGame.image));
       if (index !== -1) setImageKey(index);
       else setCustomImage(userGame.image == null ? userGame.game.image : userGame.image);

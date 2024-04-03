@@ -9,7 +9,7 @@ export default function ImageInput({ customImage, setCustomImage, imageKey, setI
   return (
     <>
       <Image width={600} height={900} alt="Hero Image" src={customImage || grids[imageKey]} />
-      <Input label="Imagen personalizada" placeholder="Introduzca una URL de sgbd.com" type="text" variant="bordered" onChange={(e) => setCustomImage(e.target.value)} value={customImage} required />
+      <Input label="Imagen personalizada" placeholder="Introduzca una URL de sgdb.com" type="text" variant="bordered" onChange={(e) => setCustomImage(e.target.value)} value={customImage} required />
       {customImage ? (
         <Button onClick={() => setCustomImage('')} className="h-10 w-full text-xl block z-40">
           Borrar imagen personalizada

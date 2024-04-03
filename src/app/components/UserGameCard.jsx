@@ -15,6 +15,10 @@ export default function UserGameCard({ entry, setGames, random }) {
   // Get Session
   const { data: session } = useSession({ required: true });
 
+  if (entry.image === null && entry.game.image === null) {
+    entry.image = 'https://placehold.jp/600x900.png';
+  }
+
   useEffect(() => {
     if (random === entry.game.id) {
       onOpen();

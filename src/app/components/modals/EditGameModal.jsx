@@ -78,7 +78,7 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
     }
 
     // Fetch grids
-    getGrids(game.sgbdId).then((filteredGrids) => {
+    getGrids(game.sgdbId).then((filteredGrids) => {
       let index = filteredGrids.findIndex((grid) => grid === game.image);
       if (index !== -1) setImageKey(index);
       else setCustomImage(game.image);
