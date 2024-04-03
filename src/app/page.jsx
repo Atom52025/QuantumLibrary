@@ -1,7 +1,5 @@
 'use client';
 
-import { singIn } from 'next-auth/react';
-
 import ButtonAuth from '@/app/components/ButtonAuth';
 
 export default async function Page() {

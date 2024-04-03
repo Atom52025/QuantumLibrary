@@ -2,12 +2,15 @@ export const dynamic = 'force-dynamic'; // defaults to auto
 
 const baseUrl = 'http://localhost:8080/';
 
-export async function GET(url) {
+export async function GET(url, token) {
   // Create Query String
   const completeUrl = `${baseUrl}${url}`;
 
   // Fetch Data
   const res = await fetch(completeUrl, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     cache: 'no-store',
   });
   if (!res.ok) {
@@ -17,7 +20,7 @@ export async function GET(url) {
   return res.json();
 }
 
-export async function POST(url, body) {
+export async function POST(url, token, body) {
   // Create Query String
   const completeUrl = `${baseUrl}${url}`;
 
@@ -26,6 +29,7 @@ export async function POST(url, body) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     cache: 'no-store',
     body: JSON.stringify(body),
@@ -37,13 +41,16 @@ export async function POST(url, body) {
   return res.json();
 }
 
-export async function DELETE(url) {
+export async function DELETE(url, token) {
   // Create Query String
   const completeUrl = `${baseUrl}${url}`;
 
   // Fetch Data
   const res = await fetch(completeUrl, {
     method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     cache: 'no-store',
   });
   if (!res.ok) {
@@ -51,7 +58,7 @@ export async function DELETE(url) {
   }
 }
 
-export async function PATCH(url, body) {
+export async function PATCH(url, token, body) {
   // Create Query String
   const completeUrl = `${baseUrl}${url}`;
 
@@ -60,6 +67,7 @@ export async function PATCH(url, body) {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     cache: 'no-store',
     body: JSON.stringify(body),
