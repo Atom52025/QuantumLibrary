@@ -1,9 +1,9 @@
 package quantum.constant;
 
-import quantum.exceptions.DatabaseConnectionException;
-import quantum.exceptions.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import quantum.exceptions.DatabaseConnectionException;
+import quantum.exceptions.EntityNotFoundException;
 
 /**
  * Error constants.

@@ -3,10 +3,11 @@ package quantum.service;
 /**
  * Service for Steam Grid DB Petitions.
  */
-public interface SteamGridBDService {
+public interface SteamGridDBService {
 
     /**
      * Search game in steam grid db by term.
+     *
      * @param term The term to search for
      * @return The games found.
      */
@@ -14,6 +15,7 @@ public interface SteamGridBDService {
 
     /**
      * Get game in steam grid db by id.
+     *
      * @param id The id to search for
      * @return The game found.
      */
@@ -21,6 +23,7 @@ public interface SteamGridBDService {
 
     /**
      * Get game in steam grid db by steam id.
+     *
      * @param id The steam id to search for
      * @return The game found.
      */
@@ -28,6 +31,7 @@ public interface SteamGridBDService {
 
     /**
      * Get game grids in steam grid db by id.
+     *
      * @param id The id to search for
      * @return The game grids found.
      */

@@ -15,6 +15,7 @@ public interface UserGamesRepository extends JpaRepository<UserGame, Long> {
 
     /**
      * JPA Named Query find a user by username.
+     *
      * @param username The username to find.
      * @param pageable The pagination information.
      * @return The user found.
@@ -23,8 +24,9 @@ public interface UserGamesRepository extends JpaRepository<UserGame, Long> {
 
     /**
      * JPA Named Query find a user by username.
+     *
      * @param username The username to find.
-     * @param backlog The backlog to find.
+     * @param backlog  The backlog to find.
      * @param pageable The pagination information.
      * @return The user found.
      */
@@ -32,6 +34,7 @@ public interface UserGamesRepository extends JpaRepository<UserGame, Long> {
 
     /**
      * JPA Named Query find a user by username.
+     *
      * @param username The username to find.
      * @param favorite The favorite boolean.
      * @param pageable The pagination information.
@@ -41,6 +44,7 @@ public interface UserGamesRepository extends JpaRepository<UserGame, Long> {
 
     /**
      * JPA Named Query find a user by username.
+     *
      * @param username The username to find.
      * @param finished The finished boolean.
      * @param pageable The pagination information.
@@ -50,6 +54,7 @@ public interface UserGamesRepository extends JpaRepository<UserGame, Long> {
 
     /**
      * JPA Named Query find a user by username.
+     *
      * @param username The username to find.
      * @param pageable The pagination information.
      * @return The user found.
@@ -59,17 +64,19 @@ public interface UserGamesRepository extends JpaRepository<UserGame, Long> {
 
     /**
      * JPA Named Query find a user game by username and game id.
+     *
      * @param username The username to find.
-     * @param gameId The game id to find.
+     * @param gameId   The game id to find.
      * @return The user found.
      */
     UserGame findByUser_UsernameAndGame_Id(String username, Long gameId);
 
     /**
-     * JPA Named Query find a user game by username and sgbd id.
+     * JPA Named Query find a user game by username and sgdb id.
+     *
      * @param username The username to find.
-     * @param sgbdId The game id to find.
+     * @param sgdbId   The game id to find.
      * @return The user found.
      */
-    Optional<UserGame> findByUser_UsernameAndGame_SgbdId(String username, Long sgbdId);
+    Optional<UserGame> findByUser_UsernameAndGame_SgdbId(String username, Long sgdbId);
 }

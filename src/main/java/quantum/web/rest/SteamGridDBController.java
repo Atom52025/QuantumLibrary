@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import quantum.service.SteamGridBDService;
+import quantum.service.SteamGridDBService;
 import quantum.web.api.SteamGridDBApi;
 
 /**
@@ -16,10 +16,11 @@ import quantum.web.api.SteamGridDBApi;
 @RequiredArgsConstructor
 public class SteamGridDBController implements SteamGridDBApi {
 
-    private final SteamGridBDService steamGridBDService;
+    private final SteamGridDBService steamGridBDService;
 
     /**
-     * GET to /api/sgbd/search to search in sgbd by term.
+     * GET to /api/sgdb/search to search in sgdb by term.
+     *
      * @param term The term to search for
      * @return The games founded.
      */
@@ -29,12 +30,13 @@ public class SteamGridDBController implements SteamGridDBApi {
     }
 
     /**
-     * GET to /api/sgbd/getGrids to search in sgbd by term.
-     * @param gameSgbdId The SGBD game id.
+     * GET to /api/sgdb/getGrids to search in sgdb by term.
+     *
+     * @param gameSgdbId The SGDB game id.
      * @return The games founded.
      */
     @Override
-    public ResponseEntity<String> getGrids(Long gameSgbdId) {
-        return ResponseEntity.ok(steamGridBDService.getGridsById(gameSgbdId));
+    public ResponseEntity<String> getGrids(Long gameSgdbId) {
+        return ResponseEntity.ok(steamGridBDService.getGridsById(gameSgdbId));
     }
 }

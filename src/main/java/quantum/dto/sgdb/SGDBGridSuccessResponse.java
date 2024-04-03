@@ -14,10 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "Body object at endpoint search game by id in sgbd.")
+@Schema(description = "Body object at endpoint search game by id in sgdb.")
 @Validated
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SGBDGridSuccessResponse {
+public class SGDBGridSuccessResponse {
     private Boolean success;
     private List<SGDBGrid> data;
 }

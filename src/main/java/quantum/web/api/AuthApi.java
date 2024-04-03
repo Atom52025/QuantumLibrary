@@ -35,7 +35,7 @@ public interface AuthApi {
     })
     @PostMapping(value = "/login", produces = "application/json")
     ResponseEntity<AuthResponse> logIn(
-        @Valid @RequestBody
+            @Valid @RequestBody
             LogInBody body
     );
 
@@ -53,8 +53,8 @@ public interface AuthApi {
     })
     @PostMapping(value = "/signup", produces = "application/json")
     ResponseEntity<AuthResponse> signUp(
-        @Valid @RequestBody
-        SignUpBody body
+            @Valid @RequestBody
+            SignUpBody body
     );
 
 }

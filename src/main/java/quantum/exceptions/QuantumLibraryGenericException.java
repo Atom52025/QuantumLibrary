@@ -3,13 +3,11 @@ package quantum.exceptions;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import java.net.http.HttpClient;
-
 /**
  * General exception for the Quantum Library application.
  */
 @Getter
-public class QuantumLibraryGenericException extends RuntimeException{
+public class QuantumLibraryGenericException extends RuntimeException {
 
     /**
      * The error code.
@@ -28,6 +26,7 @@ public class QuantumLibraryGenericException extends RuntimeException{
 
     /**
      * Instantiates a new Quantum library generic exception.
+     *
      * @param errorCode    the error code
      * @param errorMessage the error message
      * @param httpStatus   the http status

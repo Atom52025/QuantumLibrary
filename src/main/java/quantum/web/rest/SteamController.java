@@ -21,6 +21,7 @@ public class SteamController implements SteamApi {
 
     /**
      * GET to /api/steam/user/{steam_id} to search a user by its userId in steam.
+     *
      * @param steamId The steam id to search for
      * @return The user found.
      */
@@ -31,6 +32,7 @@ public class SteamController implements SteamApi {
 
     /**
      * GET to /api/steam/games/{steam_id} to search user games.
+     *
      * @param steamId The steam id to search for
      * @return The games founded.
      */

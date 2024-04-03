@@ -20,10 +20,6 @@ public class UpdateGameBody {
     @JsonProperty("name")
     private String name;
 
-    @Schema(example = "Game Description", description = "Description of the game.")
-    @JsonProperty("description")
-    private String description;
-
     @Schema(example = "Game Image", description = "Image of the game.")
     @JsonProperty("image")
     private String image;

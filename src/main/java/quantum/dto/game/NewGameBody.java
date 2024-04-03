@@ -30,6 +30,6 @@ public class NewGameBody {
     private String tags;
 
     @Schema(example = "Steam Grid DB Id", description = "The id of the game in the Steam Grid DB.")
-    @JsonProperty("sgbdId")
-    private Long sgbdId;
+    @JsonProperty("sgdbId")
+    private Long sgdbId;
 }

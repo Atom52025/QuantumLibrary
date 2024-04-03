@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import quantum.dto.user.UserListResponse;
-import quantum.dto.user.UserResponse;
 import quantum.dto.user.NewUserBody;
 import quantum.dto.user.UpdateUserBody;
+import quantum.dto.user.UserListResponse;
+import quantum.dto.user.UserResponse;
 import quantum.model.User;
 import quantum.service.UserService;
 import quantum.web.api.UserApi;
@@ -22,15 +22,16 @@ import quantum.web.api.UserApi;
 @RequiredArgsConstructor
 public class UserController implements UserApi {
 
-    private  final UserService userService;
+    private final UserService userService;
 
     /**
      * GET to /api/users to fetch users list.
+     *
      * @param pageable the pageable
      * @return The list of users
      */
     @Override
-    public ResponseEntity<UserListResponse> getUsers(String token, Pageable pageable) {
+    public ResponseEntity<UserListResponse> getUsers(String token, Pageable pageable) throws Exception {
         log.info("[CONTROLLER] - Searching users");
         UserListResponse result = userService.getUsers(pageable);
         return ResponseEntity.ok(result);
@@ -38,11 +39,12 @@ public class UserController implements UserApi {
 
     /**
      * POST to /api/users to create a user.
+     *
      * @param body The user body.
      * @return The new user.
      */
     @Override
-    public ResponseEntity<UserResponse> postUser(String token, NewUserBody body) {
+    public ResponseEntity<UserResponse> postUser(NewUserBody body) {
         log.info("[CONTROLLER] - Creating user");
         UserResponse result = userService.postUser(body);
         return ResponseEntity.ok(result);
@@ -50,8 +52,9 @@ public class UserController implements UserApi {
 
     /**
      * PUT to /api/users/{username} to update a user.
+     *
      * @param username The username of the user to update.
-     * @param body The user body.
+     * @param body     The user body.
      * @return The updated user.
      */
     @Override
@@ -63,6 +66,7 @@ public class UserController implements UserApi {
 
     /**
      * DELETE to /api/users/{username} to delete a user.
+     *
      * @param username The username of the user to delete.
      * @return The deleted user.
      */

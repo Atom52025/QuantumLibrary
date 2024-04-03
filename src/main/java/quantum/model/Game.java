@@ -33,9 +33,6 @@ public class Game {
     @Column(name = "TAGS")
     private String tags;
 
-    @Column(name = "SGBD_ID")
-    private Long sgbdId;
-
-
-
+    @Column(name = "SGDB_ID")
+    private Long sgdbId;
 }

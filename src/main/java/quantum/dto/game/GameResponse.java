@@ -1,12 +1,12 @@
 package quantum.dto.game;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import quantum.model.Game;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
@@ -28,10 +28,6 @@ public class GameResponse {
     @JsonProperty("name")
     private String name;
 
-    @Schema(example = "Game Description", description = "Description of the game.")
-    @JsonProperty("description")
-    private String description;
-
     @Schema(example = "Game Image", description = "Image of the game.")
     @JsonProperty("image")
     private String image;
@@ -41,7 +37,7 @@ public class GameResponse {
     private List<String> tags;
 
     @Schema(example = "Steam Grid DB Id", description = "The id of the game in the Steam Grid DB.")
-    @JsonProperty("sgbdId")
-    private Long sgbdId;
+    @JsonProperty("sgdbId")
+    private Long sgdbId;
 
 }

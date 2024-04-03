@@ -9,10 +9,10 @@ import static quantum.constant.ErrorConstants.ENTITY_NOT_FOUND_ERROR;
  * Exception to throw when there are database connection issues.
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class EntityNotFoundException extends QuantumLibraryGenericException{
-    
+public class EntityNotFoundException extends QuantumLibraryGenericException {
+
     private static final String DEFAULT_MESSAGE = "No results found for the given query.";
-    
+
     /**
      * Constructor for EntityNotFoundException with a message.
      */
@@ -22,6 +22,7 @@ public class EntityNotFoundException extends QuantumLibraryGenericException{
 
     /**
      * Constructor for EntityNotFoundException with a code and a message.
+     *
      * @param message The error message to pass.
      */
     public EntityNotFoundException(String message) {

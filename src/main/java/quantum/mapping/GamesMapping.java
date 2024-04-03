@@ -13,6 +13,7 @@ public interface GamesMapping {
 
     /**
      * Map {@link Game} to {@link GameResponse}.
+     *
      * @param entity The element to convert.
      * @return The converted element.
      */

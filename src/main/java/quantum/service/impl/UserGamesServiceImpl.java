@@ -1,6 +1,6 @@
 package quantum.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
+import quantum.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.QueryTimeoutException;
@@ -52,6 +52,7 @@ public class UserGamesServiceImpl implements UserGamesService {
 
     /**
      * Gets user games.
+     *
      * @param username The username.
      * @param category The category.
      * @param pageable The pageable.
@@ -67,8 +68,10 @@ public class UserGamesServiceImpl implements UserGamesService {
                 case "backlog1" -> result = userGamesRepository.findByUser_UsernameAndBacklog(username, 1, pageable);
                 case "backlog2" -> result = userGamesRepository.findByUser_UsernameAndBacklog(username, 2, pageable);
                 case "backlog3" -> result = userGamesRepository.findByUser_UsernameAndBacklog(username, 3, pageable);
-                case "favorite" -> result = userGamesRepository.findByUser_UsernameAndFavorite(username, true, pageable);
-                case "finished" -> result = userGamesRepository.findByUser_UsernameAndFinished(username, true, pageable);
+                case "favorite" ->
+                        result = userGamesRepository.findByUser_UsernameAndFavorite(username, true, pageable);
+                case "finished" ->
+                        result = userGamesRepository.findByUser_UsernameAndFinished(username, true, pageable);
                 case "completed" -> result = userGamesRepository.findByUser_UsernameAndCompleted(username, pageable);
                 default -> result = userGamesRepository.findByUser_Username(username, pageable);
             }
@@ -84,31 +87,33 @@ public class UserGamesServiceImpl implements UserGamesService {
 
     /**
      * Add game to a user.
+     *
      * @param username   The username.
-     * @param gameSgbdId The game sgbd id.
+     * @param gameSgdbId The game sgdb id.
      * @param body       The body.
      */
     @Override
-    public UserGameResponse postUserGame(String username, Long gameSgbdId, NewUserGameBody body) {
+    public UserGameResponse postUserGame(String username, Long gameSgdbId, NewUserGameBody body) {
 
         // Check if game is already added
-        Optional<UserGame> userGame = userGamesRepository.findByUser_UsernameAndGame_SgbdId(username, gameSgbdId);
+        Optional<UserGame> userGame = userGamesRepository.findByUser_UsernameAndGame_SgdbId(username, gameSgdbId);
         if (userGame.isPresent()) {
             throw new DataIntegrityViolationException(DATA_INTEGRITY_ERROR);
         }
 
         // Search if game is in the database
-        Game game = gameService.findGameBySgbdId(gameSgbdId);
+        Game game = gameService.findGameById(gameSgdbId, true);
 
         // If game is not in the database, create it
-        if (game == null){
-            game = gameService.postGame(
+        if (game == null) {
+            game = (Game) gameService.postGame(
                     NewGameBody.builder()
-                    .name(body.getName())
-                    .image(body.getImage())
-                    .tags(body.getTags())
-                    .sgbdId(gameSgbdId)
-                    .build());
+                            .name(body.getName())
+                            .image(body.getImage())
+                            .tags(body.getTags())
+                            .sgdbId(gameSgdbId)
+                            .build(),
+                    true);
         }
 
         // Generate new user game
@@ -129,11 +134,12 @@ public class UserGamesServiceImpl implements UserGamesService {
 
     /**
      * Add game to a user.
+     *
      * @param username The username.
      * @param body     The body
      */
     @Override
-    public UserGamesListResponse importUserGames( String username, UserGamesImportList body){
+    public UserGamesListResponse importUserGames(String username, UserGamesImportList body) {
         UserGamesListResponse response = UserGamesListResponse.builder().games(new ArrayList<>()).build();
         for (UserGameImport game : body.getGames()) {
             NewUserGameBody newUserGameBody = NewUserGameBody.builder()
@@ -143,7 +149,7 @@ public class UserGamesServiceImpl implements UserGamesService {
                     .tags("imported")
                     .build();
             try {
-                response.getGames().add(postUserGame(username, game.getSgbdId(), newUserGameBody));
+                response.getGames().add(postUserGame(username, game.getSgdbId(), newUserGameBody));
             } catch (DataIntegrityViolationException ex) {
                 log.debug("[USER GAME IMPORT] - Game already exists: {}", game.getName());
             }
@@ -153,6 +159,7 @@ public class UserGamesServiceImpl implements UserGamesService {
 
     /**
      * Patch a game from a user.
+     *
      * @param username The username.
      * @param gameId   The game id.
      * @param body     The body.
@@ -179,6 +186,7 @@ public class UserGamesServiceImpl implements UserGamesService {
 
     /**
      * Delete game from a user.
+     *
      * @param username The username.
      * @param gameId   The game id.
      */
@@ -191,8 +199,10 @@ public class UserGamesServiceImpl implements UserGamesService {
             throw new DatabaseConnectionException(ex);
         }
     }
+
     /**
      * Find a user game by game id and username.
+     *
      * @param gameId   The game id.
      * @param username The username.
      */
@@ -216,6 +226,7 @@ public class UserGamesServiceImpl implements UserGamesService {
 
     /**
      * Generate a new game.
+     *
      * @param username The username.
      * @param game     The game.
      * @param body     The body
@@ -246,6 +257,7 @@ public class UserGamesServiceImpl implements UserGamesService {
 
     /**
      * Update a user game.
+     *
      * @param body The body
      */
     private void updateUserGameContent(UpdateUserGameBody body, UserGame userGameToUpdate) {

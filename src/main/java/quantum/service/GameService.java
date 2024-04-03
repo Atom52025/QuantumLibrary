@@ -12,45 +12,45 @@ import quantum.model.Game;
  */
 public interface GameService {
 
-        /**
-        * Gets games.
-        * @param pageable the pageable
-        * @return the games
-        */
-        GameListResponse getGames(Pageable pageable);
+    /**
+     * Gets games.
+     *
+     * @param pageable the pageable
+     * @return the games
+     */
+    GameListResponse getGames(Pageable pageable);
 
-        /**
-         * Post game.
-         *
-         * @param body the body
-         */
-        Game postGame(NewGameBody body);
+    /**
+     * Create a new game.
+     *
+     * @param body           The body.
+     * @param retrieveObject Whether to retrieve the object or not.
+     * @return The game entity or the response.
+     */
+    Object postGame(NewGameBody body, boolean retrieveObject);
 
-        /**
-         * Patch game.
-         * @param id the id
-         * @param body the body
-         */
-        GameResponse updateGame(Long id, UpdateGameBody body);
+    /**
+     * Patch game.
+     *
+     * @param id   the id
+     * @param body The body
+     */
+    GameResponse updateGame(Long id, UpdateGameBody body);
 
-        /**
-         * Delete game.
-         * @param id the id
-         */
-        void deleteGame(Long id);
+    /**
+     * Delete game.
+     *
+     * @param id the id
+     */
+    void deleteGame(Long id);
 
-        /**
-         * Find a game by id.
-         * @param id The id of the game to find.
-         * @return The game.
-         */
-        Game findGameById(Long id);
-
-        /**
-         * Find a game by id.
-         * @param sgbdId The sgbd id of the game to find.
-         * @return The game.
-         */
-        Game findGameBySgbdId(Long sgbdId) ;
+    /**
+     * Find a game by id.
+     *
+     * @param id The id of the game to find.
+     * @param sgdbId Wheter the id is the sgdb id or not.
+     * @return The game.
+     */
+    Game findGameById(Long id, boolean sgdbId);
 
 }

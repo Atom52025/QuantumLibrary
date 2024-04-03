@@ -1,6 +1,6 @@
 package quantum.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
+import quantum.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.QueryTimeoutException;
@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import quantum.dto.user.NewUserBody;
 import quantum.dto.user.UpdateUserBody;
@@ -40,6 +41,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Retrieve Users.
+     *
      * @param pageable the pageable
      * @return the users
      */
@@ -52,6 +54,7 @@ public class UserServiceImpl implements UserService {
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
+
 
         // Check if there is any result
         if (result.isEmpty()) {
@@ -66,6 +69,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Create a new user.
+     *
      * @param body The body
      * @return The user
      */
@@ -90,8 +94,9 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Update a user.
+     *
      * @param username The username of the user.
-     * @param body The body
+     * @param body     The body
      * @return The user
      */
     @Override
@@ -116,6 +121,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Delete a user.
+     *
      * @param username The username
      */
     @Override
@@ -136,6 +142,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Generate a new user.
+     *
      * @param body The body
      * @return The user
      */
@@ -144,13 +151,15 @@ public class UserServiceImpl implements UserService {
                 .username(body.getUsername())
                 .email(body.getEmail())
                 .role("USER")
+                .password(BCrypt.hashpw(body.getPassword(), BCrypt.gensalt()))
                 .build();
     }
 
     /**
      * Update a user.
+     *
      * @param userToUpdate The user to update.
-     * @param body The body
+     * @param body         The body
      */
     private void updateUserContent(UpdateUserBody body, User userToUpdate) {
         if (body.getUsername() != null) {
@@ -159,16 +168,20 @@ public class UserServiceImpl implements UserService {
         if (body.getEmail() != null) {
             userToUpdate.setEmail(body.getEmail());
         }
+        if (body.getPassword() != null) {
+            userToUpdate.setPassword(BCrypt.hashpw(body.getPassword(), BCrypt.gensalt()));
+        }
     }
 
     /**
      * Find a user by username.
+     *
      * @param username The username of the user to find.
      * @return The user.
      */
     public User findUser(String username) {
         Optional<User> user;
-        try{
+        try {
             user = userRepository.findByUsername(username);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
