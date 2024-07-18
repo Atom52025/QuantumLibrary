@@ -27,8 +27,6 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
 
   const eraseForm = async (onClose) => {
     const formURL = `api/games/${game.id}`;
-    console.log(formURL);
-
     try {
       setGames((prevGames) => prevGames.filter((game) => game !== userGame));
       await DELETE(formURL);
@@ -44,15 +42,12 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
     const formURL = `api/games/${game.id}`;
 
     const requestBody = {
-      tags: tags.join(','),
+      tags: tags,
       image: customImage || grids[imageKey],
     };
 
     try {
       const res = await PATCH(formURL, requestBody);
-
-      console.log(res);
-
       setResultModal('Game edited successfully');
       onClose();
     } catch (error) {
@@ -61,7 +56,6 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
   };
 
   const getGrids = async (key) => {
-    console.log(game.name + ' - Session: ' + session);
     const formURL = `api/sgdb/getGrids/${key}`;
     let res = await GET(formURL, session.user.token);
     let filteredGrids = res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url);

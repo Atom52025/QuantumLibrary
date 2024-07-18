@@ -1,35 +1,27 @@
 'use client';
 
-import { Checkbox, CheckboxGroup } from '@nextui-org/react';
+import { Checkbox, CheckboxGroup, ScrollShadow } from '@nextui-org/react';
+import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { FaRandom } from 'react-icons/fa';
 
+import Counter from '@/app/components/Counter';
 import GameCard from '@/app/components/GameCard';
-import SortBy from '@/app/components/SortBy';
 import FilterBar from '@/app/components/inputs/FilterBar';
+import SortByInput from '@/app/components/inputs/SortByInput';
 import AddUserGameModal from '@/app/components/modals/AddUserGameModal';
+import SteamImportModal from '@/app/components/modals/SteamImportModal';
+import GroupListSection from '@/app/components/sections/GroupListSection';
+import TagSection from '@/app/components/sections/TagSection';
+import UserGameCard from '@/app/components/user/UserGameCard';
 
-export default function UserContentFiltering({ data }) {
-  const [tags, setTags] = useState([]);
+export default function UserContentFiltering({ data, gData }) {
   const [selectedTags, setSelectedTags] = useState([]);
   const [games, setGames] = useState(data);
   const [filteredGames, setFilteredGames] = useState(games.sort((a, b) => a.name.localeCompare(b.name)));
   const [searchParam, setSearchParam] = useState('');
   const [random, setRandom] = useState(-1);
-
-  const handleTagChange = (values) => {
-    setSelectedTags(values);
-  };
-
-  const filterTags = () => {
-    const tags = games
-      .map(({ tags }) => tags.map((tag) => tag.trim()))
-      .reduce((allTags, gameTags) => {
-        gameTags.forEach((tag) => allTags.add(tag));
-        return allTags;
-      }, new Set());
-    setTags([...tags].sort((a, b) => a.localeCompare(b)));
-  };
+  const [open, setOpen] = useState(false);
 
   const orderBy = (order) => {
     switch (order) {
@@ -65,26 +57,14 @@ export default function UserContentFiltering({ data }) {
     filterGames();
   }, [games, selectedTags, searchParam]);
 
-  useEffect(() => {
-    filterTags();
-  }, [games]);
-
   return (
     <>
-      <div className="h-full min-w-[200px] bg-gray-800/30 shadow-inner flex flex-col p-3">
-        <CheckboxGroup label="Tags Filters" values={selectedTags} onChange={handleTagChange}>
-          {tags?.map((tag) => (
-            <Checkbox key={tag} value={tag}>
-              {tag}
-            </Checkbox>
-          ))}
-        </CheckboxGroup>
-      </div>
-      <main className="min-h-full w-full shadow-inner">
+      <TagSection games={games} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
+      <ScrollShadow hideScrollBar className={`max-h-full w-full shadow-inner overflow-y-scroll ${open ? 'mr-[200px]' : 'mr-0'}`}>
         <div className="flex flex-col ">
           <div className=" px-10 pt-5 flex justify-between">
             <FilterBar searchParam={searchParam} setSearchParam={setSearchParam} />
-            <SortBy orderBy={orderBy} />
+            <SortByInput orderBy={orderBy} />
           </div>
           <div className="px-10 py-5 grid grid-cols-9 gap-3">
             {filteredGames?.map((entry) => (
@@ -94,13 +74,9 @@ export default function UserContentFiltering({ data }) {
             ))}
           </div>
         </div>
-      </main>
-      <div className="fixed bottom-5 right-10 rounded-full aspect-square w-[100px] bg-gray-800 flex justify-center text-center items-center text-3xl z-20 group">
-        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-0 opacity-100">{filteredGames.length}</p>
-        <button className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 opacity-0" onClick={() => randomGame()}>
-          <FaRandom />
-        </button>
-      </div>
+      </ScrollShadow>
+      {gData && <GroupListSection gData={gData} open={open} setOpen={setOpen} />}
+      <Counter randomGame={randomGame} filteredGames={filteredGames} open={open} />
     </>
   );
 }

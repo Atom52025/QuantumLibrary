@@ -40,7 +40,7 @@ export default function TagInput({ tags, setTags, viewOnly }) {
           }}
         />
       )}
-      <div className={'flex flex-row gap-4'}>
+      <div className={'flex flex-row flex-wrap gap-4 max-h-32 overflow-y-auto'}>
         {tags.map((tag) => (
           <Chip onClose={() => removeTag(tag)} key={tag}>
             {tag}

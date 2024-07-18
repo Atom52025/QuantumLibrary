@@ -1,5 +1,5 @@
 import { GET } from '@/app/api/request';
-import ContentFiltering from '@/app/components/ContentFiltering';
+import ContentFiltering from '@/app/components/ContentDisplay';
 
 export default async function Page({ params }) {
   // Get Data

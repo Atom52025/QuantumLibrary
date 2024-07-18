@@ -1,10 +1,10 @@
 'use client';
 
-import { Autocomplete, AutocompleteItem, Button, Checkbox, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Switch } from '@nextui-org/react';
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 
-import { GET } from '@/app/api/signalRequest';
+import { GET } from '@/app/api/tokenRequest';
 import { DELETE, PATCH } from '@/app/api/tokenRequest';
 import InfoPopups from '@/app/components/InfoPopups';
 import AchivementsInput from '@/app/components/inputs/AchivementsInput';
@@ -32,8 +32,6 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
 
   const eraseForm = async (onClose) => {
     const formURL = `api/user/${session.user.username}/games/${userGame.game.id}`;
-    console.log(formURL);
-
     try {
       await DELETE(formURL, session.user.token);
 
@@ -50,7 +48,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
     const formURL = `api/user/${session.user.username}/games/${userGame.game.id}`;
 
     const requestBody = {
-      tags: tags.join(','),
+      tags: tags,
       timePlayed: timePlayed,
       image: customImage || grids[imageKey],
       favorite: isFavorite,
@@ -73,7 +71,6 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
   };
 
   const getGrids = async (key) => {
-    console.log(userGame.game.name + ' - Session: ' + session);
     const formURL = `api/sgdb/getGrids/${key}`;
     let res = await GET(formURL, session.user.token);
     let filteredGrids = res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url);

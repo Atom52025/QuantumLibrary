@@ -38,7 +38,7 @@ export default function AddUserGameModal({ setGames }) {
 
     const requestBody = {
       name: newGame.name,
-      tags: tags.join(','),
+      tags: tags,
       timePlayed: timePlayed,
       image: customImage || grids[imageKey],
     };
