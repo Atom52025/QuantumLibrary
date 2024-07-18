@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 import quantum.dto.auth.AuthResponse;
 import quantum.dto.auth.LogInBody;
 import quantum.dto.auth.SignUpBody;
-import quantum.dto.user.UserResponse;
 import quantum.model.User;
 import quantum.service.AuthService;
 import quantum.web.api.AuthApi;
@@ -21,19 +20,19 @@ import quantum.web.api.AuthApi;
 @RequiredArgsConstructor
 public class AuthController implements AuthApi {
 
-    private  final AuthService authService;
+    private final AuthService service;
 
     @Override
     public ResponseEntity<AuthResponse> logIn(LogInBody body) {
         log.info("[CONTROLLER] - Logging in");
-        AuthResponse user = authService.logIn(body);
+        AuthResponse user = service.logIn(body);
         return ResponseEntity.ok(user);
     }
 
     @Override
     public ResponseEntity<AuthResponse> signUp(SignUpBody body) {
         log.info("[CONTROLLER] - Singing Up");
-        AuthResponse user = authService.signUp(body);
+        AuthResponse user = service.signUp(body);
         if (user == null) {
             return ResponseEntity.badRequest().build();
         }

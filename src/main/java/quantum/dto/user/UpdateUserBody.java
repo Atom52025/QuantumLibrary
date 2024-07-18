@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import quantum.validation.Alphanumeric;
+import quantum.validation.Email;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +21,15 @@ public class UpdateUserBody {
     private String username;
 
     @Schema(example = "User Mail", description = "Mail of the user.")
+    @Email
     @JsonProperty("email")
     private String email;
+
+    @Schema(example = "User Password", description = "Password of the user.")
+    @JsonProperty("password")
+    private String password;
+
+    @Schema(example = "User Image", description = "Image of the user.")
+    @JsonProperty("image")
+    private String image;
 }

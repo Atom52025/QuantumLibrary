@@ -3,22 +3,15 @@ package quantum.web.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
-import quantum.dto.auth.AuthResponse;
-import quantum.dto.auth.LogInBody;
-import quantum.dto.auth.SignUpBody;
-import quantum.model.User;
-import reactor.core.publisher.Mono;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * The api interface for sgbd request.
+ * The api interface for sgdb request.
  */
 
 @Validated
@@ -26,7 +19,8 @@ import reactor.core.publisher.Mono;
 public interface SteamGridDBApi {
 
     /**
-     * GET to /api/sgbd/search to search in sgbd by term.
+     * GET to /api/sgdb/search to search in sgdb by term.
+     *
      * @param term The term to search for
      * @return The games founded.
      */
@@ -40,11 +34,12 @@ public interface SteamGridDBApi {
     @GetMapping(value = "/search", produces = "application/json")
     ResponseEntity<String> searchByTerm(
             @RequestParam(value = "term", required = false)
-                String term);
+            String term);
 
     /**
-     * GET to /api/sgbd/getGrids to search in sgbd by term.
-     * @param gameSgbdId The SGBD game id.
+     * GET to /api/sgdb/getGrids to search in sgdb by term.
+     *
+     * @param gameSgdbId The SGDB game id.
      * @return The games founded.
      */
     @Operation(summary = "Search in SGDB for a name by its name", description = "Search in SGDB for a name by its name")
@@ -54,12 +49,12 @@ public interface SteamGridDBApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(value = "/getGrids/{game_sgbd_id}", produces = "application/json")
+    @GetMapping(value = "/getGrids/{game_sgdb_id}", produces = "application/json")
     ResponseEntity<String> getGrids(
-            @PathVariable("game_sgbd_id")
-            Long gameSgbdId);
+            @PathVariable("game_sgdb_id")
+            Long gameSgdbId);
 
-};
+}
 
 
 

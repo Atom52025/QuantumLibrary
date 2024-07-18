@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import static quantum.security.jwt.JwtUtil.decodeToken;
-
 @Slf4j
 @Configuration
 @SpringBootApplication
@@ -16,17 +14,17 @@ import static quantum.security.jwt.JwtUtil.decodeToken;
 @EntityScan(basePackages = "quantum.model")
 public class QuantumLibraryApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		SpringApplication.run(QuantumLibraryApplication.class, args);
+        SpringApplication.run(QuantumLibraryApplication.class, args);
 
-		log.info("""
-				
-				----------------------------------------------
-				Application 'Quantum Library' is running!
-				Local: 		https://localhost:8080
-				----------------------------------------------
-				""");
-	}
+        log.info("""
+                				
+                ----------------------------------------------
+                Application 'Quantum Library' is running!
+                Local: 		https://localhost:8080
+                ----------------------------------------------
+                """);
+    }
 
 }

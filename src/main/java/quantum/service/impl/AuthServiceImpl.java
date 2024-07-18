@@ -3,11 +3,7 @@ package quantum.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import quantum.dto.auth.AuthResponse;
@@ -33,6 +29,8 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final UsersMapping mapper;
 
+    //------------------------------------- PUBLIC METHODS -------------------------------------//
+
     /**
      * Sign up.
      *
@@ -54,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
 
     /**
      * Log in.
+     *
      * @param body The body with the info to log in.
      * @return The user that logged in.
      */
@@ -61,15 +60,21 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse logIn(LogInBody body) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(body.getUsername(), body.getPassword()));
         Optional<User> user = userRepository.findByUsername(body.getUsername());
-        if (user.isEmpty()) { log.info("User doesnt exist"); return null; }
+        if (user.isEmpty()) {
+            log.info("User doesnt exist");
+            return null;
+        }
         AuthResponse response = mapper.authMap(user.get());
         response.setToken(JwtUtil.generateJwtToken(user.get()));
         return response;
     }
 
+    //------------------------------------- PRIVATE METHODS -------------------------------------//
+
     /**
      * Generate a new user.
-     * @param body the body
+     *
+     * @param body The body
      * @return the user
      */
     private User generateNewUser(SignUpBody body) {

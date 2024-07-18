@@ -1,7 +1,5 @@
 package quantum.service.impl;
 
-import quantum.exceptions.DatabaseConnectionException;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.QueryTimeoutException;
@@ -16,11 +14,12 @@ import quantum.dto.game.GameListResponse;
 import quantum.dto.game.GameResponse;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
+import quantum.exceptions.DatabaseConnectionException;
+import quantum.exceptions.EntityNotFoundException;
 import quantum.mapping.GamesMapping;
 import quantum.model.Game;
 import quantum.repository.GameRepository;
 import quantum.service.GameService;
-import quantum.service.SteamGridBDService;
 
 import java.util.Optional;
 
@@ -34,21 +33,24 @@ import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
 
-    private final GameRepository gameRepository;
+    private final GameRepository repository;
     private final GamesMapping mapper;
-    private final SteamGridBDService steamGridBDService;
+
+    //------------------------------------- PUBLIC METHODS -------------------------------------//
 
     /**
      * Retrieve Games.
-     * @param pageable the pageable
-     * @return the games
+     *
+     * @param pageable The pageable
+     * @return The games
      */
     @Override
     public GameListResponse getGames(Pageable pageable) {
         Page<Game> result;
 
         try {
-            result = gameRepository.findAll(pageable);
+            log.info("[SERVICE] - [GAME SEARCH] - Searching games");
+            result = repository.findAll(pageable);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -64,92 +66,74 @@ public class GameServiceImpl implements GameService {
                 .build();
     }
 
+
     /**
      * Find a game by id.
+     *
      * @param id The id of the game to find.
      * @return The game.
      */
-    public Game findGameById(Long id) {
+    @Override
+    public Game findGameById(Long id, boolean sgdbId) {
         Optional<Game> game;
-        try{
-            game = gameRepository.findById(id);
+        try {
+            log.info("[SERVICE] - [GAME SEARCH] - Searching game: {}", id);
+            game = sgdbId ? repository.findBySgdbId(id) : repository.findById(id);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
 
         // Check if there is any result
-        if (game.isEmpty()) {
+        if (game.isEmpty() && !sgdbId) {
             throw new EntityNotFoundException();
         }
 
-        return game.get();
-    }
-
-    /**
-     * Find a game by sgbdId.
-     * @param sgbdId The sgbd id of the game to find.
-     * @return The game.
-     */
-    public Game findGameBySgbdId(Long sgbdId) {
-        Optional<Game> game;
-        try{
-            game = gameRepository.findBySgbdId(sgbdId);
-        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
-            throw new DatabaseConnectionException(ex);
-        }
-
-        // Check if there is any result
-        if (game.isEmpty()) {
-            return null;
-        }
-
-        return game.get();
+        return game.orElse(null);
     }
 
     /**
      * Create a new game.
      *
-     * @param body the body
-     * @return the game
+     * @param body           The body.
+     * @param retrieveObject Whether to retrieve the object or not.
+     * @return The game entity or the response.
      */
     @Override
-    public Game postGame(NewGameBody body) {
-
+    public Object postGame(NewGameBody body, boolean retrieveObject) {
         // Generate new game
         Game newGame = generateNewGame(body);
 
         try {
-            log.debug("[GAME CREATION] - Saving game: {}", newGame);
-            newGame = gameRepository.save(newGame);
+            log.info("[SERVICE] - [GAME CREATION] - Saving game: {}", newGame);
+            newGame = repository.save(newGame);
         } catch (DataIntegrityViolationException ex) {
             throw new DatabaseConnectionException(DATA_INTEGRITY_ERROR, ex);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
 
-        // return the enitity
-        return newGame;
-
+        return retrieveObject ? newGame : mapper.map(newGame);
     }
 
     /**
      * Update a game.
-     * @param id the id
-     * @param body the body
-     * @return the game
+     *
+     * @param id   The id
+     * @param body The body
+     * @return The game
      */
     @Override
     public GameResponse updateGame(Long id, UpdateGameBody body) {
 
         // Find the game
-        Game gameToUpdate = findGameById(id);
+        Game gameToUpdate = findGameById(id, false);
 
         // Update the game content
         updateGameContent(body, gameToUpdate);
 
         try {
-            log.debug("[GAME UPDATE] - Saving game: {}", gameToUpdate);
-            gameToUpdate = gameRepository.save(gameToUpdate);
+            log.info("[SERVICE] - [GAME UPDATE] - Saving game: {}", gameToUpdate);
+            gameToUpdate = repository.save(gameToUpdate);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -160,34 +144,40 @@ public class GameServiceImpl implements GameService {
 
     /**
      * Delete a game.
+     *
      * @param id the id
      */
     @Override
     public void deleteGame(Long id) {
         try {
-            gameRepository.delete(findGameById(id));
+            log.info("[SERVICE] - [GAME DELETE] - Deleting game: {}", id);
+            repository.delete(findGameById(id, false));
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
     }
 
+    //------------------------------------- PRIVATE METHODS -------------------------------------//
+
     /**
      * Generate a new game.
-     * @param body the body
-     * @return the game
+     *
+     * @param body The body
+     * @return The game
      */
     private Game generateNewGame(NewGameBody body) {
         return Game.builder()
                 .name(body.getName())
                 .tags(body.getTags())
                 .image(body.getImage())
-                .sgbdId(body.getSgbdId())
+                .sgdbId(body.getSgdbId())
                 .build();
     }
 
     /**
      * Update a game.
-     * @param body the body
+     *
+     * @param body The body
      */
     private void updateGameContent(UpdateGameBody body, Game gameToUpdate) {
         if (body.getName() != null) {

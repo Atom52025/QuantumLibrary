@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import quantum.model.User;
-import quantum.validation.Alphanumeric;
-
-import java.util.List;
 
 /**
  * Data transfer object for {@link User} entity.

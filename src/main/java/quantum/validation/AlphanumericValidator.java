@@ -20,12 +20,13 @@ public class AlphanumericValidator implements ConstraintValidator<Alphanumeric, 
 
     /**
      * Validates that the string is alphanumeric (including spaces).
-     * @param value The value of the string to validate.
+     *
+     * @param value   The value of the string to validate.
      * @param context The context of the validation.
      * @return The boolean value that represents if the value passed the validation or not.
      */
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context){
+    public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
             return true;
         }

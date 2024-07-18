@@ -6,8 +6,6 @@ import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;
@@ -19,12 +17,12 @@ public class JwtUtil {
     private static final String SECRET_KEY = "DAF5B3D55AEC35B676E41B599B31B275237456SDJHFGS32654234FDS";
     SecretKey key = Jwts.SIG.HS256.key().build();
 
-    public static TokenPayload decodeToken(String token){
+    public static TokenPayload decodeToken(String token) {
         String[] chunks = token.split("\\.");
 
         Base64.Decoder decoder = Base64.getUrlDecoder();
 
-        return TokenPayload.fromJsonString( new String(decoder.decode(chunks[1])));
+        return TokenPayload.fromJsonString(new String(decoder.decode(chunks[1])));
     }
 
     public String getUserNameFromJwtToken(String jwt) {

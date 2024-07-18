@@ -15,6 +15,7 @@ public class DatabaseConnectionException extends QuantumLibraryGenericException 
 
     /**
      * Constructor for DatabaseConnectionException with a message.
+     *
      * @param ex the error to pass.
      */
     public DatabaseConnectionException(Throwable ex) {
@@ -23,8 +24,9 @@ public class DatabaseConnectionException extends QuantumLibraryGenericException 
 
     /**
      * Constructor for DatabaseConnectionException with a code and a message.
+     *
      * @param errorCode the error code to pass.
-     * @param ex the error pass.
+     * @param ex        the error pass.
      */
     public DatabaseConnectionException(String errorCode, Throwable ex) {
         super(errorCode, ex.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

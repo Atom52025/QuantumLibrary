@@ -13,6 +13,7 @@ public interface UsersMapping {
 
     /**
      * Map {@link User} to {@link UserResponse}.
+     *
      * @param entity The element to convert.
      * @return The converted element.
      */
@@ -20,6 +21,7 @@ public interface UsersMapping {
 
     /**
      * Map {@link User} to {@link AuthResponse}.
+     *
      * @param entity The element to convert.
      * @return The converted element.
      */

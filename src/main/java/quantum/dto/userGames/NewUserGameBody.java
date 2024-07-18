@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,7 +32,7 @@ public class NewUserGameBody {
 
     @Schema(example = "Tags", description = "Tags.")
     @JsonProperty("tags")
-    private String tags;
+    private Set<String> tags;
 
     @Schema(example = "Achivements", description = "Achivements.")
     @JsonProperty("achivements")

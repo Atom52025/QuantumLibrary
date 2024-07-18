@@ -9,6 +9,7 @@ public interface SteamService {
 
     /**
      * Get steam user.
+     *
      * @param steamId The steam id to search for
      * @return The user found.
      */
@@ -16,6 +17,7 @@ public interface SteamService {
 
     /**
      * Get steam games.
+     *
      * @param steamId The steam id to search for
      * @return The games found.
      */

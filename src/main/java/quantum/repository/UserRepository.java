@@ -12,6 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * JPA Named Query find a user by username.
+     *
      * @param username The username to find.
      * @return The user found.
      */

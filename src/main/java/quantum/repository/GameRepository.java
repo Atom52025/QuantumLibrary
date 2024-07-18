@@ -10,9 +10,10 @@ import java.util.Optional;
  */
 public interface GameRepository extends JpaRepository<Game, Long> {
     /**
-     * JPA Named Query find a game by sgbd id.
-     * @param sgbdId The sgbd game id to find.
+     * JPA Named Query find a game by sgdb id.
+     *
+     * @param sgdbId The sgdb game id to find.
      * @return The game found.
      */
-    Optional<Game> findBySgbdId(Long sgbdId);
+    Optional<Game> findBySgdbId(Long sgdbId);
 }
