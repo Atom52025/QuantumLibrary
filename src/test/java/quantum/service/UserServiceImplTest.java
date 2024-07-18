@@ -90,7 +90,6 @@ public class UserServiceImplTest {
         UserListResponse response = service.getUsers(pageable);
 
         assertEquals(10, response.getUsers().size());
-        assertEquals(SAMPLE_USER.getId(), response.getUsers().get(0).getId());
         assertEquals(SAMPLE_USER.getUsername(), response.getUsers().get(0).getUsername());
         assertEquals(SAMPLE_USER.getEmail(), response.getUsers().get(0).getEmail());
         assertEquals(SAMPLE_USER.getRole(), response.getUsers().get(0).getRole());
@@ -205,7 +204,7 @@ public class UserServiceImplTest {
     @DisplayName("Test updateUser method (OK)")
     void updateUserOK() {
         // Clone the game so the test doesn't modify the original object
-        User testUser = new User(SAMPLE_USER.getId(), SAMPLE_USER.getUsername(), SAMPLE_USER.getEmail(), SAMPLE_USER.getPassword(), SAMPLE_USER.getRole());
+        User testUser = new User(SAMPLE_USER.getId(), SAMPLE_USER.getUsername(), SAMPLE_USER.getEmail(), SAMPLE_USER.getPassword(), SAMPLE_USER.getRole(), SAMPLE_USER.getImage(), SAMPLE_USER.getUserGames(), SAMPLE_USER.getUserGroups());
 
         // Mock repository
         when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(testUser));
@@ -214,7 +213,6 @@ public class UserServiceImplTest {
         // Verify result
         UserResponse response = service.updateUser(SAMPLE_USER.getUsername(), SAMPLE_UPDATE_USER_BODY);
 
-        assertEquals(SAMPLE_UPDATE_GAME.getId(), response.getId());
         assertEquals(SAMPLE_UPDATE_GAME.getUsername(), response.getUsername());
         assertEquals(SAMPLE_UPDATE_GAME.getEmail(), response.getEmail());
         assertEquals(SAMPLE_UPDATE_GAME.getRole(), response.getRole());
@@ -254,7 +252,7 @@ public class UserServiceImplTest {
     @DisplayName("Test deleteUser method (OK)")
     void deleteUserOK() {
         // Clone the game so the test doesn't modify the original object
-        User testUser = new User(SAMPLE_USER.getId(), SAMPLE_USER.getUsername(), SAMPLE_USER.getEmail(), SAMPLE_USER.getPassword(), SAMPLE_USER.getRole());
+        User testUser = new User(SAMPLE_USER.getId(), SAMPLE_USER.getUsername(), SAMPLE_USER.getEmail(), SAMPLE_USER.getPassword(), SAMPLE_USER.getRole(), SAMPLE_USER.getImage(), SAMPLE_USER.getUserGames(), SAMPLE_USER.getUserGroups());
 
         // Mock repository
         when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(testUser));

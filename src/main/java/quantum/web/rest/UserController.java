@@ -22,7 +22,7 @@ import quantum.web.api.UserApi;
 @RequiredArgsConstructor
 public class UserController implements UserApi {
 
-    private final UserService userService;
+    private final UserService service;
 
     /**
      * GET to /api/users to fetch users list.
@@ -33,7 +33,20 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<UserListResponse> getUsers(String token, Pageable pageable) throws Exception {
         log.info("[CONTROLLER] - Searching users");
-        UserListResponse result = userService.getUsers(pageable);
+        UserListResponse result = service.getUsers(pageable);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * GET to /api/users to fetch users list.
+     *
+     * @param username The username of the user to update.
+     * @return The list of users
+     */
+    @Override
+    public ResponseEntity<UserResponse> getUser(String token, String username) {
+        log.info("[CONTROLLER] - Searching user");
+        UserResponse result = service.getUser(username);
         return ResponseEntity.ok(result);
     }
 
@@ -46,7 +59,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<UserResponse> postUser(NewUserBody body) {
         log.info("[CONTROLLER] - Creating user");
-        UserResponse result = userService.postUser(body);
+        UserResponse result = service.postUser(body);
         return ResponseEntity.ok(result);
     }
 
@@ -60,7 +73,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<UserResponse> patchUser(String token, String username, UpdateUserBody body) {
         log.info("[CONTROLLER] - Updating user");
-        UserResponse result = userService.updateUser(username, body);
+        UserResponse result = service.updateUser(username, body);
         return ResponseEntity.ok(result);
     }
 
@@ -73,7 +86,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<Void> deleteUser(String token, String username) {
         log.info("[CONTROLLER] - Deleting user");
-        userService.deleteUser(username);
+        service.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
 

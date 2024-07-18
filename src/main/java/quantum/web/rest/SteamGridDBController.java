@@ -16,7 +16,7 @@ import quantum.web.api.SteamGridDBApi;
 @RequiredArgsConstructor
 public class SteamGridDBController implements SteamGridDBApi {
 
-    private final SteamGridDBService steamGridBDService;
+    private final SteamGridDBService service;
 
     /**
      * GET to /api/sgdb/search to search in sgdb by term.
@@ -26,7 +26,7 @@ public class SteamGridDBController implements SteamGridDBApi {
      */
     @Override
     public ResponseEntity<String> searchByTerm(String term) {
-        return ResponseEntity.ok(steamGridBDService.searchByTerm(term));
+        return ResponseEntity.ok(service.searchByTerm(term));
     }
 
     /**
@@ -37,6 +37,6 @@ public class SteamGridDBController implements SteamGridDBApi {
      */
     @Override
     public ResponseEntity<String> getGrids(Long gameSgdbId) {
-        return ResponseEntity.ok(steamGridBDService.getGridsById(gameSgdbId));
+        return ResponseEntity.ok(service.getGridsById(gameSgdbId));
     }
 }

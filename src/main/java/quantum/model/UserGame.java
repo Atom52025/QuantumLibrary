@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * Entity class for User Games
  */
@@ -20,7 +23,7 @@ import org.springframework.validation.annotation.Validated;
 public class UserGame {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "USER_GAME_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -35,8 +38,9 @@ public class UserGame {
     @Column(name = "TIME_PLAYED")
     private Integer timePlayed;
 
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "TAGS")
-    private String tags;
+    private Set<String> tags;
 
     @Column(name = "IMAGE")
     private String image;

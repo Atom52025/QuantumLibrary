@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import quantum.model.Game;
 import quantum.model.User;
 
+import java.util.Set;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestConstants {
     public static final String SAMPLE_USERNAME = "UserName";
@@ -12,7 +14,7 @@ public class TestConstants {
     public static final Game SAMPLE_GAME = Game.builder()
             .id(1L)
             .name("GameName")
-            .tags("GameTag1, GameTag2")
+            .tags(Set.of("GameTag1", "GameTag2"))
             .image("GameImage")
             .sgdbId(1L)
             .build();
@@ -22,6 +24,7 @@ public class TestConstants {
             .password("UserPassword")
             .email("UserEmail")
             .role("USER")
+            .image("UserImage")
             .build();
 
 }

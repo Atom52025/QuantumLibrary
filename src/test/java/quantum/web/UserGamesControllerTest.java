@@ -25,6 +25,7 @@ import quantum.service.UserGamesService;
 import quantum.web.rest.UserGamesController;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -82,7 +83,7 @@ class UserGamesControllerTest {
 
         NewUserGameBody input = NewUserGameBody.builder()
                 .name("name")
-                .tags("tags")
+                .tags(Set.of("tags"))
                 .image("image")
                 .build();
 

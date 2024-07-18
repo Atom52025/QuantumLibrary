@@ -28,4 +28,8 @@ public class UpdateUserBody {
     @Schema(example = "User Password", description = "Password of the user.")
     @JsonProperty("password")
     private String password;
+
+    @Schema(example = "User Image", description = "Image of the user.")
+    @JsonProperty("image")
+    private String image;
 }

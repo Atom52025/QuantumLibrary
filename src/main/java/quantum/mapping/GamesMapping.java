@@ -17,6 +17,5 @@ public interface GamesMapping {
      * @param entity The element to convert.
      * @return The converted element.
      */
-    @Mapping(expression = "java(java.util.Arrays.asList(entity.getTags().split(\",\")))", target = "tags")
     GameResponse map(Game entity);
 }

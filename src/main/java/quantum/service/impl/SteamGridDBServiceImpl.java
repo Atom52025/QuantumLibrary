@@ -26,6 +26,8 @@ public class SteamGridDBServiceImpl implements SteamGridDBService {
         this.webClient = webClientBuilder.baseUrl(EXTERNAL_API_URL).build();
     }
 
+    //------------------------------------- PUBLIC METHODS -------------------------------------//
+
     /**
      * Search game in steam grid db by term.
      *

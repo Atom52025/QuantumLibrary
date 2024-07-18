@@ -3,6 +3,7 @@ package quantum.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import quantum.exceptions.DatabaseConnectionException;
+import quantum.exceptions.EntityFoundException;
 import quantum.exceptions.EntityNotFoundException;
 
 /**
@@ -21,6 +22,16 @@ public class ErrorConstants {
      * Default error code for {@link EntityNotFoundException}.
      */
     public static final String ENTITY_NOT_FOUND_ERROR = "Entity not found.";
+
+    /**
+     * Default error code for {@link EntityFoundException}.
+     */
+    public static final String ENTITY_FOUND_ERROR = "Entity found.";
+
+    /**
+     * Default error code for {@link quantum.exceptions.BadRequestException}.
+     */
+    public static final String BAD_REQUEST_ERROR = "Bad request.";
 
     /**
      * Default error code for {@link DatabaseConnectionException}.

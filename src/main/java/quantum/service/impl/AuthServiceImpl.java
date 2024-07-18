@@ -29,6 +29,8 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final UsersMapping mapper;
 
+    //------------------------------------- PUBLIC METHODS -------------------------------------//
+
     /**
      * Sign up.
      *
@@ -66,6 +68,8 @@ public class AuthServiceImpl implements AuthService {
         response.setToken(JwtUtil.generateJwtToken(user.get()));
         return response;
     }
+
+    //------------------------------------- PRIVATE METHODS -------------------------------------//
 
     /**
      * Generate a new user.

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Data transfer object for user game imports.
  */
@@ -32,5 +34,9 @@ public class UserGameImport {
     @Schema(example = "32131", description = "The SGDB id of the game.")
     @JsonProperty("sgdbId")
     private Long sgdbId;
+
+    @Schema(example = "mmo, shooter", description = "Tags for the game.")
+    @JsonProperty("tags")
+    private List<String> tags;
 
 }

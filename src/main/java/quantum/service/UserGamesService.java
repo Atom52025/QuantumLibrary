@@ -7,6 +7,11 @@ import quantum.dto.userGames.UserGameResponse;
 import quantum.dto.userGames.UserGamesListResponse;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.model.Game;
+import quantum.model.User;
+import quantum.model.UserGame;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Service for {@link Game} entity.
@@ -22,6 +27,22 @@ public interface UserGamesService {
      * @return the games
      */
     UserGamesListResponse getUserGames(String username, String category, Pageable pageable);
+
+    /**
+     * Gets user games.
+     *
+     * @param username The username.
+     * @return the games
+     */
+    List<UserGame> getOnlineGames(String username);
+
+    /**
+     * Gets games common to list users.
+     *
+     * @param users The list of users.
+     * @return the games
+     */
+    Set<Game> getCommonGames(List<User> users);
 
     /**
      * Add game to a user.

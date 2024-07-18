@@ -8,14 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import quantum.dto.sgdb.SGDBGame;
 import quantum.dto.sgdb.SGDBGameSuccessResponse;
 import quantum.dto.sgdb.SGDBGrid;
 import quantum.dto.sgdb.SGDBGridSuccessResponse;
 import quantum.dto.steam.SteamResponse;
+import quantum.dto.steamSpy.SteamSpyGame;
 import quantum.dto.userGames.steamImport.UserGameImport;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.service.SteamGridDBService;
 import quantum.service.SteamService;
+import quantum.service.SteamSpyService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +34,21 @@ public class SteamServiceImpl implements SteamService {
 
     private static final String EXTERNAL_API_URL = "http://api.steampowered.com/";
     private final SteamGridDBService steamGridBDService;
+    private final SteamSpyService steamSpyService;
     private final WebClient webClient;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${steam.api.key}")
     private String key;
 
     @Autowired
-    public SteamServiceImpl(SteamGridDBService steamGridBDService, WebClient.Builder webClientBuilder) {
+    public SteamServiceImpl(SteamGridDBService steamGridBDService, SteamSpyService steamSpyService, WebClient.Builder webClientBuilder) {
         this.steamGridBDService = steamGridBDService;
+        this.steamSpyService = steamSpyService;
         this.webClient = webClientBuilder.baseUrl(EXTERNAL_API_URL).build();
     }
+
+    //------------------------------------- PUBLIC METHODS -------------------------------------//
 
     /**
      * Get steam user.
@@ -82,38 +90,29 @@ public class SteamServiceImpl implements SteamService {
         List<UserGameImport> userGames = new ArrayList<>();
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
 
             SteamResponse steamResponse = objectMapper.readValue(response, SteamResponse.class);
 
             steamResponse.getResponse().getGames().stream().parallel().forEach(game -> {
-                String gameResponse = steamGridBDService.getBySteamId(game.getAppId());
-                if (gameResponse == null) {
-                    log.error("Game not found in steam grid db");
-                    return;
-                }
-                SGDBGameSuccessResponse sgdbResponse = null;
-                try {
-                    sgdbResponse = objectMapper.readValue(gameResponse, SGDBGameSuccessResponse.class);
-                    String gridResponse = steamGridBDService.getGridsById(sgdbResponse.getData().getId());
-                    SGDBGridSuccessResponse sgdbGridResponse = objectMapper.readValue(gridResponse, SGDBGridSuccessResponse.class);
-                    String imageUrl = null;
-                    if (!sgdbGridResponse.getData().isEmpty()) {
-                        Optional<SGDBGrid> sgdbGrid = sgdbGridResponse.getData().stream().filter(e -> e.getWidth() == 600 && e.getHeight() == 900).findFirst();
-                        imageUrl = sgdbGrid.orElse(sgdbGridResponse.getData().getFirst()).getUrl();
-                    } else {
-                        imageUrl = "https://cdn.cloudflare.steamstatic.com/steam/apps/" + game.getAppId() + "/library_600x900.jpg";
+                SteamSpyGame steamSpyGame = steamSpyService.getSteamSpyInfo(game.getAppId());
+                if (steamSpyGame == null) { return; }
+                SGDBGame sgdbGame = getSGDBInfo(game.getAppId());
+                String imageUrl = "https://cdn.cloudflare.steamstatic.com/steam/apps/" + game.getAppId() + "/library_600x900.jpg";
+                if (sgdbGame != null) {
+                    List<SGDBGrid> sgdbGrids = getSGDBGrids(sgdbGame.getId());
+                    if (!sgdbGrids.isEmpty()) {
+                        Optional<SGDBGrid> sgdbGrid = sgdbGrids.stream().filter(e -> e.getWidth() == 600 && e.getHeight() == 900).findFirst();
+                        imageUrl = sgdbGrid.orElse(sgdbGrids.getFirst()).getUrl();
                     }
-                    UserGameImport newUserGame = UserGameImport.builder()
-                            .name(sgdbResponse.getData().getName())
-                            .timePlayed(game.getPlaytime())
-                            .image(imageUrl)
-                            .sgdbId(sgdbResponse.getData().getId())
-                            .build();
-                    userGames.add(newUserGame);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
                 }
+                UserGameImport newUserGame = UserGameImport.builder()
+                        .name(steamSpyGame.getName())
+                        .timePlayed(game.getPlaytime())
+                        .image(imageUrl)
+                        .sgdbId(sgdbGame.getId())
+                        .tags(steamSpyGame.getTags().keySet().stream().toList())
+                        .build();
+                userGames.add(newUserGame);
             });
 
         } catch (JsonProcessingException e) {
@@ -123,6 +122,38 @@ public class SteamServiceImpl implements SteamService {
         return UserGamesImportList.builder()
                 .games(userGames)
                 .build();
+    }
+
+    //------------------------------------- PRIVATE METHODS -------------------------------------//
+
+    /**
+     * Get steam grid db grids.
+     *
+     * @param sgbdId The sgbd id to search for
+     * @return The info found.
+     */
+    private SGDBGame getSGDBInfo(Long sgbdId) {
+        try {
+            String gameResponse = steamGridBDService.getBySteamId(sgbdId);
+            return objectMapper.readValue(gameResponse, SGDBGameSuccessResponse.class).getData();
+        }catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get steam grid db info.
+     *
+     * @param steamId The steam id to search for
+     * @return The info found.
+     */
+    private List<SGDBGrid> getSGDBGrids(Long steamId) {
+        try {
+            String gridResponse = steamGridBDService.getGridsById(steamId);
+            return objectMapper.readValue(gridResponse, SGDBGridSuccessResponse.class).getData();
+        }catch (JsonProcessingException e) {
+            return new ArrayList<>();
+        }
     }
 
 }

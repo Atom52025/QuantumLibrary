@@ -18,6 +18,8 @@ import quantum.dto.userGames.UserGamesListResponse;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.model.UserGame;
 
+import java.util.List;
+
 /**
  * The api interface for {@link UserGame} entity.
  */
@@ -58,6 +60,17 @@ public interface UserGamesApi {
             Pageable pageable
     );
 
+    @GetMapping(value = "/api/user/{username}/onlineGames", produces = "application/json")
+    ResponseEntity<List<UserGame>> getUserGames(
+            @RequestHeader("Authorization")
+            String token,
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
+            @PathVariable("username")
+            String username,
+            @PageableDefault(value = Integer.MAX_VALUE)
+            Pageable pageable
+    );
+
     /**
      * POST to /api/user/{username}/games/{game_sgdb_id} add a game to a user
      *
@@ -67,11 +80,7 @@ public interface UserGamesApi {
      * @param body       The user game body.
      * @return The new user game.
      */
-    @Operation(summary = "Create user game", description = "Create user game", parameters = {
-            @Parameter(name = "page", description = "The page number"),
-            @Parameter(name = "size", description = "The page size"),
-            @Parameter(name = "sort", description = "The sort order")
-    })
+    @Operation(summary = "Create user game", description = "Create user game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "The list of games"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
@@ -99,11 +108,7 @@ public interface UserGamesApi {
      * @param body     Import list body.
      * @return The new user games.
      */
-    @Operation(summary = "Import user games", description = "Import user games", parameters = {
-            @Parameter(name = "page", description = "The page number"),
-            @Parameter(name = "size", description = "The page size"),
-            @Parameter(name = "sort", description = "The sort order")
-    })
+    @Operation(summary = "Import user games", description = "Import user games")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "The list of games imported"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
@@ -130,11 +135,7 @@ public interface UserGamesApi {
      * @param body       The user game body.
      * @return The edited user game.
      */
-    @Operation(summary = "Edit a user game", description = "Edit a user game", parameters = {
-            @Parameter(name = "page", description = "The page number"),
-            @Parameter(name = "size", description = "The page size"),
-            @Parameter(name = "sort", description = "The sort order")
-    })
+    @Operation(summary = "Edit a user game", description = "Edit a user game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "The list of games"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
@@ -162,11 +163,7 @@ public interface UserGamesApi {
      * @param username   The username.
      * @param gameSgdbId The game id.
      */
-    @Operation(summary = "Delete a user game", description = "Delete a user game", parameters = {
-            @Parameter(name = "page", description = "The page number"),
-            @Parameter(name = "size", description = "The page size"),
-            @Parameter(name = "sort", description = "The sort order")
-    })
+    @Operation(summary = "Delete a user game", description = "Delete a user game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "OK No Content"),
             @ApiResponse(responseCode = "400", description = "Bad request"),

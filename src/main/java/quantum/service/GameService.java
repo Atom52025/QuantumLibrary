@@ -21,6 +21,15 @@ public interface GameService {
     GameListResponse getGames(Pageable pageable);
 
     /**
+     * Find a game by id.
+     *
+     * @param id The id of the game to find.
+     * @param sgdbId Wheter the id is the sgdb id or not.
+     * @return The game.
+     */
+    Game findGameById(Long id, boolean sgdbId);
+
+    /**
      * Create a new game.
      *
      * @param body           The body.
@@ -44,13 +53,6 @@ public interface GameService {
      */
     void deleteGame(Long id);
 
-    /**
-     * Find a game by id.
-     *
-     * @param id The id of the game to find.
-     * @param sgdbId Wheter the id is the sgdb id or not.
-     * @return The game.
-     */
-    Game findGameById(Long id, boolean sgdbId);
+
 
 }

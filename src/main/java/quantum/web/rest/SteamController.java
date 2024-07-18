@@ -17,7 +17,7 @@ import quantum.web.api.SteamApi;
 @RequiredArgsConstructor
 public class SteamController implements SteamApi {
 
-    private final SteamService steamService;
+    private final SteamService service;
 
     /**
      * GET to /api/steam/user/{steam_id} to search a user by its userId in steam.
@@ -27,7 +27,7 @@ public class SteamController implements SteamApi {
      */
     @Override
     public ResponseEntity<String> getUser(String steamId) {
-        return ResponseEntity.ok(steamService.getUser(steamId));
+        return ResponseEntity.ok(service.getUser(steamId));
     }
 
     /**
@@ -38,6 +38,6 @@ public class SteamController implements SteamApi {
      */
     @Override
     public ResponseEntity<UserGamesImportList> getGames(String steamId) {
-        return ResponseEntity.ok(steamService.getGames(steamId));
+        return ResponseEntity.ok(service.getGames(steamId));
     }
 }

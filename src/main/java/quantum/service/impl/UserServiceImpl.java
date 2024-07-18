@@ -36,8 +36,10 @@ import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repository;
     private final UsersMapping mapper;
+
+    //------------------------------------- PUBLIC METHODS -------------------------------------//
 
     /**
      * Retrieve Users.
@@ -50,7 +52,8 @@ public class UserServiceImpl implements UserService {
         Page<User> result;
 
         try {
-            result = userRepository.findAll(pageable);
+            log.info("[SERVICE] - [USER SEARCH] - Searching users");
+            result = repository.findAll(pageable);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -68,6 +71,68 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * Retrieve User.
+     *
+     * @param username The username.
+     * @return The user.
+     */
+    @Override
+    public UserResponse getUser(String username) {
+        Optional<User> result;
+
+        try {
+            log.info("[SERVICE] - [USER SEARCH] - Searching user");
+            result = repository.findByUsername(username);
+        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
+            throw new DatabaseConnectionException(ex);
+        }
+
+
+        // Check if there is any result
+        if (result.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        // Map entity to response and return
+        return mapper.map(result.get());
+    }
+
+    /**
+     * Find a user by username.
+     *
+     * @param username The username of the user to find.
+     * @return The user.
+     */
+    public User findUser(String username) {
+        Optional<User> user;
+        try {
+            log.info("[SERVICE] - [USER SEARCH] - Searching user: {}", username);
+            user = repository.findByUsername(username);
+        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
+            throw new DatabaseConnectionException(ex);
+        }
+
+        // Check if there is any result
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        return user.get();
+    }
+
+    /**
+     * Load a user by its username for the authentication process.
+     *
+     * @param username The username
+     * @return The user details
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+    }
+
+    /**
      * Create a new user.
      *
      * @param body The body
@@ -80,8 +145,8 @@ public class UserServiceImpl implements UserService {
         User newUser = generateNewUser(body);
 
         try {
-            log.debug("[GAME CREATION] - Saving user: {}", newUser);
-            newUser = userRepository.save(newUser);
+            log.info("[SERVICE] - [USER CREATION] - Saving user: {}", newUser);
+            newUser = repository.save(newUser);
         } catch (DataIntegrityViolationException ex) {
             throw new DatabaseConnectionException(DATA_INTEGRITY_ERROR, ex);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
@@ -109,8 +174,8 @@ public class UserServiceImpl implements UserService {
         updateUserContent(body, userToUpdate);
 
         try {
-            log.debug("[GAME UPDATE] - Saving user: {}", userToUpdate);
-            userToUpdate = userRepository.save(userToUpdate);
+            log.info("[SERVICE] - [GAME UPDATE] - Saving user: {}", userToUpdate);
+            userToUpdate = repository.save(userToUpdate);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -127,18 +192,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String username) {
         try {
-            userRepository.delete(findUser(username));
+            log.info("[SERVICE] - [GAME DELETE] - Deleting user: {}", username);
+            repository.delete(findUser(username));
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
-    }
-
+    //------------------------------------- PRIVATE METHODS -------------------------------------//
 
     /**
      * Generate a new user.
@@ -152,6 +213,7 @@ public class UserServiceImpl implements UserService {
                 .email(body.getEmail())
                 .role("USER")
                 .password(BCrypt.hashpw(body.getPassword(), BCrypt.gensalt()))
+                .image("https://api.dicebear.com/7.x/identicon/svg?seed=" + body.getUsername())
                 .build();
     }
 
@@ -171,27 +233,10 @@ public class UserServiceImpl implements UserService {
         if (body.getPassword() != null) {
             userToUpdate.setPassword(BCrypt.hashpw(body.getPassword(), BCrypt.gensalt()));
         }
+        if (body.getImage() != null) {
+            userToUpdate.setImage(body.getImage());
+        }
     }
 
-    /**
-     * Find a user by username.
-     *
-     * @param username The username of the user to find.
-     * @return The user.
-     */
-    public User findUser(String username) {
-        Optional<User> user;
-        try {
-            user = userRepository.findByUsername(username);
-        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
-            throw new DatabaseConnectionException(ex);
-        }
 
-        // Check if there is any result
-        if (user.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-
-        return user.get();
-    }
 }

@@ -21,6 +21,8 @@ import quantum.dto.game.UpdateGameBody;
 import quantum.service.GameService;
 import quantum.web.rest.GameController;
 
+import java.util.Set;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,7 +76,7 @@ class GameControllerTest {
 
         NewGameBody input = NewGameBody.builder()
                 .name("name")
-                .tags("tags")
+                .tags(Set.of("tags"))
                 .sgdbId(1L)
                 .image("image")
                 .build();
@@ -104,7 +106,7 @@ class GameControllerTest {
 
         UpdateGameBody input = UpdateGameBody.builder()
                 .name("name")
-                .tags("tags")
+                .tags(Set.of("tags"))
                 .image("image")
                 .build();
 

@@ -33,8 +33,10 @@ import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
 
-    private final GameRepository gameRepository;
+    private final GameRepository repository;
     private final GamesMapping mapper;
+
+    //------------------------------------- PUBLIC METHODS -------------------------------------//
 
     /**
      * Retrieve Games.
@@ -47,7 +49,8 @@ public class GameServiceImpl implements GameService {
         Page<Game> result;
 
         try {
-            result = gameRepository.findAll(pageable);
+            log.info("[SERVICE] - [GAME SEARCH] - Searching games");
+            result = repository.findAll(pageable);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -74,7 +77,8 @@ public class GameServiceImpl implements GameService {
     public Game findGameById(Long id, boolean sgdbId) {
         Optional<Game> game;
         try {
-            game = sgdbId ? gameRepository.findBySgdbId(id) : gameRepository.findById(id);
+            log.info("[SERVICE] - [GAME SEARCH] - Searching game: {}", id);
+            game = sgdbId ? repository.findBySgdbId(id) : repository.findById(id);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -100,8 +104,8 @@ public class GameServiceImpl implements GameService {
         Game newGame = generateNewGame(body);
 
         try {
-            log.debug("[GAME CREATION] - Saving game: {}", newGame);
-            newGame = gameRepository.save(newGame);
+            log.info("[SERVICE] - [GAME CREATION] - Saving game: {}", newGame);
+            newGame = repository.save(newGame);
         } catch (DataIntegrityViolationException ex) {
             throw new DatabaseConnectionException(DATA_INTEGRITY_ERROR, ex);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
@@ -128,8 +132,8 @@ public class GameServiceImpl implements GameService {
         updateGameContent(body, gameToUpdate);
 
         try {
-            log.debug("[GAME UPDATE] - Saving game: {}", gameToUpdate);
-            gameToUpdate = gameRepository.save(gameToUpdate);
+            log.info("[SERVICE] - [GAME UPDATE] - Saving game: {}", gameToUpdate);
+            gameToUpdate = repository.save(gameToUpdate);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -146,11 +150,14 @@ public class GameServiceImpl implements GameService {
     @Override
     public void deleteGame(Long id) {
         try {
-            gameRepository.delete(findGameById(id, false));
+            log.info("[SERVICE] - [GAME DELETE] - Deleting game: {}", id);
+            repository.delete(findGameById(id, false));
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
     }
+
+    //------------------------------------- PRIVATE METHODS -------------------------------------//
 
     /**
      * Generate a new game.

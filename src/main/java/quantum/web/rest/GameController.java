@@ -22,7 +22,7 @@ import quantum.web.api.GameApi;
 @RequiredArgsConstructor
 public class GameController implements GameApi {
 
-    private final GameService gameService;
+    private final GameService service;
 
     /**
      * GET to /api/games to fetch games list.
@@ -33,7 +33,7 @@ public class GameController implements GameApi {
     @Override
     public ResponseEntity<GameListResponse> getGames(Pageable pageable) {
         log.info("[CONTROLLER] - Searching games");
-        GameListResponse result = gameService.getGames(pageable);
+        GameListResponse result = service.getGames(pageable);
         return ResponseEntity.ok(result);
     }
 
@@ -46,7 +46,7 @@ public class GameController implements GameApi {
     @Override
     public ResponseEntity<GameResponse> postGame(NewGameBody body) {
         log.info("[CONTROLLER] - Creating game");
-        GameResponse result = (GameResponse) gameService.postGame(body, false);
+        GameResponse result = (GameResponse) service.postGame(body, false);
         return ResponseEntity.ok(result);
     }
 
@@ -60,7 +60,7 @@ public class GameController implements GameApi {
     @Override
     public ResponseEntity<GameResponse> patchGame(Long id, UpdateGameBody body) {
         log.info("[CONTROLLER] - Updating game");
-        GameResponse result = gameService.updateGame(id, body);
+        GameResponse result = service.updateGame(id, body);
         return ResponseEntity.ok(result);
     }
 
@@ -73,7 +73,7 @@ public class GameController implements GameApi {
     @Override
     public ResponseEntity<Void> deleteGame(Long id) {
         log.info("[CONTROLLER] - Deleting game");
-        gameService.deleteGame(id);
+        service.deleteGame(id);
         return ResponseEntity.noContent().build();
     }
 

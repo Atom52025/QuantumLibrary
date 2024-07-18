@@ -22,6 +22,14 @@ public interface UserService {
     UserListResponse getUsers(Pageable pageable) throws Exception;
 
     /**
+     * Gets users.
+     *
+     * @param username The username.
+     * @return The users.
+     */
+    UserResponse getUser(String username);
+
+    /**
      * Post user.
      *
      * @param body The body

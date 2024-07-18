@@ -18,11 +18,6 @@ import quantum.validation.Alphanumeric;
 @NoArgsConstructor
 @Schema(description = "Data transfer object for Users entity.")
 public class UserResponse {
-
-    @Schema(example = "1", description = "Id of the user.")
-    @JsonProperty("id")
-    private Long id;
-
     @Schema(example = "User Name", description = "Name of the game.")
     @JsonProperty("username")
     private String username;
@@ -36,4 +31,8 @@ public class UserResponse {
     @Alphanumeric()
     @JsonProperty("role")
     private String role;
+
+    @Schema(example = "User Image", description = "Image of the user.")
+    @JsonProperty("image")
+    private String image;
 }

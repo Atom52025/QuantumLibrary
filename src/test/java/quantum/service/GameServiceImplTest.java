@@ -24,10 +24,7 @@ import quantum.model.Game;
 import quantum.repository.GameRepository;
 import quantum.service.impl.GameServiceImpl;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,14 +56,14 @@ public class GameServiceImplTest {
 
     private static final UpdateGameBody SAMPLE_UPDATE_GAME_BODY = UpdateGameBody.builder()
             .name("GameNameUpdated")
-            .tags("Tag1Updated,Tag2Updated")
+            .tags(Set.of("Tag1Updated", "Tag2Updated"))
             .image("ImageUpdated")
             .build();
 
     private static final Game SAMPLE_UPDATE_GAME = Game.builder()
             .id(1L)
             .name("GameNameUpdated")
-            .tags("Tag1Updated,Tag2Updated")
+            .tags(Set.of("Tag1Updated", "Tag2Updated"))
             .sgdbId(1L)
             .image("ImageUpdated")
             .build();
@@ -93,8 +90,7 @@ public class GameServiceImplTest {
         assertEquals(SAMPLE_GAME.getName(), response.getGames().get(0).getName());
         assertEquals(SAMPLE_GAME.getImage(), response.getGames().get(0).getImage());
         assertEquals(SAMPLE_GAME.getSgdbId(), response.getGames().get(0).getSgdbId());
-        assertEquals(Arrays.stream(SAMPLE_GAME.getTags().split(",")).toList(),
-                response.getGames().get(0).getTags());
+        assertEquals(SAMPLE_GAME.getTags().stream().toList(), response.getGames().get(0).getTags());
     }
 
     /**
@@ -208,8 +204,7 @@ public class GameServiceImplTest {
         assertEquals(SAMPLE_GAME.getName(), response.getName());
         assertEquals(SAMPLE_GAME.getImage(), response.getImage());
         assertEquals(SAMPLE_GAME.getSgdbId(), response.getSgdbId());
-        assertEquals(Arrays.stream(SAMPLE_GAME.getTags().split(",")).toList(),
-                response.getTags());
+        assertEquals(SAMPLE_GAME.getTags().stream().toList(), response.getTags());
     }
 
     /**
@@ -238,7 +233,7 @@ public class GameServiceImplTest {
     @DisplayName("Test updateGame method (OK)")
     void updateGameOK() {
         // Clone the game so the test doesn't modify the original object
-        Game testGame = new Game(SAMPLE_GAME.getId(), SAMPLE_GAME.getName(), SAMPLE_GAME.getImage(), SAMPLE_GAME.getTags(), SAMPLE_GAME.getSgdbId());
+        Game testGame = new Game(SAMPLE_GAME.getId(), SAMPLE_GAME.getName(), SAMPLE_GAME.getImage(), SAMPLE_GAME.getTags(), SAMPLE_GAME.getSgdbId(), SAMPLE_GAME.getUserGames());
 
         // Mock repository
         when(gameRepository.findById(any(Long.class))).thenReturn(Optional.of(testGame));
@@ -251,8 +246,7 @@ public class GameServiceImplTest {
         assertEquals(SAMPLE_UPDATE_GAME.getName(), response.getName());
         assertEquals(SAMPLE_UPDATE_GAME.getImage(), response.getImage());
         assertEquals(SAMPLE_UPDATE_GAME.getSgdbId(), response.getSgdbId());
-        assertEquals(Arrays.stream(SAMPLE_UPDATE_GAME.getTags().split(",")).toList(),
-                response.getTags());
+        assertEquals(SAMPLE_UPDATE_GAME.getTags().stream().toList(), response.getTags());
     }
 
     /**
@@ -289,7 +283,7 @@ public class GameServiceImplTest {
     @DisplayName("Test deleteGame method (OK)")
     void deleteGameOK() {
         // Clone the game so the test doesn't modify the original object
-        Game testGame = new Game(SAMPLE_GAME.getId(), SAMPLE_GAME.getName(), SAMPLE_GAME.getImage(), SAMPLE_GAME.getTags(), SAMPLE_GAME.getSgdbId());
+        Game testGame = new Game(SAMPLE_GAME.getId(), SAMPLE_GAME.getName(), SAMPLE_GAME.getImage(), SAMPLE_GAME.getTags(), SAMPLE_GAME.getSgdbId(), SAMPLE_GAME.getUserGames());
 
         // Mock repository
         when(gameRepository.findById(any(Long.class))).thenReturn(Optional.of(testGame));

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import static quantum.constant.ErrorConstants.ENTITY_NOT_FOUND_ERROR;
 
 /**
- * Exception to throw when there are database connection issues.
+ * Exception to throw when the entity is not found.
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class EntityNotFoundException extends QuantumLibraryGenericException {

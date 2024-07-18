@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import quantum.validation.Alphanumeric;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +27,6 @@ public class UpdateGameBody {
     private String image;
 
     @Schema(example = "Game Tags", description = "Tags of the game.")
-    @Alphanumeric(allowedChars = ",")
     @JsonProperty("tags")
-    private String tags;
+    private Set<String> tags;
 }

@@ -50,16 +50,34 @@ public interface UserApi {
     ) throws Exception;
 
     /**
+     * GET to /api/users/{username} to fetch a user.
+     *
+     * @param username The user id.
+     * @return The list of users
+     */
+    @Operation(summary = "Get users list", description = "Get user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The user"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "No results found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping(value = "/api/users/{username}", produces = "application/json")
+    ResponseEntity<UserResponse> getUser(
+            @RequestHeader("Authorization")
+            String token,
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")
+            @PathVariable("username")
+            String username
+    );
+
+    /**
      * POST to /api/users to create a user.
      *
      * @param body The user body.
      * @return The new user.
      */
-    @Operation(summary = "Get users list", description = "Get users list", parameters = {
-            @Parameter(name = "page", description = "The page number"),
-            @Parameter(name = "size", description = "The page size"),
-            @Parameter(name = "sort", description = "The sort order")
-    })
+    @Operation(summary = "Post user", description = "Creates a new user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "The list of users"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
@@ -79,11 +97,7 @@ public interface UserApi {
      * @param body     The user body.
      * @return The edited user.
      */
-    @Operation(summary = "Edit a user", description = "Edit a user", parameters = {
-            @Parameter(name = "page", description = "The page number"),
-            @Parameter(name = "size", description = "The page size"),
-            @Parameter(name = "sort", description = "The sort order")
-    })
+    @Operation(summary = "Edit a user", description = "Edit a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "The list of users"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
@@ -106,11 +120,7 @@ public interface UserApi {
      *
      * @param username The user id
      */
-    @Operation(summary = "Delete a user", description = "Delete a user", parameters = {
-            @Parameter(name = "page", description = "The page number"),
-            @Parameter(name = "size", description = "The page size"),
-            @Parameter(name = "sort", description = "The sort order")
-    })
+    @Operation(summary = "Delete a user", description = "Delete a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "OK No Content"),
             @ApiResponse(responseCode = "400", description = "Bad request"),

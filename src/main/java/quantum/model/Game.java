@@ -1,8 +1,13 @@
 package quantum.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Entity class for Games
@@ -16,7 +21,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "GAMES")
+@Table(name = "GAMES_T")
 public class Game {
 
     @Id
@@ -30,9 +35,27 @@ public class Game {
     @Column(name = "IMAGE")
     private String image;
 
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "TAGS")
-    private String tags;
+    private Set<String> tags;
 
     @Column(name = "SGDB_ID")
     private Long sgdbId;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
+    private List<UserGame> userGames;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Game)) return false;
+        Game game = (Game) o;
+        return id.equals(game.id);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(id);
+    }
 }

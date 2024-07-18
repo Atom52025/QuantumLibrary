@@ -14,6 +14,8 @@ import quantum.model.UserGame;
 import quantum.service.UserGamesService;
 import quantum.web.api.UserGamesApi;
 
+import java.util.List;
+
 /**
  * Controller for {@link UserGame} entity.
  */
@@ -23,7 +25,7 @@ import quantum.web.api.UserGamesApi;
 @RequiredArgsConstructor
 public class UserGamesController implements UserGamesApi {
 
-    private final UserGamesService userGamesService;
+    private final UserGamesService service;
 
     /**
      * GET to /api/user/{user_id}/games to fetch a user game list.
@@ -37,8 +39,19 @@ public class UserGamesController implements UserGamesApi {
     @Override
     public ResponseEntity<UserGamesListResponse> getUserGames(String token, String username, String category, Pageable pageable) {
         log.info("[CONTROLLER] - Searching user games");
-        UserGamesListResponse result = userGamesService.getUserGames(username, category, pageable);
+        UserGamesListResponse result = service.getUserGames(username, category, pageable);
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * @param token
+     * @param username
+     * @param pageable
+     * @return
+     */
+    @Override
+    public ResponseEntity<List<UserGame>> getUserGames(String token, String username, Pageable pageable) {
+        return ResponseEntity.ok(service.getOnlineGames(username));
     }
 
     /**
@@ -53,7 +66,7 @@ public class UserGamesController implements UserGamesApi {
     @Override
     public ResponseEntity<UserGameResponse> postUserGame(String token, String username, Long gameSgdbId, NewUserGameBody body) {
         log.info("[CONTROLLER] - Adding game to user");
-        UserGameResponse result = userGamesService.postUserGame(username, gameSgdbId, body);
+        UserGameResponse result = service.postUserGame(username, gameSgdbId, body);
         return ResponseEntity.ok(result);
     }
 
@@ -68,7 +81,7 @@ public class UserGamesController implements UserGamesApi {
     @Override
     public ResponseEntity<UserGamesListResponse> importUserGames(String token, String username, UserGamesImportList body) {
         log.info("[CONTROLLER] - Importing games to user");
-        UserGamesListResponse result = userGamesService.importUserGames(username, body);
+        UserGamesListResponse result = service.importUserGames(username, body);
         return ResponseEntity.ok(result);
     }
 
@@ -85,7 +98,7 @@ public class UserGamesController implements UserGamesApi {
     @Override
     public ResponseEntity<UserGameResponse> patchUserGame(String token, String username, Long gameSgdbId, UpdateUserGameBody body) {
         log.info("[CONTROLLER] - Editing game from user");
-        UserGameResponse result = userGamesService.updateUserGame(username, gameSgdbId, body);
+        UserGameResponse result = service.updateUserGame(username, gameSgdbId, body);
         return ResponseEntity.ok(result);
     }
 
@@ -99,7 +112,7 @@ public class UserGamesController implements UserGamesApi {
     @Override
     public ResponseEntity<Void> deleteUserGame(String token, String username, Long gameSgdbId) {
         log.info("[CONTROLLER] - Deleting game from user");
-        userGamesService.deleteUserGame(username, gameSgdbId);
+        service.deleteUserGame(username, gameSgdbId);
         return ResponseEntity.noContent().build();
     }
 }
