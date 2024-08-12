@@ -140,8 +140,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse postUser(NewUserBody body) {
 
         // Check if the user already exists
-        User user = findUser(body.getUsername());
-        if (user != null) {
+        if (checkUser(body.getUsername())) {
             throw new DataIntegrityViolationException("User already exists");
         }
 
@@ -262,6 +261,24 @@ public class UserServiceImpl implements UserService {
                 .password(BCrypt.hashpw(body.getPassword(), BCrypt.gensalt()))
                 .image("https://api.dicebear.com/7.x/identicon/svg?seed=" + body.getUsername())
                 .build();
+    }
+
+    /**
+     * Find if a user exist with given username.
+     *
+     * @param username The username of the user to find.
+     * @return User found.
+     */
+    public boolean checkUser(String username) {
+        Optional<User> user;
+        try {
+            log.info("[SERVICE] - [USER SEARCH] - Searching user: {}", username);
+            user = repository.findByUsername(username);
+        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
+            throw new DatabaseConnectionException(ex);
+        }
+
+        return !user.isEmpty();
     }
 
     /**

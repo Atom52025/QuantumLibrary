@@ -69,6 +69,7 @@ public class UserServiceImplTest {
             .email("newEmail")
             .password("newPassword")
             .role("USER")
+            .image("image")
             .build();
 
     /**
@@ -212,7 +213,7 @@ public class UserServiceImplTest {
         // Verify result
         UserResponse response = service.updateUser(SAMPLE_USER.getUsername(), SAMPLE_UPDATE_USER_BODY);
 
-        assertEquals(SAMPLE_UPDATE_USER.getUsername(), response.getImage());
+        assertEquals(SAMPLE_UPDATE_USER.getImage(), response.getImage());
         assertEquals(SAMPLE_UPDATE_USER.getEmail(), response.getEmail());
     }
 

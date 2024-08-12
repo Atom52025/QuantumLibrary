@@ -8,10 +8,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.service.impl.SteamServiceImpl;
@@ -20,17 +24,26 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class SteamServiceImplTest {
 
-    @InjectMocks
     private SteamServiceImpl steamService;
 
     @Mock
     private SteamGridDBService steamGridDBService;
+
+    @Mock
+    private WebClient.Builder webClientBuilder;
+
+    @Mock
+    private WebClient webClient;
+
+    @Mock
+    private SteamSpyService steamSpyService;
 
     private static MockWebServer mockWebServer;
 
@@ -39,11 +52,17 @@ class SteamServiceImplTest {
 
     @BeforeEach
     void setup() throws IOException {
+        when(webClientBuilder.baseUrl(anyString())).thenReturn(webClientBuilder);
+        when(webClientBuilder.build()).thenReturn(webClient);
+
+        this.steamService = new SteamServiceImpl(steamGridDBService, steamSpyService, webClientBuilder);
+
         // Start the MockWebServer
         mockWebServer = new MockWebServer();
         mockWebServer.start();
 
         String mockServerUrl = String.format("http://localhost:%s", mockWebServer.getPort());
+
         ReflectionTestUtils.setField(steamService, "webClient", WebClient.builder().baseUrl(mockServerUrl).build());
         ReflectionTestUtils.setField(steamService, "key", testKey);
     }
