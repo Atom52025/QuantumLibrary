@@ -11,10 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import quantum.dto.game.NewGameBody;
-import quantum.dto.userGames.NewUserGameBody;
-import quantum.dto.userGames.UpdateUserGameBody;
-import quantum.dto.userGames.UserGameResponse;
-import quantum.dto.userGames.UserGamesListResponse;
+import quantum.dto.userGames.*;
 import quantum.dto.userGames.steamImport.UserGameImport;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.exceptions.DatabaseConnectionException;
@@ -24,12 +21,14 @@ import quantum.model.Game;
 import quantum.model.User;
 import quantum.model.UserGame;
 import quantum.repository.UserGamesRepository;
+import quantum.repository.projections.UserGameSgdbIdProjection;
 import quantum.service.GameService;
 import quantum.service.UserGamesService;
 import quantum.service.UserService;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
 import static quantum.constant.ErrorConstants.ENTITY_NOT_FOUND_ERROR;
@@ -77,9 +76,12 @@ public class UserGamesServiceImpl implements UserGamesService {
             throw new DatabaseConnectionException(ex);
         }
 
+        // Return empty list if no results found
+        List<UserGameResponse> gamesList = result.hasContent() ? result.stream().map(mapper::map).toList() : new ArrayList<>();
+
         // Map entity to response and return
         return UserGamesListResponse.builder()
-                .games(result.stream().map(mapper::map).toList())
+                .games(gamesList)
                 .build();
     }
 
@@ -238,6 +240,71 @@ public class UserGamesServiceImpl implements UserGamesService {
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
+    }
+
+    /**
+     * Gets stadistics from user games.
+     *
+     * @param username The username.
+     */
+    @Override
+    public StatsResponse getStats(String username) {
+        List<UserGameResponse> allGames = getUserGames(username, "all", Pageable.unpaged()).getGames();
+        List<UserGameResponse> b1Games = getUserGames(username, "backlog1", Pageable.unpaged()).getGames();
+        List<UserGameResponse> b2Games = getUserGames(username, "backlog2", Pageable.unpaged()).getGames();
+        List<UserGameResponse> b3Games = getUserGames(username, "backlog3", Pageable.unpaged()).getGames();
+        List<UserGameResponse> leftGames = new ArrayList<>(allGames);
+        leftGames.removeAll(b1Games);
+        leftGames.removeAll(b2Games);
+        leftGames.removeAll(b3Games);
+
+        BacklogResponse time = BacklogResponse.builder()
+                .backlog1(b1Games.stream().mapToInt(game -> Objects.requireNonNullElse(game.getTimePlayed(), 0)).sum())
+                .backlog2(b2Games.stream().mapToInt(game -> Objects.requireNonNullElse(game.getTimePlayed(), 0)).sum())
+                .backlog3(b3Games.stream().mapToInt(game -> Objects.requireNonNullElse(game.getTimePlayed(), 0)).sum())
+                .backlogNA(leftGames.stream().mapToInt(game -> Objects.requireNonNullElse(game.getTimePlayed(), 0)).sum())
+                .build();
+
+        BacklogResponse achivements = BacklogResponse.builder()
+                .backlog1(b1Games.stream().mapToInt(game -> Objects.requireNonNullElse(game.getAchivements(), 0)).sum())
+                .backlog2(b2Games.stream().mapToInt(game -> Objects.requireNonNullElse(game.getAchivements(), 0)).sum())
+                .backlog3(b3Games.stream().mapToInt(game -> Objects.requireNonNullElse(game.getAchivements(), 0)).sum())
+                .backlogNA(leftGames.stream().mapToInt(game -> Objects.requireNonNullElse(game.getAchivements(), 0)).sum())
+                .build();
+
+        BacklogResponse totalAchivements = BacklogResponse.builder()
+                .backlog1(b1Games.stream().mapToInt(game -> Objects.requireNonNullElse(game.getTotalAchivements(), 0)).sum())
+                .backlog2(b2Games.stream().mapToInt(game -> Objects.requireNonNullElse(game.getTotalAchivements(), 0)).sum())
+                .backlog3(b3Games.stream().mapToInt(game -> Objects.requireNonNullElse(game.getTotalAchivements(), 0)).sum())
+                .backlogNA(leftGames.stream().mapToInt(game -> Objects.requireNonNullElse(game.getTotalAchivements(), 0)).sum())
+                .build();
+
+        BacklogResponse games = BacklogResponse.builder()
+                .backlog1(b1Games.size())
+                .backlog2(b2Games.size())
+                .backlog3(b3Games.size())
+                .backlogNA(leftGames.size())
+                .build();
+
+        BacklogResponse played = BacklogResponse.builder()
+                .backlog1((int) b1Games.stream().filter(game -> game.getTimePlayed() != null && game.getTimePlayed() > 0).count())
+                .backlog2((int) b2Games.stream().filter(game -> game.getTimePlayed() != null && game.getTimePlayed() > 0).count())
+                .backlog3((int) b3Games.stream().filter(game -> game.getTimePlayed() != null && game.getTimePlayed() > 0).count())
+                .backlogNA((int) leftGames.stream().filter(game -> game.getTimePlayed() != null && game.getTimePlayed() > 0).count())
+                .build();
+
+        int completedGames = allGames.stream().filter(game -> Objects.equals(game.getAchivements(), game.getTotalAchivements())).toList().size();
+        int finishedGames = allGames.stream().filter(game -> Objects.requireNonNullElse(game.getFinished(), false)).toList().size();
+
+        return StatsResponse.builder()
+                .numOfGames(games)
+                .numOfCompletedGames(completedGames)
+                .numOfFinishedGames(finishedGames)
+                .numOfPlayedGames(played)
+                .numOfTotalTime(time)
+                .numOfCompletedAchivements(achivements)
+                .numOfTotalAchivements(totalAchivements)
+                .build();
     }
 
     //------------------------------------- PRIVATE METHODS -------------------------------------//

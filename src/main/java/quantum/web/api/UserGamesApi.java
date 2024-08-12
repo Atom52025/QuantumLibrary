@@ -11,10 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import quantum.dto.userGames.NewUserGameBody;
-import quantum.dto.userGames.UpdateUserGameBody;
-import quantum.dto.userGames.UserGameResponse;
-import quantum.dto.userGames.UserGamesListResponse;
+import quantum.dto.userGames.*;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.model.UserGame;
 
@@ -180,5 +177,28 @@ public interface UserGamesApi {
             @Parameter(in = ParameterIn.PATH, required = true, description = "The sgdb game id")
             @PathVariable("game_sgdb_id")
             Long gameSgdbId
+    );
+
+    /**
+     * GET to /api/user/{username}/games/stats to fetch a user game stats.
+     *
+     * @param token    The token with the authentication information.
+     * @param username The username.
+     * @return The stats
+     */
+    @Operation(summary = "Get user games stats", description = "Get user games stats")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The stats"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "No results found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping(value = "/api/user/{username}/games/stats", produces = "application/json")
+    ResponseEntity<StatsResponse> getStats(
+            @RequestHeader("Authorization")
+            String token,
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
+            @PathVariable("username")
+            String username
     );
 }

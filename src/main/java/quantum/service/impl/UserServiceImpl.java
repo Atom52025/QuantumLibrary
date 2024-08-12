@@ -1,6 +1,5 @@
 package quantum.service.impl;
 
-import quantum.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.QueryTimeoutException;
@@ -14,11 +13,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import quantum.dto.user.NewUserBody;
-import quantum.dto.user.UpdateUserBody;
-import quantum.dto.user.UserListResponse;
-import quantum.dto.user.UserResponse;
+import quantum.dto.user.*;
+import quantum.exceptions.BadPasswordException;
 import quantum.exceptions.DatabaseConnectionException;
+import quantum.exceptions.EntityNotFoundException;
 import quantum.mapping.UsersMapping;
 import quantum.model.User;
 import quantum.repository.UserRepository;
@@ -141,6 +139,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse postUser(NewUserBody body) {
 
+        // Check if the user already exists
+        User user = findUser(body.getUsername());
+        if (user != null) {
+            throw new DataIntegrityViolationException("User already exists");
+        }
+
         // Generate new user
         User newUser = generateNewUser(body);
 
@@ -174,7 +178,39 @@ public class UserServiceImpl implements UserService {
         updateUserContent(body, userToUpdate);
 
         try {
-            log.info("[SERVICE] - [GAME UPDATE] - Saving user: {}", userToUpdate);
+            log.info("[SERVICE] - [USER UPDATE] - Saving user: {}", userToUpdate);
+            userToUpdate = repository.save(userToUpdate);
+        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
+            throw new DatabaseConnectionException(ex);
+        }
+
+        // Map entity to response and return
+        return mapper.map(userToUpdate);
+    }
+
+    /**
+     * Update password.
+     *
+     * @param username The username of the user.
+     * @param body     The update password body.
+     * @return The user
+     */
+    @Override
+    public UserResponse updatePassword(String username, UpdatePasswordBody body) {
+
+        // Find the user
+        User userToUpdate = findUser(username);
+
+        // Check if the old password is correct
+        if (checkPassword(userToUpdate, body.getOldPassword())) {
+            throw new BadPasswordException();
+        }
+
+        // Update the user content
+        userToUpdate.setPassword(BCrypt.hashpw(body.getNewPassword(), BCrypt.gensalt()));
+
+        try {
+            log.info("[SERVICE] - [USER UPDATE] - Saving user: {}", userToUpdate);
             userToUpdate = repository.save(userToUpdate);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
@@ -202,6 +238,17 @@ public class UserServiceImpl implements UserService {
     //------------------------------------- PRIVATE METHODS -------------------------------------//
 
     /**
+     * Check password.
+     *
+     * @param user The user.
+     * @param password The password.
+     * @return Whether the password is correct or not.
+     */
+    public boolean checkPassword(User user, String password) {
+        return BCrypt.checkpw(password, user.getPassword());
+    }
+
+    /**
      * Generate a new user.
      *
      * @param body The body
@@ -224,14 +271,8 @@ public class UserServiceImpl implements UserService {
      * @param body         The body
      */
     private void updateUserContent(UpdateUserBody body, User userToUpdate) {
-        if (body.getUsername() != null) {
-            userToUpdate.setUsername(body.getUsername());
-        }
         if (body.getEmail() != null) {
             userToUpdate.setEmail(body.getEmail());
-        }
-        if (body.getPassword() != null) {
-            userToUpdate.setPassword(BCrypt.hashpw(body.getPassword(), BCrypt.gensalt()));
         }
         if (body.getImage() != null) {
             userToUpdate.setImage(body.getImage());

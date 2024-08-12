@@ -3,6 +3,7 @@ package quantum.service;
 import quantum.dto.auth.AuthResponse;
 import quantum.dto.auth.LogInBody;
 import quantum.dto.auth.SignUpBody;
+import quantum.model.User;
 
 /**
  * Service for Authentication.
@@ -24,6 +25,4 @@ public interface AuthService {
      * @return The user that logged in.
      */
     AuthResponse logIn(LogInBody body);
-
-
 }

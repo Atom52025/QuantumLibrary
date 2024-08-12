@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import quantum.dto.user.NewUserBody;
-import quantum.dto.user.UpdateUserBody;
-import quantum.dto.user.UserListResponse;
-import quantum.dto.user.UserResponse;
+import quantum.dto.user.*;
 import quantum.model.User;
 import quantum.service.UserService;
 import quantum.web.api.UserApi;
@@ -74,6 +71,20 @@ public class UserController implements UserApi {
     public ResponseEntity<UserResponse> patchUser(String token, String username, UpdateUserBody body) {
         log.info("[CONTROLLER] - Updating user");
         UserResponse result = service.updateUser(username, body);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * PUT to /api/users/{username}/password to update a user.
+     *
+     * @param username The username of the user to update.
+     * @param body     The user body.
+     * @return The updated user.
+     */
+    @Override
+    public ResponseEntity<UserResponse> patchUserPassword(String token, String username, UpdatePasswordBody body) {
+        log.info("[CONTROLLER] - Updating user password");
+        UserResponse result = service.updatePassword(username, body);
         return ResponseEntity.ok(result);
     }
 

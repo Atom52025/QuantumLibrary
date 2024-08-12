@@ -11,10 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import quantum.dto.user.NewUserBody;
-import quantum.dto.user.UpdateUserBody;
-import quantum.dto.user.UserListResponse;
-import quantum.dto.user.UserResponse;
+import quantum.dto.user.*;
 import quantum.model.User;
 
 /**
@@ -79,7 +76,7 @@ public interface UserApi {
      */
     @Operation(summary = "Post user", description = "Creates a new user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The list of users"),
+            @ApiResponse(responseCode = "200", description = "The user"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
@@ -99,7 +96,7 @@ public interface UserApi {
      */
     @Operation(summary = "Edit a user", description = "Edit a user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The list of users"),
+            @ApiResponse(responseCode = "200", description = "The user"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
@@ -113,6 +110,31 @@ public interface UserApi {
             String username,
             @Valid @RequestBody
             UpdateUserBody body
+    );
+
+    /**
+     * PATCH to /api/users/{username}/password to edit a user.
+     *
+     * @param username The user id.
+     * @param body     The user body.
+     * @return The edited user.
+     */
+    @Operation(summary = "Update user password", description = "Update user password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The user"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "No results found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PatchMapping(value = "/api/users/{username}/password", produces = "application/json")
+    ResponseEntity<UserResponse> patchUserPassword(
+            @RequestHeader("Authorization")
+            String token,
+            @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")
+            @PathVariable("username")
+            String username,
+            @Valid @RequestBody
+            UpdatePasswordBody body
     );
 
     /**

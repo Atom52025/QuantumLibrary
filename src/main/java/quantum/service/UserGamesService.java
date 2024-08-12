@@ -1,10 +1,7 @@
 package quantum.service;
 
 import org.springframework.data.domain.Pageable;
-import quantum.dto.userGames.NewUserGameBody;
-import quantum.dto.userGames.UpdateUserGameBody;
-import quantum.dto.userGames.UserGameResponse;
-import quantum.dto.userGames.UserGamesListResponse;
+import quantum.dto.userGames.*;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.model.Game;
 import quantum.model.User;
@@ -77,5 +74,12 @@ public interface UserGamesService {
      * @param gameId   The game id.
      */
     void deleteUserGame(String username, Long gameId);
+
+    /**
+     * Gets stadistics from user games.
+     *
+     * @param username The username.
+     */
+    StatsResponse getStats(String username);
 
 }

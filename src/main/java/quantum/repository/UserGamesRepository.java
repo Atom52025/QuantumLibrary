@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import quantum.model.UserGame;
+import quantum.repository.projections.UserGameSgdbIdProjection;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,14 @@ public interface UserGamesRepository extends JpaRepository<UserGame, Long> {
      * @return The user found.
      */
     Page<UserGame> findByUser_Username(String username, Pageable pageable);
+
+    /**
+     * JPA Named Query find list of games sgbdId of a user by username.
+     *
+     * @param username The username to find.
+     * @return The user found.
+     */
+    List<UserGameSgdbIdProjection> findByUser_Username(String username);
 
     /**
      * JPA Named Query find a user by username.

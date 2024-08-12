@@ -83,10 +83,4 @@ public interface GroupService {
      */
     GroupResponse updateGroup(Long id, UpdateGroupBody body);
 
-    /**
-     * Delete group.
-     *
-     * @param id The id
-     */
-    void deleteGroup(Long id);
 }

@@ -2,10 +2,7 @@ package quantum.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
-import quantum.dto.user.NewUserBody;
-import quantum.dto.user.UpdateUserBody;
-import quantum.dto.user.UserListResponse;
-import quantum.dto.user.UserResponse;
+import quantum.dto.user.*;
 import quantum.model.User;
 
 /**
@@ -43,6 +40,15 @@ public interface UserService {
      * @param body     The body,
      */
     UserResponse updateUser(String username, UpdateUserBody body);
+
+    /**
+     * Update password.
+     *
+     * @param username The username of the user.
+     * @param body     The update password body.
+     * @return The user
+     */
+    UserResponse updatePassword(String username, UpdatePasswordBody body);
 
     /**
      * Delete user.
