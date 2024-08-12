@@ -1,12 +1,14 @@
 'use client';
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@nextui-org/react';
-import { useSession } from 'next-auth/react';
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
+import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 
-import { DELETE, PATCH } from '@/app/api/request';
 import { GET } from '@/app/api/signalRequest';
+import { POST } from '@/app/api/tokenRequest';
 import InfoPopups from '@/app/components/InfoPopups';
+import AchivementsInput from '@/app/components/inputs/AchivementsInput';
+import BacklogInput from '@/app/components/inputs/BacklogInput';
 import ImageInput from '@/app/components/inputs/ImageInput';
 import TagInput from '@/app/components/inputs/TagInput';
 
@@ -18,50 +20,43 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
   const [imageKey, setImageKey] = useState(0);
   const [customImage, setCustomImage] = useState('');
   const [tags, setTags] = useState(game.tags);
+  const [timePlayed, setTimePlayed] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
+  const [achievements, setAchievements] = useState(null);
+  const [totalAchievements, setTotalAchievements] = useState(null);
+  const [backlog, setBacklog] = useState(new Set([]));
+  const [editing, setEditing] = useState(false);
 
   // Grid Images
   const [grids, setGrids] = useState([]);
 
-  // Admin
-  const [isAdmin, setIsAdmin] = useState(session.user.role === 'ADMIN');
-
-  const eraseForm = async (onClose) => {
-    const formURL = `api/games/${game.id}`;
-    console.log(formURL);
-
-    try {
-      setGames((prevGames) => prevGames.filter((game) => game !== userGame));
-      await DELETE(formURL);
-      setResultModal('Game erased successfully');
-
-      onClose();
-    } catch (error) {
-      setResultModal('Error erasing game');
-    }
-  };
-
-  const editForm = async (onClose) => {
-    const formURL = `api/games/${game.id}`;
+  const saveGame = async (onClose) => {
+    const formURL = `api/user/${session.user.username}/games/${game.sgdbId}`;
 
     const requestBody = {
-      tags: tags.join(','),
+      name: game.name,
+      tags: tags,
+      timePlayed: timePlayed,
       image: customImage || grids[imageKey],
+      favorite: isFavorite,
+      finished: isFinished,
+      achivements: achievements,
+      totalAchivements: totalAchievements,
+      backlog: backlog.values().next().value,
     };
 
     try {
-      const res = await PATCH(formURL, requestBody);
+      const res = await POST(formURL, session.user.token, requestBody);
 
-      console.log(res);
-
-      setResultModal('Game edited successfully');
+      setResultModal('Juego añadido a su biblioteca correctamente');
       onClose();
     } catch (error) {
-      setResultModal('Error editing game');
+      setResultModal('Error al añadir el juego, por favor, intentelo de nuevo');
     }
   };
 
   const getGrids = async (key) => {
-    console.log(game.name + ' - Session: ' + session);
     const formURL = `api/sgdb/getGrids/${key}`;
     let res = await GET(formURL, session.user.token);
     let filteredGrids = res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url);
@@ -91,23 +86,60 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
       <ModalBody className="grid grid-cols-2">
         <div className="space-y-4">
           {/* GAME IMAGE */}
-          <ImageInput customImage={customImage} setCustomImage={setCustomImage} imageKey={imageKey} setImageKey={setImageKey} grids={grids} viewOnly={isAdmin} />
+          <ImageInput customImage={customImage} setCustomImage={setCustomImage} imageKey={imageKey} setImageKey={setImageKey} grids={grids} viewOnly={!editing} />
         </div>
         <div className="flex flex-col gap-4 w-full">
+          {editing && (
+            <>
+              <div className="flex flex-row gap-4 justify-between">
+                {/* FAVORITE */}
+                <Switch size="lg" color="success" startContent={<IoMdHeart />} endContent={<IoMdHeartEmpty />} isSelected={isFavorite} onValueChange={setIsFavorite}>
+                  Favorito
+                </Switch>
+
+                {/* FINISHED */}
+                <Switch size="lg" color="success" isSelected={isFinished} onValueChange={setIsFinished}>
+                  Terminado
+                </Switch>
+              </div>
+
+              {/* BACKLOG */}
+              <BacklogInput backlog={backlog} setBacklog={setBacklog} achievements={achievements} totalAchievements={totalAchievements} />
+
+              {/* ACHIEVEMENTS */}
+              <AchivementsInput achievements={achievements} setAchievements={setAchievements} totalAchievements={totalAchievements} setTotalAchievements={setTotalAchievements} />
+
+              {/* TIME PLAYED */}
+              <Input
+                label="Tiempo jugado"
+                placeholder="Introduce el tiempo jugado en minutos"
+                type="number"
+                variant="bordered"
+                onChange={(e) => setTimePlayed(e.target.value)}
+                value={timePlayed}
+                endContent={'min'}
+              />
+            </>
+          )}
+
           {/* TAGS */}
-          <TagInput tags={tags} setTags={setTags} />
+          <TagInput tags={tags} setTags={setTags} viewOnly={!editing} />
         </div>
       </ModalBody>
       <ModalFooter>
-        {isAdmin && (
+        {editing ? (
           <>
-            <Button color="danger" onPress={() => eraseForm(onClose)}>
-              Erase
+            <Button color="error" variant="flat" onClick={() => setEditing(false)}>
+              Cancelar
             </Button>
-            <Button color="warning" onPress={() => editForm(onClose)}>
-              Edit
+            <Button color="success" variant="flat" onClick={() => saveGame(onClose)}>
+              Añadir
             </Button>
           </>
+        ) : (
+          <Button color="success" variant="flat" onClick={() => setEditing(true)}>
+            Editar y añadir
+          </Button>
         )}
         <Button color="primary" variant="flat" onPress={onClose}>
           Close
@@ -115,7 +147,6 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
       </ModalFooter>
     </>
   );
-
   return (
     <>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center">

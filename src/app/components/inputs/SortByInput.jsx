@@ -2,7 +2,7 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@
 import React from 'react';
 import { LuArrowDownAZ, LuArrowDownWideNarrow, LuArrowUpAZ, LuArrowUpWideNarrow } from 'react-icons/lu';
 
-export default function SortBy({ orderBy, usergame }) {
+export default function SortByInput({ orderBy, usergame }) {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set(['nameDown']));
 
   return (

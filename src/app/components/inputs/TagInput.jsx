@@ -1,4 +1,4 @@
-import { Button, Chip, Input } from '@nextui-org/react';
+import { Button, Chip, Input, ScrollShadow } from '@nextui-org/react';
 import { useState } from 'react';
 import { PiArrowBendDownRightBold } from 'react-icons/pi';
 
@@ -18,7 +18,9 @@ export default function TagInput({ tags, setTags, viewOnly }) {
 
   return (
     <>
-      {!viewOnly && (
+      {viewOnly ? (
+        <h1 className="text-2xl font-bold">Tags</h1>
+      ) : (
         <Input
           label="Tags"
           placeholder="Introduzca un tag"
@@ -40,13 +42,13 @@ export default function TagInput({ tags, setTags, viewOnly }) {
           }}
         />
       )}
-      <div className={'flex flex-row gap-4'}>
+      <ScrollShadow hideScrollBar className={'flex flex-row flex-wrap gap-4 max-h-32 overflow-y-auto'}>
         {tags.map((tag) => (
-          <Chip onClose={() => removeTag(tag)} key={tag}>
+          <Chip onClose={!viewOnly ? () => removeTag(tag) : null} key={tag}>
             {tag}
           </Chip>
         ))}
-      </div>
+      </ScrollShadow>
     </>
   );
 }

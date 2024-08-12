@@ -11,7 +11,6 @@ export async function GET(url, token) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    cache: 'no-store',
   });
   if (!res.ok) {
     console.log('Failed to fetch data');
@@ -31,14 +30,13 @@ export async function POST(url, token, body) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    cache: 'no-store',
     body: JSON.stringify(body),
   });
   if (!res.ok) {
     console.log('Failed to fetch data');
     throw new Error(`Failed to fetch data: ${res.status}`);
   }
-  return res.json();
+  return res?.json();
 }
 
 export async function DELETE(url, token) {
@@ -51,9 +49,8 @@ export async function DELETE(url, token) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    cache: 'no-store',
   });
-  if (!res.ok) {
+  if (!(res.ok || res.status === 204)) {
     console.log('Entity not found');
   }
 }
@@ -69,12 +66,11 @@ export async function PATCH(url, token, body) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    cache: 'no-store',
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : null,
   });
-  if (!res.ok) {
+  if (!(res.ok || res.status === 204)) {
     console.log('Failed to fetch data');
     throw new Error(`Failed to fetch data: ${res.status}`);
   }
-  return res.json();
+  return res.status === 204 ? null : res.json();
 }

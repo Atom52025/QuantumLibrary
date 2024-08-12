@@ -38,18 +38,18 @@ export default function AddUserGameModal({ setGames }) {
 
     const requestBody = {
       name: newGame.name,
-      tags: tags.join(','),
+      tags: tags,
       timePlayed: timePlayed,
       image: customImage || grids[imageKey],
     };
 
     try {
       let game = await POST(formURL, session.user.token, requestBody);
-      setResultModal('Game added successfully');
+      setResultModal('Juego añadido correctamente');
       setGames((prevGames) => [...prevGames, game]);
       onClose();
     } catch (error) {
-      setResultModal('Error adding game');
+      setResultModal('Error al añadir el juego');
     }
   };
 

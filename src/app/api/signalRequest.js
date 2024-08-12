@@ -11,7 +11,6 @@ export async function GET(url, token, signal) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    cache: 'no-store',
   });
   if (!res.ok) {
     console.log('Failed to fetch data');

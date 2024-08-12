@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { Providers } from './providers';
 import './styles/globals.css';
-import UserMenu from '@/app/components/UserMenu';
+import UserMenu from '@/app/components/user/UserMenu';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,6 +13,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  
   return (
     <html lang="en" className="h-full ">
       <head>

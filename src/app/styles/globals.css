@@ -58,35 +58,27 @@ a {
 ::-webkit-scrollbar {
   width: 15px;
   height: 10px;
+  border-radius: 100%;
 }
 
 /* Desaparecer en movil */
 @media screen and (max-width: 768px) {
   ::-webkit-scrollbar {
-    width: 5px !important;
+    width: 10px !important;
   }
 }
 
 ::-webkit-scrollbar-thumb {
   background: #454a4d;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:horizontal {
-  background: var(--gradientHorizontal);
   border-radius: 10px;
 }
-
-::-webkit-scrollbar-thumb:horizontal:hover {
-  box-shadow: 0 0 0px 0px rgba(0, 0, 0, 0);
-}
-
 ::-webkit-scrollbar-thumb:hover {
   box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
 }
 
 /* Ponemos un color de fondo y redondeamos las esquinas del track */
 ::-webkit-scrollbar-track {
+  border-radius: 20px;
   background: var(--dark-grey);
 }
 ::-webkit-scrollbar-track:horizontal {

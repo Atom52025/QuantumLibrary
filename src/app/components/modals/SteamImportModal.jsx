@@ -3,12 +3,12 @@ import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { PiArrowBendDownRightBold } from 'react-icons/pi';
 
-import { GET, POST } from '@/app/api/tokenRequest';
+import { GET, PATCH, POST } from '@/app/api/tokenRequest';
 import InfoPopups from '@/app/components/InfoPopups';
 
 export default function SteamImportModal({ setGames }) {
   // Get Session
-  const { data: session } = useSession({ required: true });
+  const { data: session, update } = useSession({ required: true });
 
   // Result modal state
   const [resultModal, setResultModal] = useState('closed');
@@ -29,7 +29,7 @@ export default function SteamImportModal({ setGames }) {
       const res = await GET(formURL, session.user.token);
       setUser(res.response.players[0]);
     } catch (error) {
-      setResultModal('Error searching user');
+      setResultModal('Error al buscar el usuario');
     }
   };
 
@@ -43,13 +43,29 @@ export default function SteamImportModal({ setGames }) {
 
       setSearchLoading(false);
     } catch (error) {
-      setResultModal('Error searching games');
+      setResultModal('Error al buscar juegos');
+    }
+  };
+
+  const importImg = async (image) => {
+    const formURL = `api/users/${session.user.username}`;
+
+    const requestBody = {
+      image: image,
+    };
+
+    try {
+      await PATCH(formURL, session.user.token, requestBody);
+      setResultModal('Imagen de usuario importada con exito');
+      await update({ ...session, user: { ...session?.user, image: image } });
+    } catch (error) {
+      setResultModal('Error al importar la imagen del usuario');
     }
   };
 
   const importGames = async (onClose) => {
     if (groupSelected.length === 0) {
-      setResultModal('Warning - No games selected');
+      setResultModal('Aviso - Ningun juego seleccionado');
       return;
     }
 
@@ -66,10 +82,10 @@ export default function SteamImportModal({ setGames }) {
       setGames((prevGames) => [...prevGames, ...res.games]);
 
       setImportLoading(false);
-      setResultModal('Games imported successfully');
+      setResultModal('Juegos importados con exito');
       onClose();
     } catch (error) {
-      setResultModal('Error importing games');
+      setResultModal('Error al importar los juegos');
     }
   };
 
@@ -108,9 +124,14 @@ export default function SteamImportModal({ setGames }) {
                 src: user.avatarfull,
               }}
             />
-            <Button color="warning" onPress={() => searchGames()}>
-              {searchLoading ? <Spinner /> : 'Search games'}
-            </Button>
+            <div className="flex flex-row gap-3">
+              <Button color="primary" onPress={() => importImg(user.avatarfull)}>
+                {searchLoading ? <Spinner /> : 'Importar imagen'}
+              </Button>
+              <Button color="warning" onPress={() => searchGames()}>
+                {searchLoading ? <Spinner /> : 'Buscar juegos'}
+              </Button>
+            </div>
           </div>
         )}
         {foundGames.length !== 0 && (

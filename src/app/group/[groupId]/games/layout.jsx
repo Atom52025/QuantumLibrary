@@ -1,0 +1,9 @@
+import { Checkbox, CheckboxGroup, Divider } from '@nextui-org/react';
+
+import Link from 'next/link';
+
+import { getServerSession } from 'next-auth/next';
+
+export default async function GamesLayout({ children }) {
+  return <section className="h-full w-full flex flex-row relative">{children}</section>;
+}
