@@ -37,10 +37,10 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
 
       setGames((prevGames) => prevGames.filter((game) => game !== userGame));
 
-      setResultModal('Game erased successfully');
+      setResultModal('Juego eliminado con exito');
       onClose();
     } catch (error) {
-      setResultModal('Error erasing game');
+      setResultModal('Error al eliminar el juego');
     }
   };
 
@@ -63,10 +63,10 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
 
       setGames((prevGames) => prevGames.map((game) => (game.game.id === res.game.id ? res : game)));
 
-      setResultModal('Game edited successfully');
+      setResultModal('Juego editado con exito');
       onClose();
     } catch (error) {
-      setResultModal('Error editing game');
+      setResultModal('Error al editar el juego');
     }
   };
 
@@ -142,13 +142,13 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
       </ModalBody>
       <ModalFooter>
         <Button color="danger" onPress={() => eraseForm(onClose)}>
-          Erase
+          Borrar
         </Button>
         <Button color="warning" onPress={() => editForm(onClose)}>
-          Edit
+          Editar
         </Button>
         <Button color="primary" variant="flat" onPress={onClose}>
-          Close
+          Cerrar
         </Button>
       </ModalFooter>
     </>

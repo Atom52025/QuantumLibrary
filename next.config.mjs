@@ -4,22 +4,8 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn2.steamgriddb.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'placehold.jp',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cdn.cloudflare.steamstatic.com',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },

@@ -15,5 +15,5 @@ export default async function Page({ params }) {
   const urlGroups = 'api/user/' + session.user.username + '/groups';
   const dataGroups = await GET(urlGroups, session.user.token);
 
-  return <UserContentDisplay data={data ? data.games : []} gData={dataGroups || { accepted: [], pending: [] }} />;
+  return <UserContentDisplay data={data.games} gData={dataGroups || { accepted: [], pending: [] }} />;
 }

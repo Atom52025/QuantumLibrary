@@ -45,11 +45,11 @@ export default function AddUserGameModal({ setGames }) {
 
     try {
       let game = await POST(formURL, session.user.token, requestBody);
-      setResultModal('Game added successfully');
+      setResultModal('Juego añadido correctamente');
       setGames((prevGames) => [...prevGames, game]);
       onClose();
     } catch (error) {
-      setResultModal('Error adding game');
+      setResultModal('Error al añadir el juego');
     }
   };
 

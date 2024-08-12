@@ -1,9 +1,8 @@
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, User, useDisclosure } from '@nextui-org/react';
+import { Button, Modal, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
-import { PiArrowBendDownRightBold } from 'react-icons/pi';
 
-import { GET, POST } from '@/app/api/tokenRequest';
+import { DELETE } from '@/app/api/tokenRequest';
 import InfoPopups from '@/app/components/InfoPopups';
 
 export default function GroupExitModal({ groupId }) {
@@ -20,57 +19,24 @@ export default function GroupExitModal({ groupId }) {
     const formURL = `api/user/${session.user.username}/groups/${groupId}`;
 
     try {
-      const res = await DELETE(formURL, session.user.token, requestBody);
-      setGroups((prevGroups) => [...prevGroups, res]);
-      setResultModal('Group created successfully');
+      await DELETE(formURL, session.user.token);
+      setResultModal('Grupo eliminado con exito');
       onClose();
+      window.location.href = '/library/games/all';
     } catch (error) {
-      setResultModal('Error inviting user to group');
+      setResultModal('Error al eliminar el grupo');
     }
   };
 
   const renderModalContent = (onClose) => (
     <>
-      <ModalHeader className="uppercase text-3xl">Enviar invitaciones</ModalHeader>
-      <ModalBody className="">
-        <Input
-          label="Buscar usuario"
-          placeholder="Introduzca el nombre del usuario que quiere invitar"
-          type="text"
-          variant="bordered"
-          value={userId}
-          onValueChange={setUserId}
-          endContent={
-            <Button isIconOnly onClick={searchUser} className="h-full">
-              <PiArrowBendDownRightBold />
-            </Button>
-          }
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              searchUser();
-            }
-          }}
-        />
-        {foundUsers.length !== 0 && (
-          <div className="flex flex-col gap-10 ">
-            {foundUsers.map((user) => (
-              <User
-                key={user.username}
-                name={user.username}
-                avatarProps={{
-                  src: user.image,
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </ModalBody>
+      <ModalHeader className="uppercase text-2xl">¿Estás seguro que deseas salir del grupo?</ModalHeader>
       <ModalFooter>
-        <Button color="danger" onPress={onClose}>
-          Cancel
+        <Button color="primary" onPress={onClose}>
+          Cancelar
         </Button>
-        <Button color="primary" onPress={() => invite(onClose)}>
-          {loading ? <Spinner color="default" /> : 'Invitar'}
+        <Button color="danger" onPress={() => exit(onClose)}>
+          Eliminar grupo
         </Button>
       </ModalFooter>
     </>

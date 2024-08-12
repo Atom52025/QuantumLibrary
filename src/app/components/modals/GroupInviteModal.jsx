@@ -30,7 +30,7 @@ export default function GroupInviteModal({ groupId, setGroups }) {
 
       setLoading(false);
     } catch (error) {
-      setResultModal('Error searching user');
+      setResultModal('Error al buscar el usuario');
     }
   };
 
@@ -42,11 +42,11 @@ export default function GroupInviteModal({ groupId, setGroups }) {
         console.log(formURL + user.username);
         const res = await POST(formURL + user.username, session.user.token);
       }
-      setResultModal('Invitation sent successfully');
+      setResultModal('Invitacion enviada con exito');
       onClose();
     } catch (error) {
       console.log(error);
-      setResultModal('Error inviting user to group');
+      setResultModal('Error al enviar la invitacion');
     }
   };
 
@@ -88,7 +88,7 @@ export default function GroupInviteModal({ groupId, setGroups }) {
       </ModalBody>
       <ModalFooter>
         <Button color="danger" onPress={onClose}>
-          Cancel
+          Cancelar
         </Button>
         <Button color="primary" onPress={() => invite(onClose)}>
           {loading ? <Spinner color="default" /> : 'Invitar'}

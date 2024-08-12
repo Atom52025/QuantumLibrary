@@ -35,7 +35,7 @@ export default function GroupCreateModal({ setGroups }) {
 
       setFoundUsers((prevFoundUsers) => [...prevFoundUsers, res]);
     } catch (error) {
-      setResultModal('Error searching user');
+      setResultModal('Error al buscar el usuario');
     }
   };
 
@@ -56,10 +56,10 @@ export default function GroupCreateModal({ setGroups }) {
       }));
       console.log(res);
 
-      setResultModal('Group created successfully');
+      setResultModal('Group creado con exito');
       onClose();
     } catch (error) {
-      setResultModal('Error creating group');
+      setResultModal('Error al crear grupo');
     }
   };
 

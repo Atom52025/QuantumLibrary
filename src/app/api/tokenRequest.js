@@ -50,7 +50,7 @@ export async function DELETE(url, token) {
       Authorization: `Bearer ${token}`,
     },
   });
-  if (!res.ok) {
+  if (!(res.ok || res.status === 204)) {
     console.log('Entity not found');
   }
 }

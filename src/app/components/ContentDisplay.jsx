@@ -15,7 +15,7 @@ import GroupListSection from '@/app/components/sections/GroupListSection';
 import TagSection from '@/app/components/sections/TagSection';
 import UserGameCard from '@/app/components/user/UserGameCard';
 
-export default function UserContentFiltering({ data, gData }) {
+export default function ContentDisplay({ data, gData }) {
   const [selectedTags, setSelectedTags] = useState([]);
   const [games, setGames] = useState(data);
   const [filteredGames, setFilteredGames] = useState(games.sort((a, b) => a.name.localeCompare(b.name)));
