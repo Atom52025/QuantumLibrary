@@ -16,19 +16,18 @@ import quantum.dto.userGames.steamImport.UserGameImport;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.exceptions.DatabaseConnectionException;
 import quantum.exceptions.EntityNotFoundException;
+import quantum.mapping.GamesMapping;
 import quantum.mapping.UserGamesMapping;
 import quantum.model.Game;
 import quantum.model.User;
 import quantum.model.UserGame;
 import quantum.repository.UserGamesRepository;
-import quantum.repository.projections.UserGameSgdbIdProjection;
 import quantum.service.GameService;
 import quantum.service.UserGamesService;
 import quantum.service.UserService;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
 import static quantum.constant.ErrorConstants.ENTITY_NOT_FOUND_ERROR;
@@ -46,6 +45,7 @@ public class UserGamesServiceImpl implements UserGamesService {
     private final UserGamesMapping mapper;
     private final UserService userService;
     private final GameService gameService;
+    private final GamesMapping gamesMapper;
 
     //------------------------------------- PUBLIC METHODS -------------------------------------//
 
@@ -93,7 +93,7 @@ public class UserGamesServiceImpl implements UserGamesService {
      */
     @Override
     public List<UserGame> getOnlineGames(String username) {
-        return repository.findByUser_UsernameAndTagsIn(username, Set.of("Co-op","Online Co-Op","Local Co-Op","Multiplayer","Local Multiplayer"));
+        return repository.findByUser_UsernameAndTagsIn(username, Set.of("Co-op", "Online Co-Op", "Local Co-Op", "Multiplayer", "Local Multiplayer"));
     }
 
     /**
@@ -103,7 +103,7 @@ public class UserGamesServiceImpl implements UserGamesService {
      * @return the games
      */
     @Override
-    public Set<Game> getCommonGames(List<User> users){
+    public Set<Game> getCommonGames(List<User> users) {
         // Create a list of CompletableFuture for fetching games of each user asynchronously
         List<CompletableFuture<List<UserGame>>> userGameFutures = users.stream()
                 .map(user -> CompletableFuture.supplyAsync(() -> getOnlineGames(user.getUsername())))
@@ -157,8 +157,11 @@ public class UserGamesServiceImpl implements UserGamesService {
                     true);
         }
 
+        // Find the user
+        User user = userService.findUser(username);
+
         // Generate new user game
-        UserGame newUserGame = generateNewUserGame(body, username, game);
+        UserGame newUserGame = generateNewUserGame(body, user, game);
 
         try {
             log.info("[SERVICE] - [USER GAME CREATION] - Saving user game: {}", newUserGame);
@@ -182,6 +185,7 @@ public class UserGamesServiceImpl implements UserGamesService {
     @Override
     public UserGamesListResponse importUserGames(String username, UserGamesImportList body) {
         UserGamesListResponse response = UserGamesListResponse.builder().games(new ArrayList<>()).build();
+        Map<Long, NewUserGameBody> gamesToImport = new HashMap<>();
         for (UserGameImport game : body.getGames()) {
             NewUserGameBody newUserGameBody = NewUserGameBody.builder()
                     .name(game.getName())
@@ -189,12 +193,14 @@ public class UserGamesServiceImpl implements UserGamesService {
                     .image(game.getImage())
                     .tags(new HashSet<>(game.getTags()))
                     .build();
-            try {
-                log.info("[SERVICE] - [USER GAME IMPORT] - Importing game: {}", game.getName());
-                response.getGames().add(postUserGame(username, game.getSgdbId(), newUserGameBody));
-            } catch (DataIntegrityViolationException ex) {
-                log.info("[SERVICE] - [USER GAME IMPORT] - Game already in library: {}", game.getName());
-            }
+            gamesToImport.put(game.getSgdbId(), newUserGameBody);
+
+        }
+        try {
+            log.info("[SERVICE] - [USER GAME IMPORT] - Importing {} games", gamesToImport.size());
+            response.setGames(postUserGames(username, gamesToImport).stream().map(mapper::map).toList());
+        } catch (DataIntegrityViolationException ex) {
+            log.info("[SERVICE] - [USER GAME IMPORT] - Error importing games: {}", ex.getMessage());
         }
         return response;
     }
@@ -334,17 +340,83 @@ public class UserGamesServiceImpl implements UserGamesService {
         return userGame.get();
     }
 
+    /**
+     * Add a list of user games to user.
+     *
+     * @param username      The username.
+     * @param gamesToImport Map of sgbdId and body.
+     */
+    public List<UserGame> postUserGames(String username, Map<Long, NewUserGameBody> gamesToImport) {
+
+        // Get available games in ddbb
+        List<Game> availableGames = new ArrayList<>(gameService.getGames(Pageable.unpaged()).getGames().stream().map(gamesMapper::map).toList());
+        List<Long> availableGameIds = availableGames.stream().map(Game::getSgdbId).toList();
+
+        // Creates a copy of the games to import and removes games already in the database
+        Map<Long, NewUserGameBody> gamesToCreate = new HashMap<>(gamesToImport);
+        availableGameIds.forEach(gamesToCreate::remove);
+
+        // Remove games already in the user library
+        List<Long> userGames = getUserGames(username, "all", Pageable.unpaged()).getGames().stream().map(e -> e.getGame().getSgdbId()).toList();
+        userGames.forEach(gamesToImport::remove);
+
+        // Create new games
+        List<Game> newGames = new ArrayList<>();
+        for (Map.Entry<Long, NewUserGameBody> entry : gamesToCreate.entrySet()) {
+            Game newGame = Game.builder()
+                    .name(entry.getValue().getName())
+                    .tags(entry.getValue().getTags())
+                    .image(entry.getValue().getImage())
+                    .sgdbId(entry.getKey())
+                    .build();
+            newGames.add(newGame);
+        }
+
+        // Add new games to available games
+        availableGames.addAll(newGames);
+
+        // Save new games
+        gameService.postGames(newGames);
+
+        // Search the user
+        User user = userService.findUser(username);
+
+        // Create new user games
+        List<UserGame> newUserGames = new ArrayList<>();
+        for (Map.Entry<Long, NewUserGameBody> entry : gamesToImport.entrySet()) {
+            Game game = availableGames.stream().filter(e -> e.getSgdbId().equals(entry.getKey())).findFirst().orElse(null);
+            if (game == null) continue;
+            UserGame newUserGame = generateNewUserGame(entry.getValue(), user, game);
+            newUserGames.add(newUserGame);
+        }
+
+        long startTime = System.currentTimeMillis();
+
+        // Saves userGames
+        try {
+            log.info("[SERVICE] - [USER GAME CREATION] - Saving {} user games", newUserGames.size());
+            return repository.saveAll(newUserGames);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DatabaseConnectionException(DATA_INTEGRITY_ERROR, ex);
+        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
+            throw new DatabaseConnectionException(ex);
+        } finally {
+            long endTime = System.currentTimeMillis(); // End the timer
+            long duration = endTime - startTime; // Calculate the duration in milliseconds
+            log.info("[SERVICE] - [GAME CREATION] - Time taken to save games: {} ms", duration);
+        }
+    }
 
     /**
      * Generate a new game.
      *
-     * @param username The username.
-     * @param game     The game.
-     * @param body     The body
+     * @param user The user.
+     * @param game The game.
+     * @param body The body
      * @return The game.
      */
-    private UserGame generateNewUserGame(NewUserGameBody body, String username, Game game) {
-        User user = userService.findUser(username);
+    private UserGame generateNewUserGame(NewUserGameBody body, User user, Game game) {
+
         if (user == null || game == null) throw new EntityNotFoundException();
         Set<String> allTags = new HashSet<>();
         allTags.addAll(game.getTags());

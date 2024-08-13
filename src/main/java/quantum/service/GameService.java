@@ -7,6 +7,8 @@ import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
 import quantum.model.Game;
 
+import java.util.List;
+
 /**
  * Service for {@link Game} entity.
  */
@@ -37,6 +39,13 @@ public interface GameService {
      * @return The game entity or the response.
      */
     Object postGame(NewGameBody body, boolean retrieveObject);
+
+    /**
+     * Saves a list of games.
+     *
+     * @param games The games to save.
+     */
+    void postGames(List<Game> games);
 
     /**
      * Patch game.
