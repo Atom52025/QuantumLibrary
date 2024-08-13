@@ -13,9 +13,13 @@ export default function UserMenu() {
     return status === 'loading' ? (
       <p>Loading...</p>
     ) : (
-      <div className="flex flex-row gap-3">
-        <Input type="button" className="w-1/12 border border-2 border-gray-500 rounded-xl" value="Iniciar Sesión" onClick={() => signIn()} />
-        <Input type="button" className="w-1/12 border border-2 border-gray-500 rounded-xl" value="Registrarse" onClick={() => createUser()} />
+      <div className="flex flex-row gap-3 ">
+        <Button className="w-1/2 border-2 border-gray-500 rounded-xl" onClick={() => signIn()}>
+          Iniciar Sesión
+        </Button>
+        <Button className="w-1/2 border-2 border-gray-500 rounded-xl" onClick={() => createUser()}>
+          Registrarse
+        </Button>
       </div>
     );
   };
