@@ -60,16 +60,16 @@ public class UserServiceImplTest {
 
     private static final UpdateUserBody SAMPLE_UPDATE_USER_BODY = UpdateUserBody.builder()
             .email("newEmail")
-            .password("newPassword")
-            .username("newUsername")
+            .image("image")
             .build();
 
-    private static final User SAMPLE_UPDATE_GAME = User.builder()
+    private static final User SAMPLE_UPDATE_USER = User.builder()
             .id(1L)
             .username("newUsername")
             .email("newEmail")
             .password("newPassword")
             .role("USER")
+            .image("image")
             .build();
 
     /**
@@ -213,9 +213,8 @@ public class UserServiceImplTest {
         // Verify result
         UserResponse response = service.updateUser(SAMPLE_USER.getUsername(), SAMPLE_UPDATE_USER_BODY);
 
-        assertEquals(SAMPLE_UPDATE_GAME.getUsername(), response.getUsername());
-        assertEquals(SAMPLE_UPDATE_GAME.getEmail(), response.getEmail());
-        assertEquals(SAMPLE_UPDATE_GAME.getRole(), response.getRole());
+        assertEquals(SAMPLE_UPDATE_USER.getImage(), response.getImage());
+        assertEquals(SAMPLE_UPDATE_USER.getEmail(), response.getEmail());
     }
 
     /**

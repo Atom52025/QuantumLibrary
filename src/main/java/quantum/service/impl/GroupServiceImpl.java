@@ -148,7 +148,7 @@ public class GroupServiceImpl implements GroupService {
 
         // If the group is empty, delete it
         if (findUsersInGroup(group).isEmpty()) {
-            deleteGroup(groupId);
+            deleteGroup(group);
         }
     }
 
@@ -282,22 +282,22 @@ public class GroupServiceImpl implements GroupService {
         return mapper.map(groupToUpdate);
     }
 
+
+    //------------------------------------- PRIVATE METHODS -------------------------------------//
+
     /**
      * Delete group.
      *
-     * @param id The id
+     * @param group The group.
      */
-    @Override
-    public void deleteGroup(Long id) {
+    public void deleteGroup(Group group) {
         try {
-            log.info("[SERVICE] - [GROUP DELETE] - Delete group: {}", id);
-            repository.delete(findGroupById(id));
+            log.info("[SERVICE] - [GROUP DELETE] - Delete group: {}", group);
+            repository.delete(group);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
     }
-
-    //------------------------------------- PRIVATE METHODS -------------------------------------//
 
     /**
      * Update a group.

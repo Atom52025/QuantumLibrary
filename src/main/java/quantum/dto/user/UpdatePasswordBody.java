@@ -13,15 +13,15 @@ import quantum.validation.Email;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "Body object at endpoint update user.")
+@Schema(description = "Body object at endpoint update password.")
 @Validated
-public class UpdateUserBody {
-    @Schema(example = "User Mail", description = "Mail of the user.")
-    @Email
-    @JsonProperty("email")
-    private String email;
+public class UpdatePasswordBody {
+    @Schema(example = "4321423", description = "The old password.")
+    @JsonProperty("oldPassword")
+    private String oldPassword;
 
-    @Schema(example = "User Image", description = "Image of the user.")
-    @JsonProperty("image")
-    private String image;
+    @Schema(example = "2342342", description = "The new password.")
+    @JsonProperty("newPassword")
+    private String newPassword;
+
 }

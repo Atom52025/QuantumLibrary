@@ -30,6 +30,10 @@ public class AuthResponse {
     @JsonProperty("email")
     private String email;
 
+    @Schema(example = "User Image", description = "Image of the user.")
+    @JsonProperty("image")
+    private String image;
+
     @Schema(example = "User Role", description = "Role of the user.")
     @JsonProperty("role")
     private String role;

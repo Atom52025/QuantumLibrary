@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import quantum.dto.userGames.NewUserGameBody;
-import quantum.dto.userGames.UpdateUserGameBody;
-import quantum.dto.userGames.UserGameResponse;
-import quantum.dto.userGames.UserGamesListResponse;
+import quantum.dto.userGames.*;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.model.UserGame;
 import quantum.service.UserGamesService;
@@ -114,5 +111,19 @@ public class UserGamesController implements UserGamesApi {
         log.info("[CONTROLLER] - Deleting game from user");
         service.deleteUserGame(username, gameSgdbId);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * GET to /api/user/{user_id}/games/stats to fetch user games statistics.
+     *
+     * @param token    The token with the authentication information.
+     * @param username The username.
+     * @return The user games statistics.
+     */
+    @Override
+    public ResponseEntity<StatsResponse> getStats(String token, String username) {
+        log.info("[CONTROLLER] - Getting user games statistics");
+        StatsResponse result = service.getStats(username);
+        return ResponseEntity.ok(result);
     }
 }

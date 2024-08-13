@@ -17,7 +17,7 @@ public class BadRequestException extends QuantumLibraryGenericException {
      * Constructor for BadRequestException with a default message.
      */
     public BadRequestException() {
-        super(BAD_REQUEST_ERROR, DEFAULT_MESSAGE, HttpStatus.FOUND);
+        super(BAD_REQUEST_ERROR, DEFAULT_MESSAGE, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -26,6 +26,6 @@ public class BadRequestException extends QuantumLibraryGenericException {
      * @param message The custom error message.
      */
     public BadRequestException(String message) {
-        super(BAD_REQUEST_ERROR, message, HttpStatus.FOUND);
+        super(BAD_REQUEST_ERROR, message, HttpStatus.BAD_REQUEST);
     }
 }

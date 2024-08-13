@@ -21,6 +21,7 @@ import quantum.model.Game;
 import quantum.repository.GameRepository;
 import quantum.service.GameService;
 
+import java.util.List;
 import java.util.Optional;
 
 import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
@@ -113,6 +114,29 @@ public class GameServiceImpl implements GameService {
         }
 
         return retrieveObject ? newGame : mapper.map(newGame);
+    }
+
+    /**
+     * Saves a list of games.
+     *
+     * @param games The games to save.
+     */
+    @Override
+    public void postGames(List<Game> games){
+        long startTime = System.currentTimeMillis();
+
+        try {
+            log.info("[SERVICE] - [GAME CREATION] - Saving {} games", games.size());
+            repository.saveAll(games);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DatabaseConnectionException(DATA_INTEGRITY_ERROR, ex);
+        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
+            throw new DatabaseConnectionException(ex);
+        } finally {
+            long endTime = System.currentTimeMillis(); // End the timer
+            long duration = endTime - startTime; // Calculate the duration in milliseconds
+            log.info("[SERVICE] - [GAME CREATION] - Time taken to save games: {} ms", duration);
+        }
     }
 
     /**

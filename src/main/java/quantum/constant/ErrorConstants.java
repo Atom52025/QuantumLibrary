@@ -34,6 +34,11 @@ public class ErrorConstants {
     public static final String BAD_REQUEST_ERROR = "Bad request.";
 
     /**
+     * Default error code for {@link quantum.exceptions.BadPasswordException}.
+     */
+    public static final String BAD_PASSWORD_ERROR = "Bad password.";
+
+    /**
      * Default error code for {@link DatabaseConnectionException}.
      */
     public static final String DATA_INTEGRITY_ERROR = "Incorrect parameter format insertion.";
