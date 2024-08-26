@@ -23,6 +23,16 @@ export default function SteamImportModal({ setGames }) {
   const [searchLoading, setSearchLoading] = useState(false);
   const [importLoading, setImportLoading] = useState(false);
 
+  useEffect(() => {
+    if (userId) {
+      const match = userId.match(/\/profiles\/(\d+)\//);
+      if (match) {
+        const extractedUserId = match[1];
+        setUserId(extractedUserId);
+      }
+    }
+  }, [userId]);
+
   const searchUser = async () => {
     const formURL = `api/steam/user/${userId}`;
     try {
@@ -126,7 +136,7 @@ export default function SteamImportModal({ setGames }) {
             />
             <div className="flex flex-row gap-3">
               <Button color="primary" onPress={() => importImg(user.avatarfull)}>
-                {searchLoading ? <Spinner /> : 'Importar imagen'}
+                Importar imagen
               </Button>
               <Button color="warning" onPress={() => searchGames()}>
                 {searchLoading ? <Spinner /> : 'Buscar juegos'}
@@ -136,7 +146,7 @@ export default function SteamImportModal({ setGames }) {
         )}
         {foundGames.length !== 0 && (
           <CheckboxGroup
-            label="Select games to import"
+            label={'Selecciona los juegos que deseas importar: ' + groupSelected.length}
             value={groupSelected}
             onChange={setGroupSelected}
             classNames={{
