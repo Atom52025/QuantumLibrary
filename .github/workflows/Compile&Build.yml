@@ -28,7 +28,7 @@ jobs:
     - name: Submit Dependency Snapshot
       uses: advanced-security/maven-dependency-tree-action@v1
       with:
-        github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN  }}
+        github_token: ${{ secrets.GITHUB_TOKEN   }}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
