@@ -26,7 +26,7 @@ import java.util.Set;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static quantum.util.TestUtils.stringifyObject;
+import static quantum.utils.TestUtils.stringifyObject;
 
 /**
  * Test for {@link GameController} controller class.

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static quantum.constant.TestConstants.SAMPLE_TOKEN;
 import static quantum.constant.TestConstants.SAMPLE_USERNAME;
-import static quantum.util.TestUtils.stringifyObject;
+import static quantum.utils.TestUtils.stringifyObject;
 
 /**
  * Test for {@link UserGamesController} controller class.

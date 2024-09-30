@@ -3,8 +3,11 @@ package quantum.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import quantum.model.Game;
+import quantum.model.Group;
 import quantum.model.User;
+import quantum.model.UserGroup;
 
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -25,6 +28,19 @@ public class TestConstants {
             .email("UserEmail")
             .role("USER")
             .image("UserImage")
+            .build();
+
+    public static final UserGroup SAMPLE_USER_GROUP = UserGroup.builder()
+            .id(1L)
+            .user(SAMPLE_USER)
+            .accepted(true)
+            .voted("votes")
+            .build();
+
+    public static final Group SAMPLE_GROUP = Group.builder()
+            .id(1L)
+            .name("GroupName")
+            .userGroups(List.of(SAMPLE_USER_GROUP))
             .build();
 
 }

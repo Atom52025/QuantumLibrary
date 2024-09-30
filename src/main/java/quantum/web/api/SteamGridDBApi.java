@@ -37,7 +37,7 @@ public interface SteamGridDBApi {
             String term);
 
     /**
-     * GET to /api/sgdb/getGrids to search in sgdb by term.
+     * GET to /api/sgdb/getGrids/{game_sgdb_id} to search in sgdb by term.
      *
      * @param gameSgdbId The SGDB game id.
      * @return The games founded.
