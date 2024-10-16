@@ -47,7 +47,7 @@ export default function Page() {
       await POST(formURL, requestBody);
       await signIn('credentials', { password: password, username: username });
     } catch (error) {
-      setError('Error al registrarse, intentelo de nuevo mas tarde');
+      setError('Error al registrarse, intentelo de nuevo mas tardeeeeee');
     }
   };
   if (status === 'authenticated')

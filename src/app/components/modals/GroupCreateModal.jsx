@@ -25,7 +25,7 @@ export default function GroupCreateModal({ setGroups }) {
     const formURL = `api/users/${userId}`;
     try {
       setLoading(true);
-      const res = await GET(formURL, session.user.token, true);
+      const res = await GET(formURL, session.user.token);
       setLoading(false);
       console.log(res);
 
@@ -48,7 +48,7 @@ export default function GroupCreateModal({ setGroups }) {
     };
 
     try {
-      const res = await POST(formURL, session.user.token, requestBody, true);
+      const res = await POST(formURL, session.user.token, requestBody);
 
       setGroups((prevGroups) => ({
         ...prevGroups,

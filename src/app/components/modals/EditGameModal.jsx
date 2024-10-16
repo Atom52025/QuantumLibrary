@@ -46,7 +46,7 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
     };
 
     try {
-      const res = await POST(formURL, session.user.token, requestBody, true);
+      const res = await POST(formURL, session.user.token, requestBody);
 
       setResultModal('Juego añadido a su biblioteca correctamente');
       onClose();
@@ -57,26 +57,28 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
 
   const getGrids = async (key) => {
     const formURL = `api/sgdb/getGrids/${key}`;
-    let res = await GET(formURL, session.user.token, true);
+    let res = await GET(formURL, session.user.token);
     let filteredGrids = res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url);
     setGrids(filteredGrids);
     return filteredGrids;
   };
 
   useEffect(() => {
-    // Prevents from calling again if already fetched
-    if (grids.length !== 0) {
-      let index = grids.findIndex((grid) => grid === game.image);
-      if (index !== -1) setImageKey(index);
-      else setCustomImage(game.image);
-    }
+    if (isOpen) {
+      // Prevents from calling again if already fetched
+      if (grids.length !== 0) {
+        let index = grids.findIndex((grid) => grid === game.image);
+        if (index !== -1) setImageKey(index);
+        else setCustomImage(game.image);
+      }
 
-    // Fetch grids
-    getGrids(game.sgdbId).then((filteredGrids) => {
-      let index = filteredGrids.findIndex((grid) => grid === game.image);
-      if (index !== -1) setImageKey(index);
-      else setCustomImage(game.image);
-    });
+      // Fetch grids
+      getGrids(game.sgdbId).then((filteredGrids) => {
+        let index = filteredGrids.findIndex((grid) => grid === game.image);
+        if (index !== -1) setImageKey(index);
+        else setCustomImage(game.image);
+      });
+    }
   }, [isOpen]);
 
   const renderModalContent = (onClose) => (
