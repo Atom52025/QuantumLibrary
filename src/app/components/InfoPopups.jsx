@@ -25,7 +25,7 @@ export default function InfoPopups({ resultModal, setResultModal }) {
   return (
     <>
       {resultModal !== 'closed' && (
-        <Card className={`text-gray-900 text-3xl absolute bottom-3 right-3 z-50 ${popupColor}`}>
+        <Card className={`text-gray-900 text-3xl absolute bottom-3 right-3 z-[100] ${popupColor}`}>
           <CardBody>
             <p>{resultModal}</p>
           </CardBody>

@@ -29,10 +29,10 @@ export default function UserContentDisplay({ data, gData }) {
         setFilteredGames((prevGames) => [...prevGames].sort((a, b) => b.game.name.localeCompare(a.game.name)));
         break;
       case 'hoursDown':
-        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => a.timePlayed - b.timePlayed));
+        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => b.timePlayed - a.timePlayed));
         break;
       case 'hoursUp':
-        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => b.timePlayed - a.timePlayed));
+        setFilteredGames((prevGames) => [...prevGames].sort((a, b) => a.timePlayed - b.timePlayed));
         break;
     }
   };
@@ -68,7 +68,7 @@ export default function UserContentDisplay({ data, gData }) {
             <FilterBar searchParam={searchParam} setSearchParam={setSearchParam} />
             <div className="flex flex-row gap-5">
               <SteamImportModal setGames={setGames} />
-              <SortByInput orderBy={orderBy} />
+              <SortByInput orderBy={orderBy} usergame={true}/>
             </div>
           </div>
           <div className="px-10 py-5 grid grid-cols-6 gap-3">

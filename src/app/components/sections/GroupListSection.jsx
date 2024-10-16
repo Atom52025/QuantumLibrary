@@ -38,7 +38,7 @@ export default function GroupListSection({ gData, open, setOpen }) {
   };
 
   return (
-    <div className={`h-full w-[200px] bg-gray-800/50 shadow-inner flex flex-col absolute ${open ? 'right-0' : 'right-[-200px]'}`}>
+    <div className={`h-full w-[200px] lg:bg-gray-800/50 bg-gray-800 shadow-inner flex flex-col top-0 z-50 absolute ${open ? 'right-0' : 'right-[-200px]'}`}>
       <div className="p-3 h-[96%] w-full">
         <p className="text-2xl font-bold"> Grupos </p>
         {groups.accepted.map((group) => {

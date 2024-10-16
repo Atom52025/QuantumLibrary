@@ -19,7 +19,21 @@ export default function UserSection() {
   // User data state
   const [email, setEmail] = useState('');
   const [image, setImage] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
+
+  // Checks if image src is valid
+  useEffect(() => {
+    const img = new Image();
+    img.src = imageUrl;
+    img.onload = () => setImage(imageUrl);
+    img.onerror = () => setImage(session.user.image); // Image failed to load
+
+    // Cleanup to avoid memory leaks
+    return () => {
+      img.onerror = null; // Remove event listener
+    };
+  }, [imageUrl])
 
   // Use useEffect to update the state once the session is loaded
   useEffect(() => {
@@ -42,7 +56,7 @@ export default function UserSection() {
     };
 
     try {
-      await PATCH(formURL, session.user.token, requestBody, true);
+      await PATCH(formURL, session.user.token, requestBody);
       setResultModal('Informacion del usuario editada con exito');
       await update({ ...session, user: { ...session?.user, email: email, image: image } });
       console.log(session);
@@ -76,7 +90,7 @@ export default function UserSection() {
               <Input label="Nombre de usuario" value={session.user.username} variant="bordered" disabled />
               <Input label="Correo" value={email} placeholder="No hay ningún email definido" variant="bordered" disabled={!isEditMode} onChange={(e) => setEmail(e.target.value)} />
               <Input label="Password actual" value={undefined} variant="bordered" placeholder="*********" disabled />
-              {isEditMode && <Input label="New image" variant="bordered" placeholder="https://..." onChange={(e) => setImage(e.target.value)} />}
+              {isEditMode && <Input label="New image" variant="bordered" placeholder="https://..." value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />}
             </div>
           </div>
         </CardBody>

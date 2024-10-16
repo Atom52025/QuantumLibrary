@@ -25,7 +25,7 @@ export default function GroupInviteModal({ groupId, setGroups }) {
     try {
       setLoading(true);
 
-      const res = await GET(formURL, session.user.token, true);
+      const res = await GET(formURL, session.user.token);
       setFoundUsers((prevFoundUsers) => [...prevFoundUsers, res]);
 
       setLoading(false);

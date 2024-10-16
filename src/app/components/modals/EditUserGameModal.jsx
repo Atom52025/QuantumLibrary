@@ -33,7 +33,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
   const eraseForm = async (onClose) => {
     const formURL = `api/user/${session.user.username}/games/${userGame.game.id}`;
     try {
-      await DELETE(formURL, session.user.token, true);
+      await DELETE(formURL, session.user.token);
 
       setGames((prevGames) => prevGames.filter((game) => game !== userGame));
 
@@ -59,7 +59,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
     };
 
     try {
-      const res = await PATCH(formURL, session.user.token, requestBody, true);
+      const res = await PATCH(formURL, session.user.token, requestBody);
 
       setGames((prevGames) => prevGames.map((game) => (game.game.id === res.game.id ? res : game)));
 
@@ -72,26 +72,28 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
 
   const getGrids = async (key) => {
     const formURL = `api/sgdb/getGrids/${key}`;
-    let res = await GET(formURL, session.user.token, true);
+    let res = await GET(formURL, session.user.token);
     let filteredGrids = res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url);
     setGrids(filteredGrids);
     return filteredGrids;
   };
 
   useEffect(() => {
-    // Prevents from calling again if already fetched
-    if (grids.length !== 0) {
-      let index = grids.findIndex((grid) => grid === (userGame.image == null ? userGame.game.image : userGame.image));
-      if (index !== -1) setImageKey(index);
-      else setCustomImage(userGame.image == null ? userGame.game.image : userGame.image);
-    }
+    if (isOpen) {
+      // Prevents from calling again if already fetched
+      if (grids.length !== 0) {
+        let index = grids.findIndex((grid) => grid === (userGame.image == null ? userGame.game.image : userGame.image));
+        if (index !== -1) setImageKey(index);
+        else setCustomImage(userGame.image == null ? userGame.game.image : userGame.image);
+      }
 
-    // Fetch grids
-    getGrids(userGame.game.sgdbId).then((filteredGrids) => {
-      let index = filteredGrids.findIndex((grid) => grid === (userGame.image == null ? userGame.game.image : userGame.image));
-      if (index !== -1) setImageKey(index);
-      else setCustomImage(userGame.image == null ? userGame.game.image : userGame.image);
-    });
+      // Fetch grids
+      getGrids(userGame.game.sgdbId).then((filteredGrids) => {
+        let index = filteredGrids.findIndex((grid) => grid === (userGame.image == null ? userGame.game.image : userGame.image));
+        if (index !== -1) setImageKey(index);
+        else setCustomImage(userGame.image == null ? userGame.game.image : userGame.image);
+      });
+    }
   }, [isOpen]);
 
   useEffect(() => {

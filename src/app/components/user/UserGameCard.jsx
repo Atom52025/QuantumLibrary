@@ -11,7 +11,7 @@ import EditUserGameModal from '@/app/components/modals/EditUserGameModal';
 
 export default function UserGameCard({ entry, setGames, random }) {
   // Modal state
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure({ defaultOpen: false });
   // Get Session
   const { data: session } = useSession({ required: true });
 

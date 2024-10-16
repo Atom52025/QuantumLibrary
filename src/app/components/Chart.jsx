@@ -32,7 +32,7 @@ export default function Chart({ obteinedData, fullData, labelObtenied, labelFull
   };
 
   return (
-    <div className="object-contain  justify-center flex">
+    <div className="object-contain justify-center flex w-full">
       <div className="relative">
         <Doughnut data={data} options={options} />
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

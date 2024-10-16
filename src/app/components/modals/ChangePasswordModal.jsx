@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 
 import { PATCH } from '@/app/api/tokenRequest';
 import InfoPopups from '@/app/components/InfoPopups';
@@ -19,19 +19,15 @@ export default function ChangePasswordModal({ user }) {
   // Modal state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const checkPasswords = (onClose) => {
+  useEffect(() => {
     if (newPassword !== confirmPassword) {
       setPasswordError('Las contraseñas no coinciden');
-      return false;
-    }
-    if (newPassword.length < 6) {
+    } else if (newPassword.length < 6) {
       setPasswordError('La contraseña debe tener al menos 6 caracteres');
-      return false;
+    } else {
+      setPasswordError(''); // Clear any errors if validation passes
     }
-
-    sendRequest(onClose);
-    return true;
-  };
+  }, [newPassword, confirmPassword]);
 
   const sendRequest = async (onClose) => {
     const formURL = `api/users/${user.username}/password`;
@@ -43,6 +39,7 @@ export default function ChangePasswordModal({ user }) {
 
     try {
       await PATCH(formURL, user.token, requestBody);
+
       setResultModal('Contraseña cambiada con exito');
       onClose();
     } catch (error) {
@@ -71,7 +68,7 @@ export default function ChangePasswordModal({ user }) {
         <Button color="error" onClick={onClose}>
           Cancelar
         </Button>
-        <Button color="success" onClick={checkPasswords(onClose)}>
+        <Button color="success disabled:warning" onClick={() => sendRequest(onClose)} disabled={passwordError !== ''}>
           Guardar Cambios
         </Button>
       </ModalFooter>
