@@ -186,7 +186,10 @@ export default function SteamImportModal({ setGames }) {
 
   return (
     <>
-      <Button onClick={onOpen}> Importar desde STEAM </Button>
+      <Button onClick={onOpen} className="lg:flex-grow-0 flex-grow ">
+        {' '}
+        Importar desde STEAM{' '}
+      </Button>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center" scrollBehavior="inside">
         <ModalContent>{(onClose) => renderModalContent(onClose)}</ModalContent>
       </Modal>

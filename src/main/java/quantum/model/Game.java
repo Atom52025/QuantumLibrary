@@ -49,8 +49,7 @@ public class Game {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Game)) return false;
-        Game game = (Game) o;
+        if (!(o instanceof Game game)) return false;
         return id.equals(game.id);
     }
 

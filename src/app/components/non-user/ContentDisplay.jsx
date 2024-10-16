@@ -6,11 +6,11 @@ import React, { useEffect, useState } from 'react';
 import { FaRandom } from 'react-icons/fa';
 
 import Counter from '@/app/components/Counter';
-import GameCard from '@/app/components/GameCard';
 import FilterBar from '@/app/components/inputs/FilterBar';
 import SortByInput from '@/app/components/inputs/SortByInput';
 import AddUserGameModal from '@/app/components/modals/AddUserGameModal';
 import SteamImportModal from '@/app/components/modals/SteamImportModal';
+import GameCard from '@/app/components/non-user/GameCard';
 import GroupListSection from '@/app/components/sections/GroupListSection';
 import TagSection from '@/app/components/sections/TagSection';
 import UserGameCard from '@/app/components/user/UserGameCard';
@@ -61,12 +61,12 @@ export default function ContentDisplay({ data, gData }) {
     <>
       <TagSection games={games} selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
       <ScrollShadow hideScrollBar className={`max-h-full w-full shadow-inner overflow-y-scroll ${open ? 'mr-[200px]' : 'mr-0'}`}>
-        <div className="flex flex-col ">
-          <div className=" px-10 pt-5 flex justify-between">
+        <div className="flex flex-col">
+          <div className="lg:px-10 px-5 pt-5 flex gap-2 flex-wrap justify-between">
             <FilterBar searchParam={searchParam} setSearchParam={setSearchParam} />
             <SortByInput orderBy={orderBy} />
           </div>
-          <div className="px-10 py-5 grid grid-cols-9 gap-3">
+          <div className="lg:px-10 px-5 py-5 grid xl:grid-cols-9 lg:grid-cols-7 sm:grid-cols-5 grid-cols-3 gap-3">
             {filteredGames?.map((entry) => (
               <div key={entry.id} className="aspect-[6/9] bg-gray-600 rounded-xl overflow-hidden">
                 <GameCard entry={entry} setGames={setGames} random={random} />

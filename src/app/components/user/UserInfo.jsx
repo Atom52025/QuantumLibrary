@@ -9,7 +9,7 @@ import InfoPopups from '@/app/components/InfoPopups';
 import ChangePasswordModal from '@/app/components/modals/ChangePasswordModal';
 import { Button } from '@nextui-org/button';
 
-export default function UserSection() {
+export default function UserMenu() {
   // Get Session
   const { data: session, update, status } = useSession();
 

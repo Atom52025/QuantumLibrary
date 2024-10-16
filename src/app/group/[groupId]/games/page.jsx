@@ -1,6 +1,6 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
 import { GET } from '@/app/api/tokenRequest';
-import ContentFiltering from '@/app/components/ContentDisplay';
+import ContentFiltering from '@/app/components/non-user/ContentDisplay';
 import GroupInfoSection from '@/app/components/sections/GroupInfoSection';
 import { getServerSession } from 'next-auth/next';
 

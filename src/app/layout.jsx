@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
 
       <body className={inter.className + ' h-full dark font-russo'} lang="es">
         <Providers>
-          <Navbar/>
+          <Navbar />
           <div className="lg:h-[91vh] h-[95vh] overflow-hidden bg-gray-900 font-russo">{children}</div>
         </Providers>
       </body>

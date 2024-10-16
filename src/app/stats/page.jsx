@@ -1,8 +1,8 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
-import UserSection from '@/app/components/sections/UserSection';
+import UserMenu from '@/app/components/user/UserInfo';
 import { getServerSession } from 'next-auth/next';
 import {GET} from "@/app/api/tokenRequest";
-import Stats from "@/app/components/Stats";
+import StatSection from "@/app/components/sections/StatSection";
 
 export default async function Page() {
   // Get Session
@@ -16,5 +16,5 @@ export default async function Page() {
   const urlGroups = 'api/user/' + session.user.username + '/groups';
   const dataGroups = await GET(urlGroups, session.user.token);
 
-  return <Stats data={data} gData={dataGroups || { accepted: [], pending: [] }} />;
+  return <StatSection data={data} gData={dataGroups || { accepted: [], pending: [] }} />;
 }
