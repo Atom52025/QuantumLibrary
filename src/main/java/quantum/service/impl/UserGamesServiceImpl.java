@@ -349,7 +349,12 @@ public class UserGamesServiceImpl implements UserGamesService {
     public List<UserGame> postUserGames(String username, Map<Long, NewUserGameBody> gamesToImport) {
 
         // Get available games in ddbb
-        List<Game> availableGames = new ArrayList<>(gameService.getGames(Pageable.unpaged()).getGames().stream().map(gamesMapper::map).toList());
+        List<Game> availableGames;
+        try {
+            availableGames = new ArrayList<>(gameService.getGames(Pageable.unpaged()).getGames().stream().map(gamesMapper::map).toList());
+        } catch (EntityNotFoundException e) {
+            availableGames = new ArrayList<>();
+        }
         List<Long> availableGameIds = availableGames.stream().map(Game::getSgdbId).toList();
 
         // Creates a copy of the games to import and removes games already in the database

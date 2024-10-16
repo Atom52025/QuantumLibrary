@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
         User userToUpdate = findUser(username);
 
         // Check if the old password is correct
-        if (checkPassword(userToUpdate, body.getOldPassword())) {
+        if (!checkPassword(userToUpdate, body.getOldPassword())) {
             throw new BadPasswordException();
         }
 
