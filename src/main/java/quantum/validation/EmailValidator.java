@@ -5,10 +5,6 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class EmailValidator implements ConstraintValidator<Email, String> {
 
-    @Override
-    public void initialize(Email contraint) {
-    }
-
     /**
      * Validates that the string is an email.
      *

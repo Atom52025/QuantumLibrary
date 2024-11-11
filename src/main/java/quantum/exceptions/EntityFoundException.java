@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static quantum.constant.ErrorConstants.ENTITY_FOUND_ERROR;
-import static quantum.constant.ErrorConstants.ENTITY_NOT_FOUND_ERROR;
 
 /**
  * Exception to throw when the entity is found.

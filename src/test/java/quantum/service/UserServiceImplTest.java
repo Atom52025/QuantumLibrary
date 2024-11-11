@@ -41,7 +41,7 @@ import static quantum.constant.TestConstants.SAMPLE_USERNAME;
  * Test for {@link UserServiceImpl} service class.
  */
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImplTest {
+class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;

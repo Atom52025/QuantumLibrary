@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import quantum.dto.userGroups.UserGroupResponse;
 import quantum.model.Group;
-import quantum.model.UserGroup;
 
 import java.util.List;
 

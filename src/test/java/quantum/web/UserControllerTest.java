@@ -11,12 +11,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import quantum.dto.user.*;
 import quantum.service.UserService;
+import quantum.web.rest.SteamController;
 import quantum.web.rest.UserController;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -33,6 +35,7 @@ import static quantum.utils.TestUtils.stringifyObject;
 @ContextConfiguration(classes = {UserController.class})
 @WebMvcTest
 @AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
 class UserControllerTest {
     @Autowired
     protected MockMvc mockMvc;
@@ -42,6 +45,7 @@ class UserControllerTest {
 
     /**
      * Test for {@link UserController#getUsers} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -66,6 +70,7 @@ class UserControllerTest {
 
     /**
      * Test for {@link UserController#getUser(String, String)} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -90,6 +95,7 @@ class UserControllerTest {
 
     /**
      * Test for {@link UserController#postUser} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -120,6 +126,7 @@ class UserControllerTest {
 
     /**
      * Test for {@link UserController#patchUser} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -149,6 +156,7 @@ class UserControllerTest {
 
     /**
      * Test for {@link UserController#patchUserPassword} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -178,6 +186,7 @@ class UserControllerTest {
 
     /**
      * Test for {@link UserController#deleteUser} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test

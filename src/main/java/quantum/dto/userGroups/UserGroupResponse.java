@@ -2,15 +2,12 @@ package quantum.dto.userGroups;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import quantum.dto.group.GroupResponse;
 import quantum.dto.user.UserResponse;
 import quantum.model.Group;
-import quantum.model.User;
 
 import java.util.List;
 
@@ -34,5 +31,5 @@ public class UserGroupResponse {
 
     @Schema(example = "1", description = "Voted games.")
     @JsonProperty("voted")
-    private String voted;
+    private List<Long> voted;
 }

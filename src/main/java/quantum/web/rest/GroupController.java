@@ -26,7 +26,7 @@ public class GroupController implements GroupApi {
     /**
      * PATCH to /api/groups/{groupId} to edit a group.
      *
-     * @param token    The token with the authentication information.
+     * @param token   The token with the authentication information.
      * @param groupId The group id.
      * @param body    The group body.
      * @return The edited group.
@@ -42,7 +42,7 @@ public class GroupController implements GroupApi {
     /**
      * GET to /api/groups/{group_id} to fetch a user group list.
      *
-     * @param token    The token with the authentication information.
+     * @param token   The token with the authentication information.
      * @param groupId The group id.
      * @return The list of groups the user is in or is invited.
      */
@@ -70,9 +70,9 @@ public class GroupController implements GroupApi {
     /**
      * POST to /api/user/{username}/groups to create a group.
      *
-     * @param token The token with the authentication information.
+     * @param token    The token with the authentication information.
      * @param username The username.
-     * @param body  The group body.
+     * @param body     The group body.
      * @return The new group.
      */
     @Override
@@ -87,7 +87,7 @@ public class GroupController implements GroupApi {
      *
      * @param token    The token with the authentication information.
      * @param username The username.
-     * @param groupId The group id.
+     * @param groupId  The group id.
      */
     @Override
     public ResponseEntity<Void> sendInvite(String token, String username, Long groupId) {
@@ -101,7 +101,7 @@ public class GroupController implements GroupApi {
      *
      * @param token    The token with the authentication information.
      * @param username The username.
-     * @param groupId The group id.
+     * @param groupId  The group id.
      */
     @Override
     public ResponseEntity<Void> joinGroup(String token, String username, Long groupId) {
@@ -115,12 +115,28 @@ public class GroupController implements GroupApi {
      *
      * @param token    The token with the authentication information.
      * @param username The username.
-     * @param groupId The group id.
+     * @param groupId  The group id.
      */
     @Override
     public ResponseEntity<Void> deleteUserGroup(String token, String username, Long groupId) {
         log.info("[CONTROLLER] - Declining or exiting group");
         service.declineOrExitGroup(username, groupId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    /**
+     * PATCH to /api/user/{username}/groups/{group_id}/game/{game_id} to vote a group game by a user.
+     *
+     * @param token    The token with the authentication information.
+     * @param username The username.
+     * @param groupId  The group id.
+     * @param gameId   The game id.
+     */
+    @Override
+    public ResponseEntity<Void> voteGroupGame(String token, String username, Long groupId, Long gameId) {
+        log.info("[CONTROLLER] - Voting game");
+        service.voteGroupGame(username, groupId, gameId);
         return ResponseEntity.noContent().build();
     }
 }

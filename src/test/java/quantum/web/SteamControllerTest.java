@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.service.SteamService;
 import quantum.web.rest.SteamController;
+import quantum.web.rest.SteamGridDBController;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -31,6 +33,7 @@ import static quantum.constant.TestConstants.SAMPLE_TOKEN;
 @ContextConfiguration(classes = {SteamController.class})
 @WebMvcTest
 @AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
 class SteamControllerTest {
 
     @Autowired

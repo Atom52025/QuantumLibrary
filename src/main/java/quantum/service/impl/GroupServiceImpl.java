@@ -26,10 +26,8 @@ import quantum.service.UserGamesService;
 import quantum.service.UserGroupsService;
 import quantum.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static quantum.constant.ErrorConstants.DATA_INTEGRITY_ERROR;
 
@@ -62,15 +60,34 @@ public class GroupServiceImpl implements GroupService {
         // Search for the group
         Group group = findGroupById(groupId);
 
-        // Gets all users in the group
+        // Gets user groups
+        List<UserGroup> userGroups = group.getUserGroups();
+
+        // Gets all accepted users in the group
         List<User> users = userGroupsService.findAcceptedUsersInGroup(groupId, true);
 
         // Gets the common games
         Set<Game> commonGames = userGamesService.getCommonGames(users);
 
+        // Map of game IDs to users who voted for them
+        Map<Long, List<String>> gameVotesMap = userGroups.stream()
+                .flatMap(userGroup -> userGroup.getVoted().stream()
+                        .map(gameId -> Map.entry(gameId, userGroup.getUser().getUsername()))
+                )
+                .collect(Collectors.groupingBy(Map.Entry::getKey,
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+
+        // Create the VotedGamesResponse using the gameVotesMap
+        List<VotedGamesResponse> votedGamesResponses = commonGames.stream()
+                .map(game -> {
+                    List<String> voters = gameVotesMap.getOrDefault(game.getId(), new ArrayList<>());
+                    return gameMapper.map(game, voters);
+                })
+                .collect(Collectors.toList());
+
         return GroupGamesResponse.builder()
                 .group(group)
-                .games(commonGames.stream().map(gameMapper::map).toList())
+                .games(votedGamesResponses)
                 .build();
     }
 
@@ -122,7 +139,9 @@ public class GroupServiceImpl implements GroupService {
      */
     @Override
     public void joinGroup(String username, Long groupId) {
-        userGroupsService.updateUserGroup(username, groupId);
+        UserGroup userGroup = userGroupsService.findUserGroup(username, groupId);
+        userGroup.setAccepted(true);
+        userGroupsService.updateUserGroup(userGroup);
     }
 
     /**
@@ -135,7 +154,6 @@ public class GroupServiceImpl implements GroupService {
     public void declineOrExitGroup(String username, Long groupId) {
         // Search for the group
         Group group = findGroupById(groupId);
-
 
         // Removes the user from the group
         if (!group.getUserGroups().removeIf(userGroup -> userGroup.getUser().getUsername().equals(username))) {
@@ -229,7 +247,7 @@ public class GroupServiceImpl implements GroupService {
                     .accepted(true)
                     .build());
 
-            for (String invitedUser : body.getInvited_users()) {
+            for (String invitedUser : body.getInvitedUsers()) {
                 try {
                     User user = userService.findUser(invitedUser);
                     userGroups.add(UserGroup.builder()
@@ -260,13 +278,13 @@ public class GroupServiceImpl implements GroupService {
     /**
      * Patch group.
      *
-     * @param id   The id
-     * @param body The body
+     * @param groupId The id
+     * @param body    The body
      */
     @Override
-    public GroupResponse updateGroup(Long id, UpdateGroupBody body) {
+    public GroupResponse updateGroup(Long groupId, UpdateGroupBody body) {
         // Find the group
-        Group groupToUpdate = findGroupById(id);
+        Group groupToUpdate = findGroupById(groupId);
 
         // Update the group content
         updateGroupContent(body, groupToUpdate);
@@ -282,6 +300,35 @@ public class GroupServiceImpl implements GroupService {
         return mapper.map(groupToUpdate);
     }
 
+
+    /**
+     * Vote group game.
+     *
+     * @param username The username
+     * @param groupId  The group id
+     * @param gameId   The game id
+     */
+    public void voteGroupGame(String username, Long groupId, Long gameId) {
+
+        UserGroup userGroup = userGroupsService.findUserGroup(username, groupId);
+
+        List<Long> voted = new ArrayList<>(userGroup.getVoted());
+
+        if (voted.contains(gameId)) {
+            voted.remove(gameId);
+            userGroup.setVoted(voted);
+        } else {
+            voted.add(gameId);
+            userGroup.setVoted(voted);
+        }
+
+        try {
+            log.info("[SERVICE] - [USER GROUP VOTE] - Voting game on user group: {}", userGroup);
+            userGroupsService.updateUserGroup(userGroup);
+        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
+            throw new DatabaseConnectionException(ex);
+        }
+    }
 
     //------------------------------------- PRIVATE METHODS -------------------------------------//
 

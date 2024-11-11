@@ -13,11 +13,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
+import quantum.filter.AuthTokenFilter;
 import quantum.service.impl.SteamServiceImpl;
 
 import java.io.IOException;
@@ -29,21 +32,25 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class SteamServiceImplTest {
 
     private SteamServiceImpl steamService;
 
+    @MockBean
+    private AuthTokenFilter authTokenFilter;
+
     @Mock
     private SteamGridDBService steamGridDBService;
+
+    @Mock
+    private SteamSpyService steamSpyService;
 
     @Mock
     private WebClient.Builder webClientBuilder;
 
     @Mock
     private WebClient webClient;
-
-    @Mock
-    private SteamSpyService steamSpyService;
 
     private static MockWebServer mockWebServer;
 

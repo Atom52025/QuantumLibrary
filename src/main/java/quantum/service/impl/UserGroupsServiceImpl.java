@@ -67,20 +67,13 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     /**
      * Update a user group.
      *
-     * @param username The username.
-     * @param groupId  The group id.
+     * @param userGroup The user group.
      */
     @Override
-    public void updateUserGroup(String username, Long groupId) {
-        // Find the user group invitation
-        UserGroup userGroupToUpdate = findUserGroup(username, groupId);
-
-        // Update the accepted value
-        userGroupToUpdate.setAccepted(true);
-
+    public void updateUserGroup(UserGroup userGroup) {
         try {
-            log.info("[SERVICE] - [USER GROUP JOIN] - Saving user group: {}", userGroupToUpdate);
-            repository.save(userGroupToUpdate);
+            log.info("[SERVICE] - [USER GROUP UPDATE] - Saving user group: {}", userGroup);
+            repository.save(userGroup);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
         }
@@ -147,16 +140,15 @@ public class UserGroupsServiceImpl implements UserGroupsService {
         // Map entity to response and return
         return result.stream().map(UserGroup::getGroup).toList();
     }
-    //------------------------------------- PRIVATE METHODS -------------------------------------//
 
     /**
-     * Find a user game by game id and username.
+     * Find a user game by group id and username.
      *
      * @param groupId  The group id.
      * @param username The username.
      * @return The user game.
      */
-    private UserGroup findUserGroup(String username, Long groupId) {
+    public UserGroup findUserGroup(String username, Long groupId) {
         Optional<UserGroup> userGroup;
 
         // Try to find the entity

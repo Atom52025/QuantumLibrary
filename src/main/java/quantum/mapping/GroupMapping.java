@@ -1,10 +1,7 @@
 package quantum.mapping;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import quantum.dto.game.GameResponse;
 import quantum.dto.group.GroupResponse;
-import quantum.model.Game;
 import quantum.model.Group;
 
 /**

@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -19,7 +20,9 @@ import quantum.dto.game.GameResponse;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
 import quantum.service.GameService;
+import quantum.web.rest.AuthController;
 import quantum.web.rest.GameController;
+import quantum.web.rest.SteamGridDBController;
 
 import java.util.Set;
 
@@ -31,11 +34,11 @@ import static quantum.utils.TestUtils.stringifyObject;
 /**
  * Test for {@link GameController} controller class.
  */
-
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = {GameController.class})
 @WebMvcTest
 @AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
 class GameControllerTest {
     @Autowired
     protected MockMvc mockMvc;
@@ -45,6 +48,7 @@ class GameControllerTest {
 
     /**
      * Test for {@link GameController#getGames} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -68,6 +72,7 @@ class GameControllerTest {
 
     /**
      * Test for {@link GameController#postGame} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -98,6 +103,7 @@ class GameControllerTest {
 
     /**
      * Test for {@link GameController#patchGame} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -127,6 +133,7 @@ class GameControllerTest {
 
     /**
      * Test for {@link GameController#deleteGame} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test

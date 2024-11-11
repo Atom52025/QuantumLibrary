@@ -1,6 +1,7 @@
 package quantum.dto.sgdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +21,8 @@ import java.util.List;
 public class SGDBGame {
     private Long id;
     private String name;
-    private Long release_date;
+    @JsonProperty("release_date")
+    private Long releaseDate;
     private List<String> types;
     private Boolean verified;
 }

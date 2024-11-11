@@ -15,7 +15,9 @@ import quantum.dto.userGames.*;
 import quantum.dto.userGames.steamImport.UserGameImport;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.exceptions.DatabaseConnectionException;
+import quantum.exceptions.EntityFoundException;
 import quantum.exceptions.EntityNotFoundException;
+import quantum.exceptions.QuantumLibraryGenericException;
 import quantum.mapping.GamesMapping;
 import quantum.mapping.UserGamesMapping;
 import quantum.model.Game;
@@ -139,7 +141,7 @@ public class UserGamesServiceImpl implements UserGamesService {
         // Check if game is already added
         Optional<UserGame> userGame = repository.findByUser_UsernameAndGame_SgdbId(username, gameSgdbId);
         if (userGame.isPresent()) {
-            throw new DataIntegrityViolationException(DATA_INTEGRITY_ERROR);
+            throw new EntityFoundException("Game already added to user library");
         }
 
         // Search if game is in the database
@@ -150,7 +152,7 @@ public class UserGamesServiceImpl implements UserGamesService {
             game = (Game) gameService.postGame(
                     NewGameBody.builder()
                             .name(body.getName())
-                            .image(body.getImage())
+                            .image(body.getDefaultImage() != null ? body.getDefaultImage() : body.getImage())
                             .tags(body.getTags())
                             .sgdbId(gameSgdbId)
                             .build(),
@@ -431,6 +433,7 @@ public class UserGamesServiceImpl implements UserGamesService {
                 .user(user)
                 .game(game)
                 .timePlayed(body.getTimePlayed())
+                .image(body.getImage())
                 .tags(allTags)
                 .achivements(body.getAchivements())
                 .totalAchivements(body.getTotalAchivements())

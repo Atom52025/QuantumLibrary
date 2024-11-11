@@ -1,4 +1,4 @@
-name: Deploy Docker Compose to EC2
+name: CD with EC2
 
 on:
   workflow_dispatch:
@@ -24,17 +24,33 @@ jobs:
 
       - name: Deploy to EC2
         run: |
+          git fetch origin
+          git pull origin main
+          echo "${{ secrets.DOCKER_COMPOSE_BUILD_FILE }}" > docker-compose.yml
+          docker-compose build
+          docker tag quantumlibrary-frontend atom52025/quantum-library-frontend:latest
+          docker tag quantumlibrary-backend atom52025/quantum-library-backend:latest
+          docker tag quantumlibrary-frontend atom52025/quantum-library-frontend:v0.3
+          docker tag quantumlibrary-backend atom52025/quantum-library-backend:v0.3
+          docker push atom52025/quantum-library-backend:latest
+          docker push atom52025/quantum-library-frontend:latest
+          docker push atom52025/quantum-library-backend:v0.3
+          docker push atom52025/quantum-library-frontend:v0.3
           ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             cd QuantumLibrary/
-            
+          
             git fetch origin
             git pull origin main
 
-            echo "${{ secrets.DOCKER_COMPOSE_FILE }}" > docker-compose.yml
-            
-            docker images -q | xargs docker rmi -f
+            echo "${{ secrets.DOCKER_COMPOSE_START_FILE }}" > docker-compose.yml
+          
             docker-compose down
-            docker-compose up -d
+            docker images -q | xargs docker rmi -f
+          
+            docker pull atom52025/quantum-library-frontend:latest && docker image prune -f
+            docker pull atom52025/quantum-library-backend:latest && docker image prune -f
+          
+            docker-compose up -D
           EOF
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}

@@ -70,7 +70,7 @@ public interface GroupService {
      * Create a new group.
      *
      * @param username The username.
-     * @param body The body.
+     * @param body     The body.
      * @return The group.
      */
     GroupResponse postGroup(String username, NewGroupBody body);
@@ -78,9 +78,18 @@ public interface GroupService {
     /**
      * Patch group.
      *
-     * @param id   The id
-     * @param body The body
+     * @param groupId The id
+     * @param body    The body
      */
-    GroupResponse updateGroup(Long id, UpdateGroupBody body);
+    GroupResponse updateGroup(Long groupId, UpdateGroupBody body);
 
+
+    /**
+     * Vote group game.
+     *
+     * @param username The username
+     * @param groupId  The group id
+     * @param gameId   The game id
+     */
+    void voteGroupGame(String username, Long groupId, Long gameId);
 }

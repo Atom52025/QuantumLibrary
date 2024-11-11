@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -18,6 +19,8 @@ import quantum.dto.auth.LogInBody;
 import quantum.dto.auth.SignUpBody;
 import quantum.service.AuthService;
 import quantum.web.rest.AuthController;
+import quantum.web.rest.GroupController;
+import quantum.web.rest.SteamGridDBController;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -32,6 +35,7 @@ import static quantum.utils.TestUtils.stringifyObject;
 @ContextConfiguration(classes = {AuthController.class})
 @WebMvcTest
 @AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
 class AuthControllerTest {
 
     @Autowired

@@ -36,7 +36,7 @@ import static quantum.constant.TestConstants.SAMPLE_GAME;
  * Test for {@link GameServiceImpl} service class.
  */
 @ExtendWith(MockitoExtension.class)
-public class GameServiceImplTest {
+class GameServiceImplTest {
 
     @Mock
     private GameRepository gameRepository;
@@ -305,5 +305,5 @@ public class GameServiceImplTest {
         // Verify result
         assertThrows(DatabaseConnectionException.class, () -> service.deleteGame(SAMPLE_GAME.getId()));
     }
-    
+
 }

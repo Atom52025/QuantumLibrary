@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import quantum.validation.Alphanumeric;
 
 import java.util.List;
 
@@ -24,5 +23,5 @@ public class NewGroupBody {
 
     @Schema(example = "[Adri, Laura, Dani]", description = "Usernames of the users invited to the group.")
     @JsonProperty("invited_users")
-    private List<String> invited_users;
+    private List<String> invitedUsers;
 }

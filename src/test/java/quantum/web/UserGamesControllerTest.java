@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -42,6 +43,7 @@ import static quantum.utils.TestUtils.stringifyObject;
 @ContextConfiguration(classes = {UserGamesController.class})
 @WebMvcTest
 @AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
 class UserGamesControllerTest {
     @Autowired
     protected MockMvc mockMvc;
@@ -51,6 +53,7 @@ class UserGamesControllerTest {
 
     /**
      * Test for {@link UserGamesController#getUserGames} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -75,6 +78,7 @@ class UserGamesControllerTest {
 
     /**
      * Test for {@link UserGamesController#postUserGame} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -105,6 +109,7 @@ class UserGamesControllerTest {
 
     /**
      * Test for {@link UserGamesController#importUserGames} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -114,11 +119,11 @@ class UserGamesControllerTest {
         UserGamesImportList input = UserGamesImportList.builder().games(
                 Collections.nCopies(10,
                         UserGameImport.builder()
-                            .name("name")
-                            .image("image")
-                            .timePlayed(1)
-                            .sgdbId(1L)
-                            .build())
+                                .name("name")
+                                .image("image")
+                                .timePlayed(1)
+                                .sgdbId(1L)
+                                .build())
         ).build();
 
         when(service.importUserGames(any(String.class), any(UserGamesImportList.class))).thenReturn(new UserGamesListResponse());
@@ -139,6 +144,7 @@ class UserGamesControllerTest {
 
     /**
      * Test for {@link UserGamesController#patchUserGame} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -166,6 +172,7 @@ class UserGamesControllerTest {
 
     /**
      * Test for {@link UserGamesController#deleteUserGame} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test

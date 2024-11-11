@@ -1,6 +1,5 @@
 package quantum.service;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,9 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
-import quantum.dto.game.GameResponse;
 import quantum.dto.group.*;
 import quantum.dto.userGroups.UserGroupsListResponse;
 import quantum.exceptions.BadRequestException;
@@ -18,16 +15,11 @@ import quantum.exceptions.DatabaseConnectionException;
 import quantum.exceptions.EntityFoundException;
 import quantum.exceptions.EntityNotFoundException;
 import quantum.mapping.GamesMappingImpl;
-import quantum.mapping.GroupMapping;
 import quantum.mapping.GroupMappingImpl;
-import quantum.model.Game;
 import quantum.model.Group;
 import quantum.model.User;
 import quantum.model.UserGroup;
 import quantum.repository.GroupRepository;
-import quantum.service.UserGamesService;
-import quantum.service.UserGroupsService;
-import quantum.service.UserService;
 import quantum.service.impl.GroupServiceImpl;
 
 import java.util.*;
@@ -114,7 +106,9 @@ class GroupServiceImplTest {
     @Test
     @DisplayName("Test sendInvite method (EntityFoundException)")
     void sendInviteEntityFoundException() {
-        when(repository.findById(any(Long.class))).thenReturn(Optional.of(SAMPLE_GROUP));
+        Group group = SAMPLE_GROUP;
+        group.getUserGroups().add(SAMPLE_USER_GROUP);
+        when(repository.findById(any(Long.class))).thenReturn(Optional.of(group));
         when(userService.findUser(any(String.class))).thenReturn(SAMPLE_USER);
 
         assertThrows(EntityFoundException.class, () -> service.sendInvite("testUser", 1L));
@@ -123,9 +117,10 @@ class GroupServiceImplTest {
     @Test
     @DisplayName("Test joinGroup method (OK)")
     void joinGroupOK() {
-        doNothing().when(userGroupsService).updateUserGroup("testUser", 1L);
+        when(userGroupsService.findUserGroup(any(String.class), any(Long.class))).thenReturn(SAMPLE_USER_GROUP);
+        doNothing().when(userGroupsService).updateUserGroup(SAMPLE_USER_GROUP);
         service.joinGroup("testUser", 1L);
-        verify(userGroupsService).updateUserGroup("testUser", 1L);
+        verify(userGroupsService).updateUserGroup(SAMPLE_USER_GROUP);
     }
 
     @Test
@@ -226,4 +221,18 @@ class GroupServiceImplTest {
 
         assertThrows(DatabaseConnectionException.class, () -> service.deleteGroup(testGroup));
     }
+
+    @Test
+    @DisplayName("Test voteGroupGame method (OK)")
+    void voteGroupGame() {
+        // Mock repository
+        when(userGroupsService.findUserGroup(any(String.class), any(Long.class))).thenReturn(SAMPLE_USER_GROUP);
+
+        // Mock service
+        doNothing().when(userGroupsService).updateUserGroup(any(UserGroup.class));
+
+        // Verify result
+        assertDoesNotThrow(() -> service.voteGroupGame(SAMPLE_USER_GROUP.getUser().getUsername(), SAMPLE_USER_GROUP.getGroup().getId(), 1L));
+    }
+
 }

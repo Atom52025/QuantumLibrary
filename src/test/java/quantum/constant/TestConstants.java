@@ -7,6 +7,7 @@ import quantum.model.Group;
 import quantum.model.User;
 import quantum.model.UserGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -30,17 +31,19 @@ public class TestConstants {
             .image("UserImage")
             .build();
 
+    public static Group SAMPLE_GROUP = Group.builder()
+            .id(1L)
+            .name("GroupName")
+            .userGroups(new ArrayList<>())
+            .build();
+
     public static final UserGroup SAMPLE_USER_GROUP = UserGroup.builder()
             .id(1L)
             .user(SAMPLE_USER)
+            .group(SAMPLE_GROUP)
             .accepted(true)
-            .voted("votes")
+            .voted(new ArrayList<>())
             .build();
 
-    public static final Group SAMPLE_GROUP = Group.builder()
-            .id(1L)
-            .name("GroupName")
-            .userGroups(List.of(SAMPLE_USER_GROUP))
-            .build();
 
 }
