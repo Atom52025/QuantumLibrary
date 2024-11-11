@@ -109,6 +109,7 @@ public class SteamServiceImpl implements SteamService {
                         imageUrl = sgdbGrid.orElse(sgdbGrids.getFirst()).getUrl();
                     }
                 }
+                assert sgdbGame != null;
                 UserGameImport newUserGame = UserGameImport.builder()
                         .name(steamSpyGame.getName())
                         .timePlayed(game.getPlaytime())
