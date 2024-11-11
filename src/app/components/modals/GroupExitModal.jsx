@@ -44,7 +44,7 @@ export default function GroupExitModal({ groupId }) {
 
   return (
     <>
-      <button className="h-[4%] w-full p-1" onClick={onOpen}>
+      <button className="min-h-10 w-full p-1" onClick={onOpen}>
         <p className="w-full h-full flex items-center justify-center leading-tight bg-blue-400/20 rounded-full hover:bg-red-600 ">Salir del grupo</p>
       </button>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center" scrollBehavior="inside">

@@ -8,8 +8,6 @@ import { getToken } from 'next-auth/jwt';
 export default function ButtonAuth() {
   const { data: session, status } = useSession();
 
-  console.log({ session, status });
-
   if (status === 'loading') {
     return <p>Loading...</p>;
   }

@@ -5,5 +5,5 @@ import Link from 'next/link';
 import { getServerSession } from 'next-auth/next';
 
 export default async function GamesLayout({ children }) {
-  return <section className="h-full w-full flex lg:flex-row flex-col relative">{children}</section>;
+  return <section className="h-full w-full flex md:flex-row flex-col relative">{children}</section>;
 }

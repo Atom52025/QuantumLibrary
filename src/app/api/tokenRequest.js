@@ -6,7 +6,7 @@ const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_URL;
 // Detects if its executing on client or in server
 const API_URL = typeof window === 'undefined' ? INTERNAL_API_URL : EXTERNAL_API_URL;
 
-export async function GET(url, token) {
+export async function GET(url, token, tags = null) {
   // Create Query String
   const completeUrl = `${API_URL}/${url}`;
 
@@ -15,6 +15,7 @@ export async function GET(url, token) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    next: { tags: tags },
   });
   if (!res.ok) {
     console.log('Failed to fetch data');

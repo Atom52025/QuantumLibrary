@@ -2,7 +2,7 @@ import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@
 import React, { useState } from 'react';
 import { LuArrowDownAZ, LuArrowDownWideNarrow, LuArrowUpAZ, LuArrowUpWideNarrow } from 'react-icons/lu';
 
-export default function SortByInput({ orderBy, usergame }) {
+export default function SortByInput({ setOrder, usergame = false, groupgame = false }) {
   const [selectedKeys, setSelectedKeys] = useState(new Set(['nameDown']));
 
   // Define menu items based on `usergame` dynamically
@@ -15,6 +15,12 @@ export default function SortByInput({ orderBy, usergame }) {
           { key: 'hoursUp', label: 'Horas jugadas (Menor a mayor)', icon: <LuArrowUpWideNarrow /> },
         ]
       : []),
+    ...(groupgame
+      ? [
+          { key: 'mostVoted', label: 'Más votado', icon: <LuArrowDownWideNarrow /> },
+          { key: 'leastVoted', label: 'Menos votado', icon: <LuArrowUpWideNarrow /> },
+        ]
+      : []),
   ];
 
   return (
@@ -24,7 +30,7 @@ export default function SortByInput({ orderBy, usergame }) {
           Ordenar por
         </Button>
       </DropdownTrigger>
-      <DropdownMenu aria-label="Sort by button" onAction={(order) => orderBy(order)} disallowEmptySelection selectionMode="single" selectedKeys={selectedKeys} onSelectionChange={setSelectedKeys}>
+      <DropdownMenu aria-label="Sort by button" onAction={(order) => setOrder(order)} disallowEmptySelection selectionMode="single" selectedKeys={selectedKeys} onSelectionChange={setSelectedKeys}>
         {menuItems.map((item) => (
           <DropdownItem key={item.key} startContent={item.icon}>
             {item.label}

@@ -4,8 +4,8 @@ import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 import { useAsyncList } from '@react-stately/data';
 import { useSession } from 'next-auth/react';
 
-import { GET } from '@/app/api/tokenRequest';
 import { GETSIGNAL } from '@/app/api/signalRequest';
+import { GET } from '@/app/api/tokenRequest';
 
 export default function SearchBar({ setGame, setGrids }) {
   // Get Session
@@ -14,17 +14,22 @@ export default function SearchBar({ setGame, setGrids }) {
   const getGrids = async (key) => {
     const formURL = `api/sgdb/getGrids/${key}`;
     let res = await GET(formURL, session.user.token);
-    console.log(res.data);
     setGrids(res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url));
   };
 
   let list = useAsyncList({
     async load({ signal, filterText }) {
       try {
-        let res = await GETSIGNAL('api/sgdb/search?term=' + filterText, session.user.token, signal);
-        return {
-          items: res.data,
-        };
+        if (filterText) {
+          let res = await GETSIGNAL('api/sgdb/search?term=' + filterText, session.user.token, signal);
+          return {
+            items: res.data,
+          };
+        } else {
+          return {
+            items: [],
+          };
+        }
       } catch (error) {
         console.error('Error:', error);
       }
@@ -32,18 +37,29 @@ export default function SearchBar({ setGame, setGrids }) {
   });
 
   const handleSelection = async (key) => {
-    setGame({ key: key, name: list.filterText });
-    await getGrids(key);
+    if (!key) {
+      return;
+    }
+
+    // Find the selected item based on the key
+    const selectedItem = list.items.find((item) => item.id === key);
+
+    // If the selected item is found, set the game with its name
+    if (selectedItem) {
+      setGame({ key: selectedItem.id, name: selectedItem.name });
+      await getGrids(selectedItem.id);
+    }
   };
 
   return (
     <Autocomplete
-      placeholder="Search a game"
+      placeholder="Buscar juego"
       aria-label="search"
       className="w-full"
+      allowsCustomValue
       inputValue={list.filterText}
       isLoading={list.isLoading}
-      items={list.items}
+      defaultItems={list.items}
       onInputChange={list.setFilterText}
       onSelectionChange={(key) => handleSelection(key)}>
       {(item) => (

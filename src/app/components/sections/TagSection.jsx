@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox, CheckboxGroup } from '@nextui-org/react';
+import { Checkbox, CheckboxGroup, ScrollShadow } from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { FaRandom } from 'react-icons/fa';
@@ -12,6 +12,7 @@ import AddUserGameModal from '@/app/components/modals/AddUserGameModal';
 import SteamImportModal from '@/app/components/modals/SteamImportModal';
 import GameCard from '@/app/components/non-user/GameCard';
 import UserGameCard from '@/app/components/user/UserGameCard';
+import { Button } from '@nextui-org/button';
 
 export default function TagSection({ games, selectedTags, setSelectedTags }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,17 +26,6 @@ export default function TagSection({ games, selectedTags, setSelectedTags }) {
     setSelectedTags(values);
   };
 
-  // Checks if window is lg
-  useEffect(() => {
-    // Check screen width on mount
-    const handleResize = () => {
-      setIsLgScreen(window.innerWidth >= 1024);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   const filterTags = () => {
     const tagCounts = games
       .map(({ tags }) => tags.map((tag) => tag.trim()))
@@ -45,43 +35,53 @@ export default function TagSection({ games, selectedTags, setSelectedTags }) {
         return counts;
       }, {});
 
+    // Sort tags based on frequency from highest to lowest
     const sortedTags = Object.entries(tagCounts)
       .sort(([, countA], [, countB]) => countB - countA)
-      .slice(0, 20)
-      .map(([tag]) => tag)
-      .sort((a, b) => a.localeCompare(b));
+      .slice(0, 30)
+      .map(([tag]) => tag);
 
+    // Filter out static tags
     setTags(sortedTags.filter((tag) => !staticTags.includes(tag)));
   };
+
+  // Checks if window is md
+  useEffect(() => {
+    // Check screen width on mount
+    const handleResize = () => {
+      setIsLgScreen(window.innerWidth >= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     filterTags();
   }, [games]);
 
   return (
-    <div className={`h-full min-w-[200px] bg-gray-800/30 shadow-inner flex flex-col p-3 gap-5 relative´ ${isOpen || isLgScreen ? 'max-h-[100%]' : 'max-h-12'}`}>
-      <button onClick={() => setIsOpen(!isOpen)} className="uppercase text-center text-lg justify-center flex flex-row gap-3 items-center lg:hidden">
+    <div className={`md:min-h-full md:min-w-[220px] md:w-auto w-full bg-gray-800/30 shadow-inner flex flex-col p-3 gap-5 relative´ ${isOpen || isLgScreen ? 'max-h-[100%]' : 'max-h-12'}`}>
+      <button onClick={() => setIsOpen(!isOpen)} className="uppercase text-center text-md justify-center flex flex-row gap-3 items-center md:hidden">
         Tags
         {isOpen ? <IoIosArrowDropup /> : <IoIosArrowDropdown />}
       </button>
-
-      <div className={`h-full w-full flex flex-col gap-5 ´ ${isOpen || isLgScreen ? 'overflow-auto' : 'overflow-hidden'}`}>
-        <CheckboxGroup label="Multiplayer Tags" values={selectedTags} onChange={handleTagChange}>
+      <ScrollShadow className={`h-full w-full flex flex-col gap-5 overflow-x-hidden`}>
+        <CheckboxGroup values={selectedTags} onChange={handleTagChange}>
+          <p className="relative text-medium text-foreground-500">Multiplayer Tags</p>
           {staticTags?.map((tag) => (
             <Checkbox key={tag} value={tag}>
               {tag}
             </Checkbox>
           ))}
-        </CheckboxGroup>
-
-        <CheckboxGroup label="Tags Filters" values={selectedTags} onChange={handleTagChange}>
+          <p className="relative text-medium text-foreground-500">Tags</p>
           {tags?.map((tag) => (
             <Checkbox key={tag} value={tag}>
               {tag}
             </Checkbox>
           ))}
         </CheckboxGroup>
-      </div>
+      </ScrollShadow>
     </div>
   );
 }

@@ -1,11 +1,13 @@
 'use client';
 
+import { Button, p } from '@nextui-org/react';
+import { Input } from '@nextui-org/react';
+import { Card } from '@nextui-org/react';
 import { signOut, useSession } from 'next-auth/react';
 import { signIn } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 import { POST } from '@/app/api/request';
-import { Button } from '@nextui-org/button';
 
 export default function Page() {
   const { data: session, status } = useSession();
@@ -22,7 +24,7 @@ export default function Page() {
     } else {
       setError('');
     }
-  }, [confirmPassword]);
+  }, [confirmPassword, password]);
 
   const register = async () => {
     const formURL = `api/users`;
@@ -38,97 +40,61 @@ export default function Page() {
     }
 
     const requestBody = {
-      username: username,
-      password: password,
-      email: email,
+      username,
+      password,
+      email,
     };
 
     try {
       await POST(formURL, requestBody);
-      await signIn('credentials', { password: password, username: username });
+      await signIn('credentials', { username: username, password: password });
+
+      window.location.href = '/';
     } catch (error) {
-      setError('Error al registrarse, intentelo de nuevo mas tardeeeeee');
+      setError('Error al registrarse, intentelo de nuevo más tarde');
     }
   };
+
   if (status === 'authenticated')
     return (
       <div className="flex items-center justify-center w-full h-full flex-col gap-3">
-        <p className="text-2xl">Ya tiene una sesion abierta, para crear una cuenta debera cerrarla primero</p>
-        <Button
-          onClick={() => signOut()}
-          className="bg-red-500 w-1/2 text-white py-2 px-4 rounded-md disabled:bg-gray-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+        <h3>Ya tiene una sesión abierta, para crear una cuenta deberá cerrarla primero</h3>
+        <Button onClick={() => signOut()} color="error" className="w-1/2">
           Cerrar Sesión
         </Button>
       </div>
     );
-  else
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
-          <div className="mb-4">
-            <label className="block text-gray-400 text-sm mb-2" htmlFor="username">
-              Nombre de usuario
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              className="w-full px-3 py-2 text-gray-900 rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-400 text-sm mb-2" htmlFor="username">
-              Email
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              className="w-full px-3 py-2 text-gray-900 rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <Card className="bg-gray-800 p-6 w-80 flex flex-col gap-4">
+        <h3 className="text-center text-white text-xl">Registrarse</h3>
 
-          <div className="mb-6 gap-2 flex flex-col">
-            <label className="block text-gray-400 text-sm mb-2" htmlFor="password">
-              Contraseña
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              className="w-full px-3 py-2 text-gray-900 rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              id="password"
-              name="password"
-              type="password"
-              className="w-full px-3 py-2 text-gray-900 rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Confirmar Contraseña"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            {error && <p className="text-red-500 text-xs italic">{error}</p>}
-          </div>
+        <Input clearable underlined label="Nombre de usuario" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
 
-          <div>
-            <button
-              onClick={() => register()}
-              disabled={error.length !== 0}
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md disabled:bg-gray-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
-              Registrarse
-            </button>
-          </div>
+        <Input clearable underlined label="Email" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+
+        <Input clearable underlined label="Contraseña" type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
+
+        <Input label="Confirmar Contraseña" type="password" placeholder="Confirmar Contraseña" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+
+        {error && <p className="text-red-600 text-xs text-center">{error}</p>}
+
+        <Button color="primary" onClick={register} disabled={error.length !== 0} className="w-full">
+          Registrarse
+        </Button>
+
+        <div className="flex flex-row items-center justify-center gap-2">
+          <div className="border-1 border-white flex-grow " />
+          <p>o</p>
+          <div className="border-1 border-white flex-grow" />
         </div>
-      </div>
-    );
+
+        <p className="text-center text-white text-xl">¿Ya tiene una cuenta?</p>
+        <Button variant="ghost" color="primary" onClick={() => (window.location.href = '/auth/signin')} className="w-full">
+          Iniciar Sesión
+        </Button>
+      </Card>
+    </div>
+  );
 }

@@ -20,8 +20,10 @@ export default function UserContentDisplay({ data, gData }) {
   const [searchParam, setSearchParam] = useState('');
   const [random, setRandom] = useState(-1);
   const [open, setOpen] = useState(false);
+  const [order, setOrder] = useState('nameDown');
 
-  const orderBy = (order) => {
+  // Function to order the games
+  useEffect(() => {
     switch (order) {
       case 'nameDown':
         setFilteredGames((prevGames) => [...prevGames].sort((a, b) => a.game.name.localeCompare(b.game.name)));
@@ -36,7 +38,7 @@ export default function UserContentDisplay({ data, gData }) {
         setFilteredGames((prevGames) => [...prevGames].sort((a, b) => a.timePlayed - b.timePlayed));
         break;
     }
-  };
+  }, [order]);
 
   const filterGames = () => {
     if (selectedTags.length === 0) {
@@ -66,23 +68,21 @@ export default function UserContentDisplay({ data, gData }) {
       <TagSection games={games} setSelectedTags={setSelectedTags} selectedTags={selectedTags} />
       <div className={`max-h-full w-full ${open ? 'mr-[200px]' : 'mr-0'}`}>
         <div className="w-full h-full flex flex-col relative">
-          <div className="lg:px-10 px-5 py-5 flex flex-wrap gap-2 lg:justify-between justify-center sticky top-0 z-50 bg-gray-900">
+          <div className="md:px-10 px-5 py-5 flex flex-wrap gap-2 md:justify-between justify-center sticky top-0 bg-gray-900">
             <FilterBar searchParam={searchParam} setSearchParam={setSearchParam} />
-            <div className="flex flex-row flex-wrap lg:justify-normal justify-center lg:gap-5 gap-2">
+            <div className="flex flex-row flex-wrap md:justify-normal justify-center md:gap-5 gap-2 ">
+              <AddUserGameModal setGames={setGames} />
               <SteamImportModal setGames={setGames} />
-              <SortByInput orderBy={orderBy} usergame={true} />
+              <SortByInput setOrder={setOrder} usergame />
             </div>
           </div>
-          <ScrollShadow hideScrollBar className="h-full w-full shadow-inner overflow-y-scroll">
-            <div className="lg:px-10 px-5 py-5 grid lg:grid-cols-6 sm:grid-cols-5 grid-cols-3 gap-3">
+          <ScrollShadow className="h-full w-full shadow-inner overflow-y-scroll">
+            <div className="md:px-10 px-5 py-5 grid lg:grid-cols-6 sm:grid-cols-5 grid-cols-3 gap-3">
               {filteredGames?.map((entry) => (
                 <div key={entry.game.id} className="aspect-[6/9] bg-gray-600 rounded-xl overflow-hidden">
                   <UserGameCard entry={entry} setGames={setGames} random={random} />
                 </div>
               ))}
-              <div className="aspect-[6/9] bg-gray-600 rounded-md overflow-hidden group border border-dashed border-gray-400 flex justify-center items-center">
-                <AddUserGameModal setGames={setGames} />
-              </div>
             </div>
           </ScrollShadow>
         </div>
