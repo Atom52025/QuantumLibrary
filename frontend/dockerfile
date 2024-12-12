@@ -2,9 +2,23 @@
 FROM node:18-alpine AS build
 WORKDIR /app
 
+# Define build-time arguments
+ARG NEXTAUTH_SECRET
+ARG NEXT_PUBLIC_EXTERNAL_API_URL
+ARG NEXT_PUBLIC_INTERNAL_API_URL
+ARG NEXTAUTH_URL
+
+# Expose build-time arguments to the Next.js environment
+ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+ENV NEXT_PUBLIC_EXTERNAL_API_URL=${NEXT_PUBLIC_EXTERNAL_API_URL}
+ENV NEXT_PUBLIC_INTERNAL_API_URL=${NEXT_PUBLIC_INTERNAL_API_URL}
+ENV NEXTAUTH_URL=${NEXTAUTH_URL}
+
+# Copy package files and install dependencies
 COPY package*.json .
 RUN npm install
 
+# Copy the rest of the application code
 COPY src/app/ ./src/app/
 COPY public/ ./public/
 COPY src/middleware.js ./src/
@@ -13,8 +27,9 @@ COPY tailwind.config.js .
 COPY postcss.config.js .
 COPY next.config.mjs .
 
+# Build the application
 RUN npm run build
 
 # Stage 2: Run the app
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "prod"]

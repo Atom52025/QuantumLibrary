@@ -8,8 +8,8 @@
     "build": "next build",
     "lint": "next lint",
     "start": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "backend": "mvn spring-boot:run",
-    "frontend": "npm run prod"
+    "backend": "mvn spring-boot:run -Dspring-boot.run.profiles=dev",
+    "frontend": "npm run dev"
   },
   "dependencies": {
     "@nextui-org/input": "^2.1.16",

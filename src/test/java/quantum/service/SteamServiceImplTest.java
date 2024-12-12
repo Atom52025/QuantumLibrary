@@ -80,7 +80,10 @@ class SteamServiceImplTest {
     @DisplayName("Test getUser method (OK)")
     void testGetUser() {
         // Mock web server response
-        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody("{\"response\": {\"players\": [] } }"));
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody("{\"response\": {\"players\": [] } }")
+        );
 
         // Verify result
         String response = steamService.getUser("test_steam_id");
@@ -94,7 +97,10 @@ class SteamServiceImplTest {
     @DisplayName("Test getGames method (OK)")
     void testGetGames() {
         // Mock web server response
-        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody("{\"response\":{\"game_count\":170,\"games\":[{\"appid\":4000,\"playtime_forever\":3770}]}}"));
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody("{\"response\":{\"game_count\":170,\"games\":[{\"appid\":4000,\"playtime_forever\":3770}]}}")
+        );
 
         // Mock sgdb service
         when(steamGridDBService.getBySteamId(any(Long.class))).thenReturn("{\"success\":true,\"data\":{\"id\":9022,\"name\":\"Portal\",\"release_date\":1191999600,\"types\":[\"steam\"],\"verified\":true}}");

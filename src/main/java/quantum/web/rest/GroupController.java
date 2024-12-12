@@ -68,7 +68,7 @@ public class GroupController implements GroupApi {
     }
 
     /**
-     * POST to /api/groups to create a group.
+     * POST to /api/user/{username}/groups to create a group.
      *
      * @param token The token with the authentication information.
      * @param username The username.
@@ -83,7 +83,7 @@ public class GroupController implements GroupApi {
     }
 
     /**
-     * POST to /api/user/{username}/groups to send an invitation to a user.
+     * POST to /api/groups/{group_id}/invite/{username} to send an invitation to a user.
      *
      * @param token    The token with the authentication information.
      * @param username The username.
@@ -97,7 +97,7 @@ public class GroupController implements GroupApi {
     }
 
     /**
-     * PATCH to /api/user/{username}/groups/{groupId} to accept a group invitation from a user.
+     * PATCH to /api/user/{username}/groups/{group_id} to accept a group invitation from a user.
      *
      * @param token    The token with the authentication information.
      * @param username The username.
