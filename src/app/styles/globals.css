@@ -6,81 +6,83 @@
 @import 'tailwindcss/utilities';
 
 :root {
-  /*Colores*/
-  --green: #adf651;
-  --dark-grey: #3f3f3f;
-  --medium-purple: #885ab6;
-  --light-white: #ffffff;
-  --aquamarine: #3eced9;
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+    /*Colores*/
+    --green: #adf651;
+    --dark-grey: #3f3f3f;
+    --medium-purple: #885ab6;
+    --light-white: #ffffff;
+    --aquamarine: #3eced9;
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
 
-  /*Gradiente*/
-  --gradient: linear-gradient(180deg, #adf651 0%, #3eced9 47.92%, #885ab6 100%);
-  --gradientHorizontal: linear-gradient(90deg, #adf651 0%, #3eced9 47.92%, #885ab6 100%);
+    /*Gradiente*/
+    --gradient: linear-gradient(180deg, #adf651 0%, #3eced9 47.92%, #885ab6 100%);
+    --gradientHorizontal: linear-gradient(90deg, #adf651 0%, #3eced9 47.92%, #885ab6 100%);
 }
 
 @font-face {
-  font-family: 'FasterStroker';
-  src: url('/fonts/FasterStroker.otf') format('opentype');
+    font-family: 'FasterStroker';
+    src: url('/fonts/FasterStroker.otf') format('opentype');
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-start-rgb: 0, 0, 0;
+        --background-end-rgb: 0, 0, 0;
+    }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+    color: rgb(var(--foreground-rgb));
+    background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
 
 * {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
 /* Scroll */
 
 ::-webkit-scrollbar {
-  width: 15px;
-  height: 10px;
-  border-radius: 100%;
+    width: 5px;
+    height: 10px;
+    border-radius: 100%;
 }
 
 /* Desaparecer en movil */
 @media screen and (max-width: 768px) {
-  ::-webkit-scrollbar {
-    width: 10px !important;
-  }
+    ::-webkit-scrollbar {
+        width: 10px !important;
+    }
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #454a4d;
-  border-radius: 10px;
+    background: #454a4d;
+    border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
 }
 
 /* Ponemos un color de fondo y redondeamos las esquinas del track */
 ::-webkit-scrollbar-track {
-  border-radius: 20px;
-  background: var(--dark-grey);
+    border-radius: 20px;
+    background: var(--dark-grey);
 }
+
 ::-webkit-scrollbar-track:horizontal {
-  background: transparent;
+    background: transparent;
 }

@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import Chart from '@/app/components/Chart';
 import GroupListSection from '@/app/components/sections/GroupListSection';
 
-export default function Stats({ data, gData }) {
+export default function StatSection({ data, gData }) {
   const [bl1, setBl1] = useState(true);
   const [bl2, setBl2] = useState(true);
   const [bl3, setBl3] = useState(true);

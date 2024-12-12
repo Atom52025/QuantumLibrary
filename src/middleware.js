@@ -3,11 +3,15 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * - auth/signup (signup page)
+     * - auth/signin (signin page)
+     * - / (homepage)
+     * - /games (games page)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - fonts (fonts files)
      */
-    '/((?!auth/signup|_next/static|_next/image|favicon.ico).*)',
+    '/((?!auth/signup|auth/signin||games|_next/static|_next/image|favicon.ico|fonts).*)',
   ],
 };

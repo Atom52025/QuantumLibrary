@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
 import { PATCH } from '@/app/api/tokenRequest';
 import InfoPopups from '@/app/components/InfoPopups';
@@ -77,7 +77,7 @@ export default function ChangePasswordModal({ user }) {
 
   return (
     <>
-      <Button color="primary" onClick={onOpen}>
+      <Button className="sm:flex-grow-0 flex-grow" color="primary" onClick={onOpen}>
         Cambiar Contraseña
       </Button>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center">

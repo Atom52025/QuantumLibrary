@@ -141,6 +141,9 @@ export default function SteamImportModal({ setGames }) {
               <Button color="warning" onPress={() => searchGames()}>
                 {searchLoading ? <Spinner /> : 'Buscar juegos'}
               </Button>
+              <Button color="danger" variant="bordered" onClick={() => setUser(null)}>
+                Eliminar usuario
+              </Button>
             </div>
           </div>
         )}
@@ -175,10 +178,10 @@ export default function SteamImportModal({ setGames }) {
       </ModalBody>
       <ModalFooter>
         <Button color="danger" onPress={onClose}>
-          Cancel
+          Cancelar
         </Button>
-        <Button color="primary" onPress={() => importGames(onClose)}>
-          {importLoading ? <Spinner color="default" /> : 'Import'}
+        <Button color="primary" onPress={() => importGames(onClose)} isDisabled={foundGames.length < 1}>
+          {importLoading ? <Spinner color="default" /> : 'Importar'}
         </Button>
       </ModalFooter>
     </>
@@ -186,7 +189,9 @@ export default function SteamImportModal({ setGames }) {
 
   return (
     <>
-      <Button onClick={onOpen}> Importar desde STEAM </Button>
+      <Button onClick={onOpen} className="lg:flex-grow-0 flex-grow ">
+        Importar desde STEAM
+      </Button>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center" scrollBehavior="inside">
         <ModalContent>{(onClose) => renderModalContent(onClose)}</ModalContent>
       </Modal>

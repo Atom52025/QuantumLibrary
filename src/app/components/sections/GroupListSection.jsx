@@ -9,6 +9,7 @@ import Link from 'next/link';
 
 import { DELETE, PATCH } from '@/app/api/tokenRequest';
 import GroupCreateModal from '@/app/components/modals/GroupCreateModal';
+import { motion } from 'framer-motion';
 
 export default function GroupListSection({ gData, open, setOpen }) {
   const { data: session } = useSession({ required: true });
@@ -38,8 +39,8 @@ export default function GroupListSection({ gData, open, setOpen }) {
   };
 
   return (
-    <div className={`h-full w-[200px] lg:bg-gray-800/50 bg-gray-800 shadow-inner flex flex-col top-0 z-50 absolute ${open ? 'right-0' : 'right-[-200px]'}`}>
-      <div className="p-3 h-[96%] w-full">
+    <div className={`h-full w-[200px] lg:bg-gray-800/50 bg-gray-800 shadow-inner flex flex-col top-0 z-40 absolute ${open ? 'right-0' : 'right-[-200px]'}`}>
+      <div className="p-3 flex-grow w-full">
         <p className="text-2xl font-bold"> Grupos </p>
         {groups.accepted.map((group) => {
           return (
@@ -83,8 +84,10 @@ export default function GroupListSection({ gData, open, setOpen }) {
       </div>
       <GroupCreateModal groups={groups} setGroups={setGroups} />
       <button onClick={() => setOpen(!open)}>
-        <div className="absolute top-1/2 rounded-full left-[-25px] w-[50px] h-[50px] bg-gray-800 py-3 px-2">
-          {open ? <FaAngleRight className="h-full w-full" /> : <FaAngleLeft className="h-full " />}
+        <div className="absolute top-1/2 rounded-full left-[-25px] w-[50px] h-[50px] bg-gray-800 flex items-center justify-center">
+          <motion.div initial={{ rotate: 0, right: -10 }} animate={{ rotate: open ? 180 : 0, x: open ? 0 : -10 }} className="w-[30px] h-[30px]">
+            <FaAngleLeft className="h-full w-full text-white" />
+          </motion.div>
         </div>
       </button>
     </div>

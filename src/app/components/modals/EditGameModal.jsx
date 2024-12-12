@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch } from '@nextui-org/react';
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, Switch } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 
@@ -8,6 +8,7 @@ import { GET, POST } from '@/app/api/tokenRequest';
 import InfoPopups from '@/app/components/InfoPopups';
 import AchivementsInput from '@/app/components/inputs/AchivementsInput';
 import BacklogInput from '@/app/components/inputs/BacklogInput';
+import GameInputs from '@/app/components/inputs/GameInputs';
 import ImageInput from '@/app/components/inputs/ImageInput';
 import TagInput from '@/app/components/inputs/TagInput';
 
@@ -16,14 +17,14 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
   const [resultModal, setResultModal] = useState('closed');
 
   // Form data
+  const [timePlayed, setTimePlayed] = useState(0);
   const [imageKey, setImageKey] = useState(0);
   const [customImage, setCustomImage] = useState('');
   const [tags, setTags] = useState(game.tags);
-  const [timePlayed, setTimePlayed] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-  const [achievements, setAchievements] = useState(null);
-  const [totalAchievements, setTotalAchievements] = useState(null);
+  const [achievements, setAchievements] = useState(0);
+  const [totalAchievements, setTotalAchievements] = useState(0);
   const [backlog, setBacklog] = useState(new Set([]));
   const [editing, setEditing] = useState(false);
 
@@ -83,74 +84,61 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
 
   const renderModalContent = (onClose) => (
     <>
-      <ModalHeader className="uppercase text-3xl">{game.name}</ModalHeader>
-      <ModalBody className="grid grid-cols-2">
-        <div className="space-y-4">
-          {/* GAME IMAGE */}
-          <ImageInput customImage={customImage} setCustomImage={setCustomImage} imageKey={imageKey} setImageKey={setImageKey} grids={grids} viewOnly={!editing} />
-        </div>
-        <div className="flex flex-col gap-4 w-full">
-          {editing && (
-            <>
-              <div className="flex flex-row gap-4 justify-between">
-                {/* FAVORITE */}
-                <Switch size="lg" color="success" startContent={<IoMdHeart />} endContent={<IoMdHeartEmpty />} isSelected={isFavorite} onValueChange={setIsFavorite}>
-                  Favorito
-                </Switch>
-
-                {/* FINISHED */}
-                <Switch size="lg" color="success" isSelected={isFinished} onValueChange={setIsFinished}>
-                  Terminado
-                </Switch>
-              </div>
-
-              {/* BACKLOG */}
-              <BacklogInput backlog={backlog} setBacklog={setBacklog} achievements={achievements} totalAchievements={totalAchievements} />
-
-              {/* ACHIEVEMENTS */}
-              <AchivementsInput achievements={achievements} setAchievements={setAchievements} totalAchievements={totalAchievements} setTotalAchievements={setTotalAchievements} />
-
-              {/* TIME PLAYED */}
-              <Input
-                label="Tiempo jugado"
-                placeholder="Introduce el tiempo jugado en minutos"
-                type="number"
-                variant="bordered"
-                onChange={(e) => setTimePlayed(e.target.value)}
-                value={timePlayed}
-                endContent={'min'}
+      <ModalHeader className="uppercase sm:text-3xl text-xl">{game.name}</ModalHeader>
+      <ModalBody className="overflow-auto">
+        <ScrollShadow hideScrollBar className="flex flex-col sm:flex-row gap-5">
+          <div className="space-y-4 flex-shrink">
+            {/* GAME IMAGE */}
+            <ImageInput customImage={customImage} setCustomImage={setCustomImage} imageKey={imageKey} setImageKey={setImageKey} grids={grids} viewOnly={!editing} />
+          </div>
+          <div className="flex flex-col gap-4 w-full flex-grow">
+            {editing ? (
+              <GameInputs
+                isFavorite={isFavorite}
+                setIsFavorite={setIsFavorite}
+                isFinished={isFinished}
+                setIsFinished={setIsFinished}
+                backlog={backlog}
+                setBacklog={setBacklog}
+                achievements={achievements}
+                setAchievements={setAchievements}
+                totalAchievements={totalAchievements}
+                setTotalAchievements={setTotalAchievements}
+                timePlayed={timePlayed}
+                setTimePlayed={setTimePlayed}
+                tags={tags}
+                setTags={setTags}
               />
-            </>
-          )}
-
-          {/* TAGS */}
-          <TagInput tags={tags} setTags={setTags} viewOnly={!editing} />
-        </div>
+            ) : (
+              <TagInput tags={tags} setTags={setTags} viewOnly={!editing} />
+            )}
+          </div>
+        </ScrollShadow>
       </ModalBody>
-      <ModalFooter>
+      <ModalFooter className="flex flex-wrap">
         {editing ? (
           <>
-            <Button color="error" variant="flat" onClick={() => setEditing(false)}>
+            <Button className="sm:w-auto w-full" color="error" variant="flat" onClick={() => setEditing(false)}>
               Cancelar
             </Button>
-            <Button color="success" variant="flat" onClick={() => saveGame(onClose)}>
+            <Button className="sm:w-auto w-full" color="success" variant="flat" onClick={() => saveGame(onClose)}>
               Añadir
             </Button>
           </>
         ) : (
-          <Button color="success" variant="flat" onClick={() => setEditing(true)}>
+          <Button className="sm:w-auto w-full" color="success" variant="flat" onClick={() => setEditing(true)}>
             Editar y añadir
           </Button>
         )}
-        <Button color="primary" variant="flat" onPress={onClose}>
-          Close
+        <Button className="sm:w-auto w-full" color="primary" variant="flat" onPress={onClose}>
+          Cerrar
         </Button>
       </ModalFooter>
     </>
   );
   return (
     <>
-      <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center">
+      <Modal isOpen={isOpen} size={'4xl'} className="max-h-[80vh] overflow-hidden" onOpenChange={onOpenChange} placement="top-center">
         <ModalContent>{(onClose) => renderModalContent(onClose)}</ModalContent>
       </Modal>
       <InfoPopups resultModal={resultModal} setResultModal={setResultModal} />

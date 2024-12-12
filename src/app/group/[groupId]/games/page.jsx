@@ -1,7 +1,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
 import { GET } from '@/app/api/tokenRequest';
-import ContentFiltering from '@/app/components/ContentDisplay';
 import GroupInfoSection from '@/app/components/sections/GroupInfoSection';
+import GroupContentDisplay from '@/app/components/user/GroupContentDisplay';
 import { getServerSession } from 'next-auth/next';
 
 export default async function Page({ params }) {
@@ -19,7 +19,7 @@ export default async function Page({ params }) {
   return (
     <>
       <GroupInfoSection group={data?.group} />
-      <ContentFiltering data={data?.games} gData={dataGroups || { accepted: [], pending: [] }} />
+      <GroupContentDisplay data={data?.games} group={data?.group} gData={dataGroups || { accepted: [], pending: [] }} />
     </>
   );
 }

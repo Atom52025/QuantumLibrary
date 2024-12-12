@@ -8,6 +8,7 @@ import FilterBar from '@/app/components/inputs/FilterBar';
 import SortByInput from '@/app/components/inputs/SortByInput';
 import AddUserGameModal from '@/app/components/modals/AddUserGameModal';
 import SteamImportModal from '@/app/components/modals/SteamImportModal';
+import CategorySection from '@/app/components/sections/CategorySection';
 import GroupListSection from '@/app/components/sections/GroupListSection';
 import TagSection from '@/app/components/sections/TagSection';
 import UserGameCard from '@/app/components/user/UserGameCard';
@@ -19,8 +20,10 @@ export default function UserContentDisplay({ data, gData }) {
   const [searchParam, setSearchParam] = useState('');
   const [random, setRandom] = useState(-1);
   const [open, setOpen] = useState(false);
+  const [order, setOrder] = useState('nameDown');
 
-  const orderBy = (order) => {
+  // Function to order the games
+  useEffect(() => {
     switch (order) {
       case 'nameDown':
         setFilteredGames((prevGames) => [...prevGames].sort((a, b) => a.game.name.localeCompare(b.game.name)));
@@ -35,7 +38,7 @@ export default function UserContentDisplay({ data, gData }) {
         setFilteredGames((prevGames) => [...prevGames].sort((a, b) => a.timePlayed - b.timePlayed));
         break;
     }
-  };
+  }, [order]);
 
   const filterGames = () => {
     if (selectedTags.length === 0) {
@@ -61,28 +64,29 @@ export default function UserContentDisplay({ data, gData }) {
 
   return (
     <>
+      <CategorySection />
       <TagSection games={games} setSelectedTags={setSelectedTags} selectedTags={selectedTags} />
-      <ScrollShadow hideScrollBar className={`max-h-full w-full shadow-inner overflow-y-scroll ${open ? 'mr-[200px]' : 'mr-0'}`}>
-        <div className="flex flex-col ">
-          <div className=" px-10 pt-5 flex justify-between">
+      <div className={`max-h-full w-full ${open ? 'mr-[200px]' : 'mr-0'}`}>
+        <div className="w-full h-full flex flex-col relative">
+          <div className="md:px-10 px-5 py-5 flex flex-wrap gap-2 md:justify-between justify-center sticky top-0 bg-gray-900">
             <FilterBar searchParam={searchParam} setSearchParam={setSearchParam} />
-            <div className="flex flex-row gap-5">
-              <SteamImportModal setGames={setGames} />
-              <SortByInput orderBy={orderBy} usergame={true}/>
-            </div>
-          </div>
-          <div className="px-10 py-5 grid grid-cols-6 gap-3">
-            {filteredGames?.map((entry) => (
-              <div key={entry.game.id} className="aspect-[6/9] bg-gray-600 rounded-xl overflow-hidden">
-                <UserGameCard entry={entry} setGames={setGames} random={random} />
-              </div>
-            ))}
-            <div className="aspect-[6/9] bg-gray-600 rounded-md overflow-hidden group border border-dashed border-gray-400 flex justify-center items-center">
+            <div className="flex flex-row flex-wrap md:justify-normal justify-center md:gap-5 gap-2 ">
               <AddUserGameModal setGames={setGames} />
+              <SteamImportModal setGames={setGames} />
+              <SortByInput setOrder={setOrder} usergame />
             </div>
           </div>
+          <ScrollShadow className="h-full w-full shadow-inner overflow-y-scroll">
+            <div className="md:px-10 px-5 py-5 grid lg:grid-cols-6 sm:grid-cols-5 grid-cols-3 gap-3">
+              {filteredGames?.map((entry) => (
+                <div key={entry.game.id} className="aspect-[6/9] bg-gray-600 rounded-xl overflow-hidden">
+                  <UserGameCard entry={entry} setGames={setGames} random={random} />
+                </div>
+              ))}
+            </div>
+          </ScrollShadow>
         </div>
-      </ScrollShadow>
+      </div>
       <GroupListSection gData={gData} open={open} setOpen={setOpen} />
       <Counter randomGame={randomGame} filteredGames={filteredGames} open={open} />
     </>
