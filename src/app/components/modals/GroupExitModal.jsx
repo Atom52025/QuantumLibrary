@@ -19,7 +19,7 @@ export default function GroupExitModal({ groupId }) {
     const formURL = `api/user/${session.user.username}/groups/${groupId}`;
 
     try {
-      await DELETE(formURL, session.user.token);
+      await DELETE(formURL, session.user.token, true);
       setResultModal('Grupo eliminado con exito');
       onClose();
       window.location.href = '/library/games/all';

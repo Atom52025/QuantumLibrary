@@ -33,7 +33,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
   const eraseForm = async (onClose) => {
     const formURL = `api/user/${session.user.username}/games/${userGame.game.id}`;
     try {
-      await DELETE(formURL, session.user.token);
+      await DELETE(formURL, session.user.token, true);
 
       setGames((prevGames) => prevGames.filter((game) => game !== userGame));
 
@@ -59,7 +59,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
     };
 
     try {
-      const res = await PATCH(formURL, session.user.token, requestBody);
+      const res = await PATCH(formURL, session.user.token, requestBody, true);
 
       setGames((prevGames) => prevGames.map((game) => (game.game.id === res.game.id ? res : game)));
 
@@ -72,7 +72,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
 
   const getGrids = async (key) => {
     const formURL = `api/sgdb/getGrids/${key}`;
-    let res = await GET(formURL, session.user.token);
+    let res = await GET(formURL, session.user.token, true);
     let filteredGrids = res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url);
     setGrids(filteredGrids);
     return filteredGrids;

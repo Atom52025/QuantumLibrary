@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prod": "next start",
     "build": "next build",
     "lint": "next lint",
     "start": "concurrently \"npm run backend\" \"npm run frontend\"",
     "backend": "mvn spring-boot:run",
-    "frontend": "npm run dev"
+    "frontend": "npm run prod"
   },
   "dependencies": {
     "@nextui-org/input": "^2.1.16",

@@ -4,7 +4,8 @@ import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 import { useAsyncList } from '@react-stately/data';
 import { useSession } from 'next-auth/react';
 
-import { GET } from '@/app/api/signalRequest';
+import { GET } from '@/app/api/tokenRequest';
+import { GETSIGNAL } from '@/app/api/signalRequest';
 
 export default function SearchBar({ setGame, setGrids }) {
   // Get Session
@@ -12,7 +13,7 @@ export default function SearchBar({ setGame, setGrids }) {
 
   const getGrids = async (key) => {
     const formURL = `api/sgdb/getGrids/${key}`;
-    let res = await GET(formURL, session.user.token);
+    let res = await GET(formURL, session.user.token, true);
     console.log(res.data);
     setGrids(res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url));
   };
@@ -20,7 +21,7 @@ export default function SearchBar({ setGame, setGrids }) {
   let list = useAsyncList({
     async load({ signal, filterText }) {
       try {
-        let res = await GET('api/sgdb/search?term=' + filterText, session.user.token, signal);
+        let res = await GETSIGNAL('api/sgdb/search?term=' + filterText, session.user.token, signal);
         return {
           items: res.data,
         };

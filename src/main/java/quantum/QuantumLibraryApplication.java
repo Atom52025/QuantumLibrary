@@ -22,7 +22,6 @@ public class QuantumLibraryApplication {
                 				
                 ----------------------------------------------
                 Application 'Quantum Library' is running!
-                Local: 		https://localhost:8080
                 ----------------------------------------------
                 """);
     }

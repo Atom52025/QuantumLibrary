@@ -36,7 +36,7 @@ export default function SteamImportModal({ setGames }) {
   const searchUser = async () => {
     const formURL = `api/steam/user/${userId}`;
     try {
-      const res = await GET(formURL, session.user.token);
+      const res = await GET(formURL, session.user.token, true);
       setUser(res.response.players[0]);
     } catch (error) {
       setResultModal('Error al buscar el usuario');
@@ -48,7 +48,7 @@ export default function SteamImportModal({ setGames }) {
     try {
       setSearchLoading(true);
 
-      const res = await GET(formURL, session.user.token);
+      const res = await GET(formURL, session.user.token, true);
       setFoundGames(res.games);
 
       setSearchLoading(false);
@@ -65,7 +65,7 @@ export default function SteamImportModal({ setGames }) {
     };
 
     try {
-      await PATCH(formURL, session.user.token, requestBody);
+      await PATCH(formURL, session.user.token, requestBody, true);
       setResultModal('Imagen de usuario importada con exito');
       await update({ ...session, user: { ...session?.user, image: image } });
     } catch (error) {
@@ -88,7 +88,7 @@ export default function SteamImportModal({ setGames }) {
     try {
       setImportLoading(true);
 
-      const res = await POST(formURL, session.user.token, requestBody);
+      const res = await POST(formURL, session.user.token, requestBody, true);
       setGames((prevGames) => [...prevGames, ...res.games]);
 
       setImportLoading(false);

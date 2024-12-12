@@ -25,7 +25,7 @@ export default function GroupInviteModal({ groupId, setGroups }) {
     try {
       setLoading(true);
 
-      const res = await GET(formURL, session.user.token);
+      const res = await GET(formURL, session.user.token, true);
       setFoundUsers((prevFoundUsers) => [...prevFoundUsers, res]);
 
       setLoading(false);
@@ -40,7 +40,7 @@ export default function GroupInviteModal({ groupId, setGroups }) {
     try {
       for (const user of foundUsers) {
         console.log(formURL + user.username);
-        const res = await POST(formURL + user.username, session.user.token);
+        const res = await POST(formURL + user.username, session.user.token, true);
       }
       setResultModal('Invitacion enviada con exito');
       onClose();

@@ -1,10 +1,11 @@
 export const dynamic = 'force-dynamic'; // defaults to auto
 
-const baseUrl = 'http://localhost:8080/';
+const INTERNAL_API_URL = process.env.INTERNAL_API_URL;
+const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET(url) {
   // Create Query String
-  const completeUrl = `${baseUrl}${url}`;
+  const completeUrl = `${INTERNAL_API_URL}/${url}`;
 
   // Fetch Data
   const res = await fetch(completeUrl, {
@@ -19,7 +20,7 @@ export async function GET(url) {
 
 export async function POST(url, body) {
   // Create Query String
-  const completeUrl = `${baseUrl}${url}`;
+  const completeUrl = `${INTERNAL_API_URL}/${url}`;
 
   // Fetch Data
   const res = await fetch(completeUrl, {
@@ -39,7 +40,7 @@ export async function POST(url, body) {
 
 export async function DELETE(url) {
   // Create Query String
-  const completeUrl = `${baseUrl}${url}`;
+  const completeUrl = `${INTERNAL_API_URL}/${url}`;
 
   // Fetch Data
   const res = await fetch(completeUrl, {
@@ -53,7 +54,7 @@ export async function DELETE(url) {
 
 export async function PATCH(url, body) {
   // Create Query String
-  const completeUrl = `${baseUrl}${url}`;
+  const completeUrl = `${INTERNAL_API_URL}/${url}`;
 
   // Fetch Data
   const res = await fetch(completeUrl, {

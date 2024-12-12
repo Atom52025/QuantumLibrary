@@ -42,7 +42,7 @@ export default function UserSection() {
     };
 
     try {
-      await PATCH(formURL, session.user.token, requestBody);
+      await PATCH(formURL, session.user.token, requestBody, true);
       setResultModal('Informacion del usuario editada con exito');
       await update({ ...session, user: { ...session?.user, email: email, image: image } });
       console.log(session);
