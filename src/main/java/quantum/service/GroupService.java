@@ -59,14 +59,6 @@ public interface GroupService {
     void declineOrExitGroup(String username, Long groupId);
 
     /**
-     * Find a group by id.
-     *
-     * @param id The id of the group to find.
-     * @return The group.
-     */
-    Group findGroupById(Long id);
-
-    /**
      * Create a new group.
      *
      * @param username The username.

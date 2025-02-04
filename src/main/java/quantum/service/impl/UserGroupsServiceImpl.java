@@ -10,15 +10,11 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import quantum.exceptions.DatabaseConnectionException;
 import quantum.exceptions.EntityNotFoundException;
-import quantum.mapping.GamesMapping;
-import quantum.mapping.UsersMapping;
 import quantum.model.Group;
 import quantum.model.User;
 import quantum.model.UserGroup;
 import quantum.repository.UserGroupsRepository;
-import quantum.service.GroupService;
 import quantum.service.UserGroupsService;
-import quantum.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +24,7 @@ import static quantum.constant.ErrorConstants.ENTITY_NOT_FOUND_ERROR;
 
 
 /**
- * Service implementation for {@link UserGroup} entity.
+ * Test for {@link UserGroup} service class.
  */
 @Slf4j
 @Service

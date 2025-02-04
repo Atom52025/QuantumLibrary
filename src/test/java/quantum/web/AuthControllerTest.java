@@ -45,7 +45,7 @@ class AuthControllerTest {
     protected AuthService service;
 
     @Test
-    @DisplayName("Test Auth controller POST logIn")
+    @DisplayName("Test Auth controller POST (logIn)")
     void logIn() throws Exception {
 
         LogInBody input = LogInBody.builder()
@@ -67,7 +67,7 @@ class AuthControllerTest {
     }
 
     @Test
-    @DisplayName("Test Auth controller POST signUp")
+    @DisplayName("Test Auth controller POST (signUp)")
     void signUp() throws Exception {
 
         SignUpBody input = SignUpBody.builder()

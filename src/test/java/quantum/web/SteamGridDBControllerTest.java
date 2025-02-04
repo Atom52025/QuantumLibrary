@@ -43,7 +43,7 @@ class SteamGridDBControllerTest {
     protected SteamGridDBService service;
 
     @Test
-    @DisplayName("Test SteamGridDB controller GET search by term")
+    @DisplayName("Test SteamGridDB controller GET (search by term)")
     void searchByTerm() throws Exception {
         // Arrange
         when(service.searchByTerm(anyString())).thenReturn("SampleResponse");
@@ -63,7 +63,7 @@ class SteamGridDBControllerTest {
     }
 
     @Test
-    @DisplayName("Test SteamGridDB controller GET grids by game ID")
+    @DisplayName("Test SteamGridDB controller GET (grids by game ID)")
     void getGrids() throws Exception {
         // Arrange
         when(service.getGridsById(anyLong())).thenReturn("SampleGridResponse");

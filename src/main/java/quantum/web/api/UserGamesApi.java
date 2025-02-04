@@ -57,15 +57,27 @@ public interface UserGamesApi {
             Pageable pageable
     );
 
+    /**
+     * GET to /api/user/{username}/onlineGames to fetch a user game online list.
+     *
+     * @param token    The token with the authentication information.
+     * @param username The username.
+     * @return The list of games
+     */
+    @Operation(summary = "Get online games list", description = "Get online games list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The list of games"),
+            @ApiResponse(responseCode = "400", description = "Invalid page or page size value"),
+            @ApiResponse(responseCode = "404", description = "No results found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping(value = "/api/user/{username}/onlineGames", produces = "application/json")
-    ResponseEntity<List<UserGame>> getUserGames(
+    ResponseEntity<List<UserGame>> getOnlineGames(
             @RequestHeader("Authorization")
             String token,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
             @PathVariable("username")
-            String username,
-            @PageableDefault(value = Integer.MAX_VALUE)
-            Pageable pageable
+            String username
     );
 
     /**

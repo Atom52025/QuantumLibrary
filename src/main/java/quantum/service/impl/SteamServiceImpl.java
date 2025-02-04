@@ -100,7 +100,7 @@ public class SteamServiceImpl implements SteamService {
                 if (steamSpyGame == null) {
                     return;
                 }
-                SGDBGame sgdbGame = getSGDBInfo(game.getAppId());
+                SGDBGame sgdbGame = steamGridBDService.getBySteamId(game.getAppId());
                 String imageUrl = "https://cdn.cloudflare.steamstatic.com/steam/apps/" + game.getAppId() + "/library_600x900.jpg";
                 if (sgdbGame != null) {
                     List<SGDBGrid> sgdbGrids = getSGDBGrids(sgdbGame.getId());
@@ -132,22 +132,7 @@ public class SteamServiceImpl implements SteamService {
     //------------------------------------- PRIVATE METHODS -------------------------------------//
 
     /**
-     * Get steam grid db grids.
-     *
-     * @param sgbdId The sgbd id to search for
-     * @return The info found.
-     */
-    private SGDBGame getSGDBInfo(Long sgbdId) {
-        try {
-            String gameResponse = steamGridBDService.getBySteamId(sgbdId);
-            return objectMapper.readValue(gameResponse, SGDBGameSuccessResponse.class).getData();
-        } catch (JsonProcessingException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Get steam grid db info.
+     * Get steam grid db info and parse it.
      *
      * @param steamId The steam id to search for
      * @return The info found.

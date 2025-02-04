@@ -198,30 +198,6 @@ public class GroupServiceImpl implements GroupService {
     }
 
     /**
-     * Find a group by id.
-     *
-     * @param id The id of the group to find.
-     * @return The group.
-     */
-    @Override
-    public Group findGroupById(Long id) {
-        Optional<Group> group;
-        try {
-            log.info("[SERVICE] - [GROUP SEARCH] - Searching group: {}", id);
-            group = repository.findById(id);
-        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
-            throw new DatabaseConnectionException(ex);
-        }
-
-        // Check if there is any result
-        if (group.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-
-        return group.get();
-    }
-
-    /**
      * Create a new group.
      *
      * @param username The username.
@@ -331,6 +307,29 @@ public class GroupServiceImpl implements GroupService {
     }
 
     //------------------------------------- PRIVATE METHODS -------------------------------------//
+
+    /**
+     * Find a group by id.
+     *
+     * @param id The id of the group to find.
+     * @return The group.
+     */
+    public Group findGroupById(Long id) {
+        Optional<Group> group;
+        try {
+            log.info("[SERVICE] - [GROUP SEARCH] - Searching group: {}", id);
+            group = repository.findById(id);
+        } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
+            throw new DatabaseConnectionException(ex);
+        }
+
+        // Check if there is any result
+        if (group.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
+
+        return group.get();
+    }
 
     /**
      * Delete group.

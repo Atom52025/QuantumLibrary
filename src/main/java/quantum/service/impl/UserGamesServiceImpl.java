@@ -179,7 +179,7 @@ public class UserGamesServiceImpl implements UserGamesService {
     }
 
     /**
-     * Add game to a user.
+     * Import list of games to a user.
      *
      * @param username The username.
      * @param body     The body

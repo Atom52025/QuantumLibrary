@@ -43,7 +43,7 @@ class SteamControllerTest {
     protected SteamService service;
 
     @Test
-    @DisplayName("Test steam controller GET user")
+    @DisplayName("Test steam controller GET (user)")
     void getUser() throws Exception {
 
         // Mock the service call
@@ -64,7 +64,7 @@ class SteamControllerTest {
     }
 
     @Test
-    @DisplayName("Test steam controller GET games")
+    @DisplayName("Test steam controller GET (games)")
     void getGames() throws Exception {
 
         // Mock the service call

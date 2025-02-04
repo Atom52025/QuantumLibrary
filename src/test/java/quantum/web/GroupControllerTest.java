@@ -73,7 +73,7 @@ class GroupControllerTest {
     }
 
     @Test
-    @DisplayName("Test group controller GET group games")
+    @DisplayName("Test group controller GET (group games)")
     void getGroupGames() throws Exception {
 
         when(service.getGroupGames(any(Long.class))).thenReturn(new GroupGamesResponse());
@@ -93,7 +93,7 @@ class GroupControllerTest {
     }
 
     @Test
-    @DisplayName("Test group controller GET user groups")
+    @DisplayName("Test group controller GET (user group)")
     void getUserGroups() throws Exception {
 
         when(service.getUserGroups(any(String.class))).thenReturn(new UserGroupsListResponse());
@@ -137,7 +137,7 @@ class GroupControllerTest {
     }
 
     @Test
-    @DisplayName("Test group controller SEND INVITE")
+    @DisplayName("Test group controller POST (send invite)")
     void sendInvite() throws Exception {
 
         // Mock the service to do nothing
@@ -157,7 +157,7 @@ class GroupControllerTest {
     }
 
     @Test
-    @DisplayName("Test group controller JOIN group")
+    @DisplayName("Test group controller PATCH (join group)")
     void joinGroup() throws Exception {
 
         // Mock the service to do nothing
@@ -177,7 +177,7 @@ class GroupControllerTest {
     }
 
     @Test
-    @DisplayName("Test group controller DELETE user group")
+    @DisplayName("Test group controller DELETE (user group)")
     void deleteUserGroup() throws Exception {
 
         // Mock the service to do nothing
@@ -194,5 +194,25 @@ class GroupControllerTest {
                 .andReturn();
 
         verify(service, times(1)).declineOrExitGroup(any(String.class), any(Long.class));
+    }
+
+    @Test
+    @DisplayName("Test group controller PATCH (vote group game)")
+    void voteGroupGame() throws Exception {
+
+        // Mock the service to do nothing
+        doNothing().when(service).voteGroupGame(any(String.class), any(Long.class), any(Long.class));
+
+        // Build the request
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/user/{username}/groups/{group_id}/game/{game_id}", "user", 1L, 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
+
+        // Perform the request and expect no content (204)
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        verify(service, times(1)).voteGroupGame(any(String.class), any(Long.class), any(Long.class));
     }
 }

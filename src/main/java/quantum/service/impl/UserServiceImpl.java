@@ -239,7 +239,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Check password.
      *
-     * @param user The user.
+     * @param user     The user.
      * @param password The password.
      * @return Whether the password is correct or not.
      */
@@ -278,7 +278,7 @@ public class UserServiceImpl implements UserService {
             throw new DatabaseConnectionException(ex);
         }
 
-        return !user.isEmpty();
+        return user.isPresent();
     }
 
     /**

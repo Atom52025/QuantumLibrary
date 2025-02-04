@@ -15,8 +15,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import quantum.dto.sgdb.SGDBGame;
+import quantum.dto.steamSpy.SteamSpyGame;
 import quantum.filter.AuthTokenFilter;
+import quantum.service.impl.GameServiceImpl;
 import quantum.service.impl.SteamGridDBServiceImpl;
+import quantum.service.impl.SteamSpyServiceImpl;
 
 import java.io.IOException;
 
@@ -32,9 +35,9 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class SteamGridDBServiceImplTest {
+class SteamSpyServiceImplTest {
 
-    private SteamGridDBServiceImpl steamGridDBService;
+    private SteamSpyServiceImpl steamSpyService;
 
     @MockBean
     private AuthTokenFilter authTokenFilter;
@@ -47,15 +50,12 @@ class SteamGridDBServiceImplTest {
 
     private static MockWebServer mockWebServer;
 
-    @Value("${steamdb.api.key}")
-    private String testKey;
-
     @BeforeEach
     void setup() throws IOException {
         when(webClientBuilder.baseUrl(anyString())).thenReturn(webClientBuilder);
         when(webClientBuilder.build()).thenReturn(webClient);
 
-        this.steamGridDBService = new SteamGridDBServiceImpl(webClientBuilder);
+        this.steamSpyService = new SteamSpyServiceImpl(webClientBuilder);
 
         // Start the MockWebServer
         mockWebServer = new MockWebServer();
@@ -63,8 +63,7 @@ class SteamGridDBServiceImplTest {
 
         String mockServerUrl = String.format("http://localhost:%s", mockWebServer.getPort());
 
-        ReflectionTestUtils.setField(steamGridDBService, "webClient", WebClient.builder().baseUrl(mockServerUrl).build());
-        ReflectionTestUtils.setField(steamGridDBService, "key", testKey);
+        ReflectionTestUtils.setField(steamSpyService, "webClient", WebClient.builder().baseUrl(mockServerUrl).build());
     }
 
     @AfterEach
@@ -73,67 +72,32 @@ class SteamGridDBServiceImplTest {
         mockWebServer.shutdown();
     }
 
+    /**
+     * Test for RequiredArgsConstructor method.
+     */
     @Test
     @DisplayName("Test RequiredArgsConstructor method (OK)")
     void testRequiredArgsConstructor() {
-        SteamGridDBServiceImpl service = new SteamGridDBServiceImpl(webClient);
+        SteamSpyServiceImpl service = new SteamSpyServiceImpl(webClient);
         assertNotNull(service);
-        ReflectionTestUtils.setField(service, "key", testKey);
     }
 
+    /**
+     * Test for {@link SteamSpyServiceImpl#getSteamSpyInfo} method.
+     */
     @Test
-    @DisplayName("Test searchByTerm method (OK)")
-    void searchByTermOK() {
+    @DisplayName("Test getSteamSpyInfo method (OK)")
+    void getSteamSpyInfoOK() {
         // Mock API response
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(200)
-                .setBody("{\"data\": [\"Game1\", \"Game2\"]}")
+                .setBody("{\"appid\":4000,\"name\":\"Garry's Mod\",\"developer\":\"Facepunch Studios\",\"publisher\":\"Valve\",\"score_rank\":\"\",\"positive\":1091540,\"negative\":36287,\"userscore\":0,\"owners\":\"20,000,000 .. 50,000,000\",\"average_forever\":13444,\"average_2weeks\":246,\"median_forever\":1679,\"median_2weeks\":86,\"price\":\"999\",\"initialprice\":\"999\",\"discount\":\"0\",\"ccu\":31594,\"languages\":\"English\",\"genre\":\"Casual, Indie, Simulation\",\"tags\":{\"Sandbox\":18633}}")
+
         );
 
         // Call the method and assert the response
-        String response = steamGridDBService.searchByTerm("TestGame");
+        SteamSpyGame response = steamSpyService.getSteamSpyInfo(400L);
         assertNotNull(response);
     }
 
-    @Test
-    @DisplayName("Test getBySteamId method (OK)")
-    void getBySteamIdOK() {
-        // Mock API response for getBySteamId
-        mockWebServer.enqueue(new MockResponse()
-                .setResponseCode(200)
-                .setBody("{\"steam_id\": 76561198034336239, \"name\": \"Test Steam Game\"}")
-        );
-
-        // Call the method and assert the response
-        SGDBGame response = steamGridDBService.getBySteamId(76561198034336239L);
-        assertNull(response);
-    }
-
-    @Test
-    @DisplayName("Test getBySteamId method (Not Found)")
-    void getBySteamIdNotFound() {
-        // Mock 404 Not Found response
-        mockWebServer.enqueue(new MockResponse()
-                .setResponseCode(404)
-                .setBody("")
-        );
-
-        // Call the method and assert the response is null
-        SGDBGame response = steamGridDBService.getBySteamId(76561198034336239L);
-        assertNull(response);
-    }
-
-    @Test
-    @DisplayName("Test getGridsById method (OK)")
-    void getGridsByIdOK() {
-        // Mock API response for getGridsById
-        mockWebServer.enqueue(new MockResponse()
-                .setResponseCode(200)
-                .setBody("{\"grids\": [\"Grid1\", \"Grid2\"]}")
-        );
-
-        // Call the method and assert the response
-        String response = steamGridDBService.getGridsById(456L);
-        assertNotNull(response);
-    }
 }

@@ -16,16 +16,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import quantum.dto.userGames.NewUserGameBody;
-import quantum.dto.userGames.UpdateUserGameBody;
-import quantum.dto.userGames.UserGameResponse;
-import quantum.dto.userGames.UserGamesListResponse;
+import quantum.dto.userGames.*;
 import quantum.dto.userGames.steamImport.UserGameImport;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
+import quantum.model.UserGame;
 import quantum.service.UserGamesService;
 import quantum.web.rest.UserGamesController;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -74,6 +74,30 @@ class UserGamesControllerTest {
                 .andReturn();
 
         verify(service, times(1)).getUserGames(any(String.class), any(String.class), any(Pageable.class));
+    }
+
+    /**
+     * Test for {@link UserGamesController#getUserGames} method.
+     *
+     * @throws Exception if any error occurs when performing the test request.
+     */
+    @Test
+    @DisplayName("Test games controller GET (online)")
+    void getOnlineGames() throws Exception {
+
+        when(service.getOnlineGames(any(String.class))).thenReturn(new ArrayList<>());
+
+        // Build the request
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/{username}/onlineGames", SAMPLE_USERNAME)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
+
+        // Perform the request
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(service, times(1)).getOnlineGames(any(String.class));
     }
 
     /**
@@ -150,10 +174,7 @@ class UserGamesControllerTest {
     @Test
     @DisplayName("Test games controller PATCH")
     void patchGame() throws Exception {
-
-        UpdateUserGameBody input = UpdateUserGameBody.builder()
-                .build();
-
+        UpdateUserGameBody input = UpdateUserGameBody.builder().build();
         when(service.updateUserGame(any(String.class), any(Long.class), any(UpdateUserGameBody.class))).thenReturn(new UserGameResponse());
 
         // Build the request
@@ -190,5 +211,28 @@ class UserGamesControllerTest {
                 .andReturn();
 
         verify(service, times(1)).deleteUserGame(any(String.class), any(Long.class));
+    }
+
+    /**
+     * Test for {@link UserGamesController#deleteUserGame} method.
+     *
+     * @throws Exception if any error occurs when performing the test request.
+     */
+    @Test
+    @DisplayName("Test games controller GET (stats)")
+    void getStats() throws Exception {
+        when(service.getStats(any(String.class))).thenReturn(new StatsResponse());
+
+        // Build the request
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/{username}/games/stats", SAMPLE_USERNAME)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
+
+        // Perform the request
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(service, times(1)).getStats(any(String.class));
     }
 }

@@ -41,14 +41,17 @@ public class UserGamesController implements UserGamesApi {
     }
 
     /**
-     * @param token
-     * @param username
-     * @param pageable
-     * @return
+     * GET to /api/user/{username}/onlineGames to fetch a user game online list.
+     *
+     * @param token    The token with the authentication information.
+     * @param username The username.
+     * @return The list of games
      */
     @Override
-    public ResponseEntity<List<UserGame>> getUserGames(String token, String username, Pageable pageable) {
-        return ResponseEntity.ok(service.getOnlineGames(username));
+    public ResponseEntity<List<UserGame>> getOnlineGames(String token, String username) {
+        log.info("[CONTROLLER] - Searching online games on user");
+        List<UserGame> result = service.getOnlineGames(username);
+        return ResponseEntity.ok(result);
     }
 
     /**

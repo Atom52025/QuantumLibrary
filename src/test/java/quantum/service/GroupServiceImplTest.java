@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import quantum.dto.group.*;
 import quantum.dto.userGroups.UserGroupsListResponse;
@@ -29,6 +30,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static quantum.constant.TestConstants.*;
 
+/**
+ * Test for {@link GroupServiceImpl} service class.
+ */
 @ExtendWith(MockitoExtension.class)
 class GroupServiceImplTest {
 
@@ -59,15 +63,17 @@ class GroupServiceImplTest {
     @Test
     @DisplayName("Test getGroupGames method (OK)")
     void getGroupGamesOK() {
+        // Mock dependencies
         when(userGroupsService.findAcceptedUsersInGroup(any(Long.class), any(Boolean.class))).thenReturn(Collections.singletonList(SAMPLE_USER));
         when(userGamesService.getCommonGames(any(List.class))).thenReturn(Set.of(SAMPLE_GAME));
         when(repository.findById(any(Long.class))).thenReturn(Optional.of(SAMPLE_GROUP));
 
+        // Verify result
         GroupGamesResponse response = service.getGroupGames(1L);
 
         assertEquals(SAMPLE_GROUP.getName(), response.getGroup().getName());
         assertEquals(1, response.getGames().size());
-        assertEquals(SAMPLE_GAME.getName(), response.getGames().get(0).getName());
+        assertEquals(SAMPLE_GAME.getName(), response.getGames().getFirst().getName());
     }
 
     @Test
@@ -80,9 +86,11 @@ class GroupServiceImplTest {
     @Test
     @DisplayName("Test getUserGroups method (OK)")
     void getUserGroupsOK() {
+        // Mock dependencies
         when(userGroupsService.findAcceptedGroupsByUser("testUser", true)).thenReturn(Collections.emptyList());
         when(userGroupsService.findAcceptedGroupsByUser("testUser", false)).thenReturn(Collections.emptyList());
 
+        // Verify result
         UserGroupsListResponse response = service.getUserGroups("testUser");
 
         assertTrue(response.getAccepted().isEmpty());
@@ -93,14 +101,17 @@ class GroupServiceImplTest {
     @DisplayName("Test sendInvite method (OK)")
     void sendInviteOK() {
         Group newGroup = new Group(1L, "Sample Group", new ArrayList<>());
+
+        // Mock dependencies
         when(repository.findById(any(Long.class))).thenReturn(Optional.of(newGroup));
         when(userService.findUser(any(String.class))).thenReturn(SAMPLE_USER);
         when(userGroupsService.postUserGroup(any(User.class), any(Group.class))).thenReturn(new UserGroup());
 
+        // Verify result
         UserGroup response = service.sendInvite("invitedUser", 1L);
 
-        assertNotNull(response);
         verify(userGroupsService).postUserGroup(SAMPLE_USER, newGroup);
+        assertNotNull(response);
     }
 
     @Test
@@ -110,16 +121,19 @@ class GroupServiceImplTest {
         group.getUserGroups().add(SAMPLE_USER_GROUP);
         when(repository.findById(any(Long.class))).thenReturn(Optional.of(group));
         when(userService.findUser(any(String.class))).thenReturn(SAMPLE_USER);
-
         assertThrows(EntityFoundException.class, () -> service.sendInvite("testUser", 1L));
     }
 
     @Test
     @DisplayName("Test joinGroup method (OK)")
     void joinGroupOK() {
+        // Mock dependencies
         when(userGroupsService.findUserGroup(any(String.class), any(Long.class))).thenReturn(SAMPLE_USER_GROUP);
         doNothing().when(userGroupsService).updateUserGroup(SAMPLE_USER_GROUP);
+
+        // Verify result
         service.joinGroup("testUser", 1L);
+
         verify(userGroupsService).updateUserGroup(SAMPLE_USER_GROUP);
     }
 
@@ -128,11 +142,12 @@ class GroupServiceImplTest {
     void declineOrExitGroupOK() {
         // Clone the group so the test doesn't modify the original object
         Group testGroup = new Group(SAMPLE_GROUP.getId(), SAMPLE_GROUP.getName(), new ArrayList<>());
-
-        // Add user to the group
         testGroup.getUserGroups().add(SAMPLE_USER_GROUP);
 
+        // Mock dependencies
         when(repository.findById(any(Long.class))).thenReturn(Optional.of(testGroup));
+
+        // Verify result
         service.declineOrExitGroup(SAMPLE_USER.getUsername(), SAMPLE_GROUP.getId());
 
         assertTrue(testGroup.getUserGroups().isEmpty());
@@ -140,13 +155,34 @@ class GroupServiceImplTest {
     }
 
     @Test
+    @DisplayName("Test declineOrExitGroup method (NotFoundException)")
+    void declineOrExitGroupNotFoundException() {
+        // Clone the group so the test doesn't modify the original object
+        Group testGroup = new Group(SAMPLE_GROUP.getId(), SAMPLE_GROUP.getName(), new ArrayList<>());
+
+        // Don't add the user so the group is empty
+        when(repository.findById(any(Long.class))).thenReturn(Optional.of(testGroup));
+
+        assertThrows(EntityNotFoundException.class, () -> service.declineOrExitGroup(SAMPLE_USER.getUsername(), SAMPLE_GROUP.getId()));
+    }
+
+    @Test
     @DisplayName("Test getGroups method (OK)")
     void getGroupsOK() {
+        // Mock dependencies
         when(repository.findAll()).thenReturn(List.of(SAMPLE_GROUP));
 
+        // Verify result
         GroupListResponse response = service.getGroups();
 
         assertEquals(1, response.getGroups().size());
+    }
+
+    @Test
+    @DisplayName("Test getGroups method (DatabaseConnectionException)")
+    void getGroupsEntityDatabaseConnectionException() {
+        doThrow(JpaSystemException.class).when(repository).findAll();
+        assertThrows(DatabaseConnectionException.class, () -> service.getGroups());
     }
 
     @Test
@@ -159,14 +195,14 @@ class GroupServiceImplTest {
     @Test
     @DisplayName("Test postGroup method (OK)")
     void postGroupOK() {
-        Group newGroup = new Group(1L, "Sample Group", new ArrayList<>());
-        when(repository.save(any(Group.class))).thenReturn(newGroup);
-        when(mapper.map(newGroup)).thenReturn(new GroupResponse());
+        // Mock dependencies
+        when(repository.save(any(Group.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
+        // Verify result
         GroupResponse response = service.postGroup("testUser", SAMPLE_NEW_GROUP_BODY);
 
-        assertNotNull(response);
         verify(repository).save(any(Group.class));
+        assertNotNull(response);
     }
 
     @Test
@@ -177,12 +213,26 @@ class GroupServiceImplTest {
     }
 
     @Test
+    @DisplayName("Test postGroup method (DatabaseConnectionException)")
+    void postGroupDatabaseConnectionException() {
+        doThrow(JpaSystemException.class).when(repository).save(any(Group.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.postGroup("testUser", SAMPLE_NEW_GROUP_BODY));
+    }
+
+    @Test
+    @DisplayName("Test postGroup method (DataIntegrityViolationException)")
+    void postGroupDataIntegrityViolationException() {
+        doThrow(DataIntegrityViolationException.class).when(repository).save(any(Group.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.postGroup("testUser", SAMPLE_NEW_GROUP_BODY));
+    }
+
+    @Test
     @DisplayName("Test updateGroup method (OK)")
     void updateGroupOK() {
         // Clone the group so the test doesn't modify the original object
         Group testGroup = new Group(SAMPLE_GROUP.getId(), SAMPLE_GROUP.getName(), SAMPLE_GROUP.getUserGroups());
 
-        // Mock repository
+        // Mock dependencies
         when(repository.findById(any(Long.class))).thenReturn(Optional.of(testGroup));
         when(repository.save(any(Group.class))).then(element -> element.getArgument(0));
 
@@ -195,8 +245,16 @@ class GroupServiceImplTest {
     @Test
     @DisplayName("Test updateGroup method (EntityNotFoundException)")
     void updateGroupEntityNotFoundException() {
-        when(repository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> service.updateGroup(1L, SAMPLE_UPDATE_GROUP_BODY));
+        doThrow(JpaSystemException.class).when(repository).findById(any(Long.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.updateGroup(1L, SAMPLE_UPDATE_GROUP_BODY));
+    }
+
+    @Test
+    @DisplayName("Test updateGroup method (DatabaseConnectionException)")
+    void updateGroupDatabaseConnectionException() {
+        when(repository.findById(any(Long.class))).thenReturn(Optional.of(SAMPLE_GROUP));
+        doThrow(JpaSystemException.class).when(repository).save(any(Group.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.updateGroup(1L, SAMPLE_UPDATE_GROUP_BODY));
     }
 
     @Test
@@ -205,6 +263,7 @@ class GroupServiceImplTest {
         // Clone the group so the test doesn't modify the original object
         Group testGroup = new Group(SAMPLE_GROUP.getId(), SAMPLE_GROUP.getName(), SAMPLE_GROUP.getUserGroups());
 
+        // Mock dependencies
         doNothing().when(repository).delete(any(Group.class));
 
         // Verify result
@@ -214,18 +273,14 @@ class GroupServiceImplTest {
     @Test
     @DisplayName("Test deleteGroup method (DatabaseConnectionException)")
     void deleteGroupDatabaseConnectionException() {
-        // Clone the group so the test doesn't modify the original object
-        Group testGroup = new Group(SAMPLE_GROUP.getId(), SAMPLE_GROUP.getName(), SAMPLE_GROUP.getUserGroups());
-
         doThrow(JpaSystemException.class).when(repository).delete(any(Group.class));
-
-        assertThrows(DatabaseConnectionException.class, () -> service.deleteGroup(testGroup));
+        assertThrows(DatabaseConnectionException.class, () -> service.deleteGroup(SAMPLE_GROUP));
     }
 
     @Test
     @DisplayName("Test voteGroupGame method (OK)")
-    void voteGroupGame() {
-        // Mock repository
+    void voteGroupGameOK() {
+        // Mock dependencies
         when(userGroupsService.findUserGroup(any(String.class), any(Long.class))).thenReturn(SAMPLE_USER_GROUP);
 
         // Mock service
@@ -233,6 +288,15 @@ class GroupServiceImplTest {
 
         // Verify result
         assertDoesNotThrow(() -> service.voteGroupGame(SAMPLE_USER_GROUP.getUser().getUsername(), SAMPLE_USER_GROUP.getGroup().getId(), 1L));
+    }
+
+    @Test
+    @DisplayName("Test voteGroupGame method (DatabaseConnectionException)")
+    void voteGroupGameDatabaseConnectionException() {
+        UserGroup userGroup = new UserGroup(SAMPLE_USER_GROUP.getId(), SAMPLE_USER_GROUP.getUser(), SAMPLE_USER_GROUP.getGroup(), true, List.of(1L));
+        when(userGroupsService.findUserGroup(any(String.class), any(Long.class))).thenReturn(userGroup);
+        doThrow(JpaSystemException.class).when(userGroupsService).updateUserGroup(any(UserGroup.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.voteGroupGame(SAMPLE_USER_GROUP.getUser().getUsername(), SAMPLE_USER_GROUP.getGroup().getId(), 1L));
     }
 
 }

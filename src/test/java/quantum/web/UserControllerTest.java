@@ -160,7 +160,7 @@ class UserControllerTest {
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
-    @DisplayName("Test user password controller PATCH")
+    @DisplayName("Test user controller PATCH (password)")
     void patchUserPassword() throws Exception {
 
         UpdatePasswordBody input = UpdatePasswordBody.builder()

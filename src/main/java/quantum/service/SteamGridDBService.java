@@ -1,5 +1,7 @@
 package quantum.service;
 
+import quantum.dto.sgdb.SGDBGame;
+
 /**
  * Service for Steam Grid DB Petitions.
  */
@@ -14,20 +16,12 @@ public interface SteamGridDBService {
     String searchByTerm(String term);
 
     /**
-     * Get game in steam grid db by id.
-     *
-     * @param id The id to search for
-     * @return The game found.
-     */
-    String getById(Long id);
-
-    /**
      * Get game in steam grid db by steam id.
      *
      * @param id The steam id to search for
      * @return The game found.
      */
-    String getBySteamId(Long id);
+    SGDBGame getBySteamId(Long id);
 
     /**
      * Get game grids in steam grid db by id.
