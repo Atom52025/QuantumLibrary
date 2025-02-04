@@ -26,6 +26,10 @@ public class NewUserGameBody {
     @JsonProperty("image")
     private String image;
 
+    @Schema(example = "Game default image", description = "Game default image.")
+    @JsonProperty("defaultImage")
+    private String defaultImage;
+
     @Schema(example = "Game name", description = "Game name.")
     @JsonProperty("name")
     private String name;

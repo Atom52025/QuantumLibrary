@@ -11,6 +11,15 @@ import java.util.List;
  */
 public interface UserGroupsService {
     /**
+     * Find user group.
+     *
+     * @param username The username.
+     * @param groupId  The group id.
+     * @return The user group.
+     */
+    UserGroup findUserGroup(String username, Long groupId);
+
+    /**
      * Accept group.
      *
      * @param user  The user.
@@ -22,10 +31,9 @@ public interface UserGroupsService {
     /**
      * Update a user group.
      *
-     * @param username The username.
-     * @param groupId  The group id.
+     * @param userGroup The user group.
      */
-    void updateUserGroup(String username, Long groupId);
+    void updateUserGroup(UserGroup userGroup);
 
     /**
      * Decline group.

@@ -1,5 +1,5 @@
 import { GET } from '@/app/api/request';
-import ContentDisplay from '@/app/components/ContentDisplay';
+import ContentDisplay from '@/app/components/non-user/ContentDisplay';
 
 export default async function Page({ params }) {
   // Get Data

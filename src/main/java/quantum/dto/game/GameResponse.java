@@ -3,9 +3,9 @@ package quantum.dto.game;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import quantum.model.Game;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * Data transfer object for {@link Game} entity.
  */
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Data transfer object for Games entity.")

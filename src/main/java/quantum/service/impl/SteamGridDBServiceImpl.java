@@ -1,11 +1,15 @@
 package quantum.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import quantum.dto.sgdb.SGDBGame;
+import quantum.dto.sgdb.SGDBGameSuccessResponse;
 import quantum.service.SteamGridDBService;
 
 /**
@@ -16,10 +20,12 @@ import quantum.service.SteamGridDBService;
 @RequiredArgsConstructor
 public class SteamGridDBServiceImpl implements SteamGridDBService {
 
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String EXTERNAL_API_URL = "https://www.steamgriddb.com/api/v2/";
-    private static final String AUTH_TOKEN = "1a8c79dc9eff0c11128e1a230c8abdae";
     private final WebClient webClient;
+
+    @Value("${steamdb.api.key}")
+    private String key;
 
     @Autowired
     public SteamGridDBServiceImpl(WebClient.Builder webClientBuilder) {
@@ -39,7 +45,7 @@ public class SteamGridDBServiceImpl implements SteamGridDBService {
         String apiUrl = EXTERNAL_API_URL + "search/autocomplete/" + term;
         String response = webClient.get()
                 .uri(apiUrl)
-                .header("Authorization", "Bearer " + AUTH_TOKEN)
+                .header("Authorization", "Bearer " + key)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -58,32 +64,20 @@ public class SteamGridDBServiceImpl implements SteamGridDBService {
      * @return The game found.
      */
     @Override
-    public String getById(Long id) {
-        String apiUrl = EXTERNAL_API_URL + "games/id/" + id;
-        return webClient.get()
-                .uri(apiUrl)
-                .header("Authorization", "Bearer " + AUTH_TOKEN)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
-
-    /**
-     * Get game in steam grid db by id.
-     *
-     * @param id The id to search for
-     * @return The game found.
-     */
-    @Override
-    public String getBySteamId(Long id) {
+    public SGDBGame getBySteamId(Long id) {
         String apiUrl = EXTERNAL_API_URL + "games/steam/" + id;
         try {
-            return webClient.get()
+            String response = webClient.get()
                     .uri(apiUrl)
-                    .header("Authorization", "Bearer " + AUTH_TOKEN)
+                    .header("Authorization", "Bearer " + key)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+            try {
+                return objectMapper.readValue(response, SGDBGameSuccessResponse.class).getData();
+            } catch (Exception e) {
+                return null;
+            }
         } catch (WebClientResponseException.NotFound ex) {
             return null;
         }
@@ -100,7 +94,7 @@ public class SteamGridDBServiceImpl implements SteamGridDBService {
         String apiUrl = EXTERNAL_API_URL + "grids/game/" + id;
         return webClient.get()
                 .uri(apiUrl)
-                .header("Authorization", "Bearer " + AUTH_TOKEN)
+                .header("Authorization", "Bearer " + key)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();

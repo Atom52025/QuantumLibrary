@@ -16,17 +16,24 @@ export default function GroupInviteModal({ groupId, setGroups }) {
   // Modal state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  // Search state
   const [userId, setUserId] = useState('');
   const [foundUsers, setFoundUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Search user
   const searchUser = async () => {
     const formURL = `api/users/${userId}`;
     try {
       setLoading(true);
 
-      const res = await GET(formURL, session.user.token, true);
-      setFoundUsers((prevFoundUsers) => [...prevFoundUsers, res]);
+      const res = await GET(formURL, session.user.token);
+
+      if (res === null) {
+        setResultModal('Error: No se pudo encontrar al usuario');
+      } else {
+        setFoundUsers((prevFoundUsers) => [...prevFoundUsers, res]);
+      }
 
       setLoading(false);
     } catch (error) {
@@ -34,20 +41,23 @@ export default function GroupInviteModal({ groupId, setGroups }) {
     }
   };
 
+  // Invite user to group
   const invite = async (onClose) => {
     const formURL = `api/groups/${groupId}/invite/`;
-    console.log(foundUsers);
     try {
       for (const user of foundUsers) {
-        console.log(formURL + user.username);
         const res = await POST(formURL + user.username, session.user.token, true);
       }
       setResultModal('Invitacion enviada con exito');
       onClose();
     } catch (error) {
-      console.log(error);
       setResultModal('Error al enviar la invitacion');
     }
+  };
+
+  // Erase user from foundUsers
+  const eraseUser = (user) => {
+    setFoundUsers((users) => users.filter((posUser) => posUser.username !== user.username));
   };
 
   const renderModalContent = (onClose) => (
@@ -73,15 +83,20 @@ export default function GroupInviteModal({ groupId, setGroups }) {
           }}
         />
         {foundUsers.length !== 0 && (
-          <div className="flex flex-col gap-10 ">
+          <div className="flex flex-col gap-3 ">
             {foundUsers.map((user) => (
-              <User
-                key={user.username}
-                name={user.username}
-                avatarProps={{
-                  src: user.image,
-                }}
-              />
+              <div className="flex flex-row justify-between gap-5">
+                <User
+                  key={user.username}
+                  name={user.username}
+                  avatarProps={{
+                    src: user.image,
+                  }}
+                />
+                <Button color="danger" variant="bordered" onClick={() => eraseUser(user)}>
+                  Eliminar usuario
+                </Button>
+              </div>
             ))}
           </div>
         )}
@@ -90,7 +105,7 @@ export default function GroupInviteModal({ groupId, setGroups }) {
         <Button color="danger" onPress={onClose}>
           Cancelar
         </Button>
-        <Button color="primary" onPress={() => invite(onClose)}>
+        <Button color="primary" onPress={() => invite(onClose)} isDisabled={foundUsers.length < 1}>
           {loading ? <Spinner color="default" /> : 'Invitar'}
         </Button>
       </ModalFooter>
@@ -99,7 +114,7 @@ export default function GroupInviteModal({ groupId, setGroups }) {
 
   return (
     <>
-      <button className="h-[4%] w-full p-1" onClick={onOpen}>
+      <button className="min-h-10 w-full p-1" onClick={onOpen}>
         <p className="w-full h-full flex items-center justify-center leading-tight bg-blue-400/20 rounded-full hover:bg-green-600">Invitar</p>
       </button>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center" scrollBehavior="inside">

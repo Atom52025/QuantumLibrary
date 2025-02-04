@@ -44,7 +44,7 @@ public interface UserApi {
             String token,
             @PageableDefault
             Pageable pageable
-    ) throws Exception;
+    );
 
     /**
      * GET to /api/users/{username} to fetch a user.

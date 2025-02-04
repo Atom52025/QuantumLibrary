@@ -15,7 +15,9 @@ import quantum.dto.userGames.*;
 import quantum.dto.userGames.steamImport.UserGameImport;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.exceptions.DatabaseConnectionException;
+import quantum.exceptions.EntityFoundException;
 import quantum.exceptions.EntityNotFoundException;
+import quantum.exceptions.QuantumLibraryGenericException;
 import quantum.mapping.GamesMapping;
 import quantum.mapping.UserGamesMapping;
 import quantum.model.Game;
@@ -139,7 +141,7 @@ public class UserGamesServiceImpl implements UserGamesService {
         // Check if game is already added
         Optional<UserGame> userGame = repository.findByUser_UsernameAndGame_SgdbId(username, gameSgdbId);
         if (userGame.isPresent()) {
-            throw new DataIntegrityViolationException(DATA_INTEGRITY_ERROR);
+            throw new EntityFoundException("Game already added to user library");
         }
 
         // Search if game is in the database
@@ -150,7 +152,7 @@ public class UserGamesServiceImpl implements UserGamesService {
             game = (Game) gameService.postGame(
                     NewGameBody.builder()
                             .name(body.getName())
-                            .image(body.getImage())
+                            .image(body.getDefaultImage() != null ? body.getDefaultImage() : body.getImage())
                             .tags(body.getTags())
                             .sgdbId(gameSgdbId)
                             .build(),
@@ -177,7 +179,7 @@ public class UserGamesServiceImpl implements UserGamesService {
     }
 
     /**
-     * Add game to a user.
+     * Import list of games to a user.
      *
      * @param username The username.
      * @param body     The body
@@ -349,7 +351,12 @@ public class UserGamesServiceImpl implements UserGamesService {
     public List<UserGame> postUserGames(String username, Map<Long, NewUserGameBody> gamesToImport) {
 
         // Get available games in ddbb
-        List<Game> availableGames = new ArrayList<>(gameService.getGames(Pageable.unpaged()).getGames().stream().map(gamesMapper::map).toList());
+        List<Game> availableGames;
+        try {
+            availableGames = new ArrayList<>(gameService.getGames(Pageable.unpaged()).getGames().stream().map(gamesMapper::map).toList());
+        } catch (EntityNotFoundException e) {
+            availableGames = new ArrayList<>();
+        }
         List<Long> availableGameIds = availableGames.stream().map(Game::getSgdbId).toList();
 
         // Creates a copy of the games to import and removes games already in the database
@@ -426,6 +433,7 @@ public class UserGamesServiceImpl implements UserGamesService {
                 .user(user)
                 .game(game)
                 .timePlayed(body.getTimePlayed())
+                .image(body.getImage())
                 .tags(allTags)
                 .achivements(body.getAchivements())
                 .totalAchivements(body.getTotalAchivements())

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import quantum.dto.sgdb.SGDBGame;
@@ -16,6 +17,7 @@ import quantum.dto.steam.SteamResponse;
 import quantum.dto.steamSpy.SteamSpyGame;
 import quantum.dto.userGames.steamImport.UserGameImport;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
+import quantum.exceptions.QuantumLibraryGenericException;
 import quantum.service.SteamGridDBService;
 import quantum.service.SteamService;
 import quantum.service.SteamSpyService;
@@ -95,8 +97,10 @@ public class SteamServiceImpl implements SteamService {
 
             steamResponse.getResponse().getGames().stream().parallel().forEach(game -> {
                 SteamSpyGame steamSpyGame = steamSpyService.getSteamSpyInfo(game.getAppId());
-                if (steamSpyGame == null) { return; }
-                SGDBGame sgdbGame = getSGDBInfo(game.getAppId());
+                if (steamSpyGame == null) {
+                    return;
+                }
+                SGDBGame sgdbGame = steamGridBDService.getBySteamId(game.getAppId());
                 String imageUrl = "https://cdn.cloudflare.steamstatic.com/steam/apps/" + game.getAppId() + "/library_600x900.jpg";
                 if (sgdbGame != null) {
                     List<SGDBGrid> sgdbGrids = getSGDBGrids(sgdbGame.getId());
@@ -105,6 +109,7 @@ public class SteamServiceImpl implements SteamService {
                         imageUrl = sgdbGrid.orElse(sgdbGrids.getFirst()).getUrl();
                     }
                 }
+                assert sgdbGame != null;
                 UserGameImport newUserGame = UserGameImport.builder()
                         .name(steamSpyGame.getName())
                         .timePlayed(game.getPlaytime())
@@ -116,7 +121,7 @@ public class SteamServiceImpl implements SteamService {
             });
 
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new QuantumLibraryGenericException("Error parsing response from steam", e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
         }
 
         return UserGamesImportList.builder()
@@ -127,22 +132,7 @@ public class SteamServiceImpl implements SteamService {
     //------------------------------------- PRIVATE METHODS -------------------------------------//
 
     /**
-     * Get steam grid db grids.
-     *
-     * @param sgbdId The sgbd id to search for
-     * @return The info found.
-     */
-    private SGDBGame getSGDBInfo(Long sgbdId) {
-        try {
-            String gameResponse = steamGridBDService.getBySteamId(sgbdId);
-            return objectMapper.readValue(gameResponse, SGDBGameSuccessResponse.class).getData();
-        }catch (JsonProcessingException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Get steam grid db info.
+     * Get steam grid db info and parse it.
      *
      * @param steamId The steam id to search for
      * @return The info found.
@@ -151,7 +141,7 @@ public class SteamServiceImpl implements SteamService {
         try {
             String gridResponse = steamGridBDService.getGridsById(steamId);
             return objectMapper.readValue(gridResponse, SGDBGridSuccessResponse.class).getData();
-        }catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             return new ArrayList<>();
         }
     }

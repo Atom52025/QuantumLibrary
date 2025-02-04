@@ -1,13 +1,11 @@
 package quantum.dto.group;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import quantum.dto.game.GameResponse;
-import quantum.dto.user.UserResponse;
 import quantum.model.Group;
 
 import java.util.List;
@@ -26,6 +24,6 @@ public class GroupGamesResponse {
     private Group group;
 
     @Schema(description = "List of games.")
-    private List<GameResponse> games;
+    private List<VotedGamesResponse> games;
 
 }

@@ -122,9 +122,7 @@ public class GameServiceImpl implements GameService {
      * @param games The games to save.
      */
     @Override
-    public void postGames(List<Game> games){
-        long startTime = System.currentTimeMillis();
-
+    public void postGames(List<Game> games) {
         try {
             log.info("[SERVICE] - [GAME CREATION] - Saving {} games", games.size());
             repository.saveAll(games);
@@ -132,10 +130,6 @@ public class GameServiceImpl implements GameService {
             throw new DatabaseConnectionException(DATA_INTEGRITY_ERROR, ex);
         } catch (JpaSystemException | QueryTimeoutException | JDBCConnectionException | DataException ex) {
             throw new DatabaseConnectionException(ex);
-        } finally {
-            long endTime = System.currentTimeMillis(); // End the timer
-            long duration = endTime - startTime; // Calculate the duration in milliseconds
-            log.info("[SERVICE] - [GAME CREATION] - Time taken to save games: {} ms", duration);
         }
     }
 

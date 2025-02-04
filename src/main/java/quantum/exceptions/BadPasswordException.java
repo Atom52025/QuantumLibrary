@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static quantum.constant.ErrorConstants.BAD_PASSWORD_ERROR;
-import static quantum.constant.ErrorConstants.BAD_REQUEST_ERROR;
 
 /**
  * Exception to throw when the request is bad.

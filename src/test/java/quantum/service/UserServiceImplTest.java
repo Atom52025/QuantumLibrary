@@ -13,12 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import quantum.dto.user.UserListResponse;
-import quantum.dto.user.UserResponse;
-import quantum.dto.user.NewUserBody;
-import quantum.dto.user.UpdateUserBody;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import quantum.dto.user.*;
+import quantum.exceptions.BadPasswordException;
 import quantum.exceptions.DatabaseConnectionException;
 import quantum.exceptions.EntityNotFoundException;
 import quantum.mapping.UsersMappingImpl;
@@ -41,7 +41,7 @@ import static quantum.constant.TestConstants.SAMPLE_USERNAME;
  * Test for {@link UserServiceImpl} service class.
  */
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImplTest {
+class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
@@ -63,6 +63,11 @@ public class UserServiceImplTest {
             .image("image")
             .build();
 
+    private static final UpdatePasswordBody SAMPLE_UPDATE_PASSWORD_BODY = UpdatePasswordBody.builder()
+            .oldPassword(SAMPLE_USER.getPassword())
+            .newPassword("newPassword")
+            .build();
+
     private static final User SAMPLE_UPDATE_USER = User.builder()
             .id(1L)
             .username("newUsername")
@@ -82,7 +87,7 @@ public class UserServiceImplTest {
         List<User> resultContent = Collections.nCopies(10, SAMPLE_USER);
         Page<User> pagedResult = new PageImpl<>(resultContent, pageable, resultContent.size());
 
-        // Mock repository
+        // Mock dependencies
         when(userRepository.findAll(any(Pageable.class))).thenReturn(pagedResult);
         when(mapper.map(any(User.class))).thenCallRealMethod();
 
@@ -90,9 +95,9 @@ public class UserServiceImplTest {
         UserListResponse response = service.getUsers(pageable);
 
         assertEquals(10, response.getUsers().size());
-        assertEquals(SAMPLE_USER.getUsername(), response.getUsers().get(0).getUsername());
-        assertEquals(SAMPLE_USER.getEmail(), response.getUsers().get(0).getEmail());
-        assertEquals(SAMPLE_USER.getRole(), response.getUsers().get(0).getRole());
+        assertEquals(SAMPLE_USER.getUsername(), response.getUsers().getFirst().getUsername());
+        assertEquals(SAMPLE_USER.getEmail(), response.getUsers().getFirst().getEmail());
+        assertEquals(SAMPLE_USER.getRole(), response.getUsers().getFirst().getRole());
     }
 
     /**
@@ -102,11 +107,7 @@ public class UserServiceImplTest {
     @DisplayName("Test getUsers method (DatabaseConnectionException)")
     void getUsersDatabaseConnectionException() {
         Pageable pageable = PageRequest.of(0, 10);
-
-        // Mock repository
         when(userRepository.findAll(any(Pageable.class))).thenThrow(JDBCConnectionException.class);
-
-        // Verify result
         assertThrows(DatabaseConnectionException.class, () -> service.getUsers(pageable));
     }
 
@@ -119,14 +120,73 @@ public class UserServiceImplTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<User> resultContent = Collections.nCopies(0, SAMPLE_USER);
         Page<User> pagedResult = new PageImpl<>(resultContent, pageable, resultContent.size());
-
-        // Mock repository
         when(userRepository.findAll(any(Pageable.class))).thenReturn(pagedResult);
-
-        // Verify result
         assertThrows(EntityNotFoundException.class, () -> service.getUsers(pageable));
     }
 
+    /**
+     * Test for {@link UserServiceImpl#getUser} method.
+     */
+    @Test
+    @DisplayName("Test getUser method (OK)")
+    void getUserOK() {
+        // Mock dependencies
+        when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(SAMPLE_USER));
+
+        // Verify result
+        UserResponse response = service.getUser(SAMPLE_USER.getUsername());
+
+        assertEquals(SAMPLE_USER.getUsername(), response.getUsername());
+        assertEquals(SAMPLE_USER.getEmail(), response.getEmail());
+        assertEquals(SAMPLE_USER.getRole(), response.getRole());
+    }
+
+    /**
+     * Test for {@link UserServiceImpl#getUser} method.
+     */
+    @Test
+    @DisplayName("Test getUser method (EntityNotFoundException)")
+    void getUserNotFoundException() {
+        when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> service.getUser(SAMPLE_USERNAME));
+    }
+
+    /**
+     * Test for {@link UserServiceImpl#getUser} method.
+     */
+    @Test
+    @DisplayName("Test getUser method (DatabaseConnectionException)")
+    void getUserDatabaseConnectionException() {
+        doThrow(JDBCConnectionException.class).when(userRepository).findByUsername(any(String.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.getUser(SAMPLE_USERNAME));
+    }
+
+    /**
+     * Test for {@link UserServiceImpl#getUser} method.
+     */
+    @Test
+    @DisplayName("Test findUser method (OK)")
+    void findUserOK() {
+        // Mock dependencies
+        when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(SAMPLE_USER));
+
+        // Verify result
+        User response = service.findUser(SAMPLE_USER.getUsername());
+
+        assertEquals(SAMPLE_USER.getUsername(), response.getUsername());
+        assertEquals(SAMPLE_USER.getEmail(), response.getEmail());
+        assertEquals(SAMPLE_USER.getRole(), response.getRole());
+    }
+
+    /**
+     * Test for {@link UserServiceImpl#getUser} method.
+     */
+    @Test
+    @DisplayName("Test findUser method (DatabaseConnectionException)")
+    void findUserDatabaseConnectionException() {
+        doThrow(JDBCConnectionException.class).when(userRepository).findByUsername(any(String.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.findUser(SAMPLE_USERNAME));
+    }
 
     /**
      * Test for {@link UserServiceImpl#loadUserByUsername} method.
@@ -135,7 +195,7 @@ public class UserServiceImplTest {
     @DisplayName("Test loadUserByUsername method (OK)")
     void loadUserByUsernameOK() {
 
-        // Mock repository
+        // Mock dependencies
         when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(SAMPLE_USER));
 
         // Verify result
@@ -151,11 +211,7 @@ public class UserServiceImplTest {
     @Test
     @DisplayName("Test loadUserByUsername method (UsernameNotFoundException)")
     void loadUserByUsernameNotFoundException() {
-
-        // Mock repository
         when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.empty());
-
-        // Verify result
         assertThrows(UsernameNotFoundException.class, () -> service.loadUserByUsername(SAMPLE_USERNAME));
     }
 
@@ -166,7 +222,7 @@ public class UserServiceImplTest {
     @Test
     @DisplayName("Test postUser method (OK)")
     void postUserOK() {
-        // Mock repository
+        // Mock dependencies
         when(userRepository.save(any(User.class))).then(element -> element.getArgument(0));
         when(mapper.map(any(User.class))).thenCallRealMethod();
 
@@ -182,20 +238,36 @@ public class UserServiceImplTest {
      * Test for {@link UserServiceImpl#postUser} method.
      */
     @Test
-    @DisplayName("Test postUser method (Error on save)")
+    @DisplayName("Test postUser method (DataIntegrityViolationException)")
+    void postUserDataIntegrityViolationException() {
+        when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(SAMPLE_USER));
+        assertThrows(DataIntegrityViolationException.class, () -> service.postUser(SAMPLE_NEW_USER_BODY));
+    }
+
+    /**
+     * Test for {@link UserServiceImpl#postUser} method.
+     */
+    @Test
+    @DisplayName("Test postUser method (DatabaseConnectionException)")
     void postUserDatabaseConnectionException() {
-        // Mock repository (DatabaseConnectionException)
+        // DataIntegrityViolationException
         when(userRepository.save(any(User.class))).thenThrow(DataIntegrityViolationException.class);
-
-        // Verify result (DatabaseConnectionException)
         assertThrows(DatabaseConnectionException.class, () -> service.postUser(SAMPLE_NEW_USER_BODY));
-
-        // Mock repository (JDBCConnectionException)
+        // JDBCConnectionException
         when(userRepository.save(any(User.class))).thenThrow(JDBCConnectionException.class);
-
-        // Verify result (JDBCConnectionException)
         assertThrows(DatabaseConnectionException.class, () -> service.postUser(SAMPLE_NEW_USER_BODY));
     }
+
+    /**
+     * Test for {@link UserServiceImpl#checkUser} method.
+     */
+    @Test
+    @DisplayName("Test checkUser method (DatabaseConnectionException)")
+    void checkUserDatabaseConnectionException() {
+        when(userRepository.findByUsername(any(String.class))).thenThrow(JpaSystemException.class);
+        assertThrows(DatabaseConnectionException.class, () -> service.postUser(SAMPLE_NEW_USER_BODY));
+    }
+
 
     /**
      * Test for {@link UserServiceImpl#updateUser} method.
@@ -203,10 +275,10 @@ public class UserServiceImplTest {
     @Test
     @DisplayName("Test updateUser method (OK)")
     void updateUserOK() {
-        // Clone the game so the test doesn't modify the original object
+        // Clone the entity so the test doesn't modify the original object
         User testUser = new User(SAMPLE_USER.getId(), SAMPLE_USER.getUsername(), SAMPLE_USER.getEmail(), SAMPLE_USER.getPassword(), SAMPLE_USER.getRole(), SAMPLE_USER.getImage(), SAMPLE_USER.getUserGames(), SAMPLE_USER.getUserGroups());
 
-        // Mock repository
+        // Mock dependencies
         when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).then(element -> element.getArgument(0));
 
@@ -223,11 +295,8 @@ public class UserServiceImplTest {
     @Test
     @DisplayName("Test updateUser method (DatabaseConnectionException)")
     void updateUserDatabaseConnectionException() {
-        // Mock repository
         when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(SAMPLE_USER));
         doThrow(JDBCConnectionException.class).when(userRepository).save(any(User.class));
-
-        // Verify result
         assertThrows(DatabaseConnectionException.class, () -> service.updateUser(SAMPLE_USER.getUsername(), SAMPLE_UPDATE_USER_BODY));
     }
 
@@ -237,11 +306,50 @@ public class UserServiceImplTest {
     @Test
     @DisplayName("Test updateUser method (EntityNotFoundException)")
     void updateUserEntityNotFoundException() {
-        // Mock repository
         when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> service.updateUser(SAMPLE_USER.getUsername(), SAMPLE_UPDATE_USER_BODY));
+    }
+
+    /**
+     * Test for {@link UserServiceImpl#updatePassword} method.
+     */
+    @Test
+    @DisplayName("Test updatePassword method (OK)")
+    void updatePasswordOK() {
+        // Clone the entity so the test doesn't modify the original object
+        User testUser = new User(SAMPLE_USER.getId(), SAMPLE_USER.getUsername(), SAMPLE_USER.getEmail(), BCrypt.hashpw(SAMPLE_USER.getPassword(), BCrypt.gensalt()), SAMPLE_USER.getRole(), SAMPLE_USER.getImage(), SAMPLE_USER.getUserGames(), SAMPLE_USER.getUserGroups());
+
+        // Mock dependencies
+        when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(testUser));
+        when(userRepository.save(any(User.class))).then(element -> element.getArgument(0));
 
         // Verify result
-        assertThrows(EntityNotFoundException.class, () -> service.updateUser(SAMPLE_USER.getUsername(), SAMPLE_UPDATE_USER_BODY));
+        UserResponse response = service.updatePassword(SAMPLE_USER.getUsername(), SAMPLE_UPDATE_PASSWORD_BODY);
+
+        assertNotNull(response);
+    }
+
+    /**
+     * Test for {@link UserServiceImpl#updatePassword} method.
+     */
+    @Test
+    @DisplayName("Test updatePassword method (DatabaseConnectionException)")
+    void updatePasswordDatabaseConnectionException() {
+        User testUser = new User(SAMPLE_USER.getId(), SAMPLE_USER.getUsername(), SAMPLE_USER.getEmail(), BCrypt.hashpw(SAMPLE_USER.getPassword(), BCrypt.gensalt()), SAMPLE_USER.getRole(), SAMPLE_USER.getImage(), SAMPLE_USER.getUserGames(), SAMPLE_USER.getUserGroups());
+        when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(testUser));
+        doThrow(JpaSystemException.class).when(userRepository).save(any(User.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.updatePassword(SAMPLE_USER.getUsername(), SAMPLE_UPDATE_PASSWORD_BODY));
+    }
+
+    /**
+     * Test for {@link UserServiceImpl#updatePassword} method.
+     */
+    @Test
+    @DisplayName("Test updatePassword method (BadPasswordException)")
+    void updatePasswordBadPasswordException() {
+        User testUser = new User(SAMPLE_USER.getId(), SAMPLE_USER.getUsername(), SAMPLE_USER.getEmail(), BCrypt.hashpw("incorrectPassword", BCrypt.gensalt()), SAMPLE_USER.getRole(), SAMPLE_USER.getImage(), SAMPLE_USER.getUserGames(), SAMPLE_USER.getUserGroups());
+        when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(testUser));
+        assertThrows(BadPasswordException.class, () -> service.updatePassword(SAMPLE_USER.getUsername(), SAMPLE_UPDATE_PASSWORD_BODY));
     }
 
     /**
@@ -250,10 +358,10 @@ public class UserServiceImplTest {
     @Test
     @DisplayName("Test deleteUser method (OK)")
     void deleteUserOK() {
-        // Clone the game so the test doesn't modify the original object
+        // Clone the entity so the test doesn't modify the original object
         User testUser = new User(SAMPLE_USER.getId(), SAMPLE_USER.getUsername(), SAMPLE_USER.getEmail(), SAMPLE_USER.getPassword(), SAMPLE_USER.getRole(), SAMPLE_USER.getImage(), SAMPLE_USER.getUserGames(), SAMPLE_USER.getUserGroups());
 
-        // Mock repository
+        // Mock dependencies
         when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(testUser));
 
         // Verify result
@@ -266,11 +374,8 @@ public class UserServiceImplTest {
     @Test
     @DisplayName("Test deleteUser method (DatabaseConnectionException)")
     void deleteUserDatabaseConnectionException() {
-        // Mock repository
         when(userRepository.findByUsername(any(String.class))).thenReturn(Optional.of(SAMPLE_USER));
         doThrow(JDBCConnectionException.class).when(userRepository).delete(any(User.class));
-
-        // Verify result
         assertThrows(DatabaseConnectionException.class, () -> service.deleteUser(SAMPLE_USER.getUsername()));
     }
 }

@@ -42,7 +42,7 @@ export default function TagInput({ tags, setTags, viewOnly }) {
           }}
         />
       )}
-      <ScrollShadow hideScrollBar className={'flex flex-row flex-wrap gap-4 max-h-32 overflow-y-auto'}>
+      <ScrollShadow hideScrollBar className={'flex flex-row flex-wrap gap-4 sm:max-h-60 overflow-y-auto'}>
         {tags.map((tag) => (
           <Chip onClose={!viewOnly ? () => removeTag(tag) : null} key={tag}>
             {tag}

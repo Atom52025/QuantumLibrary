@@ -1,16 +1,12 @@
 'use client';
 
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Switch } from '@nextui-org/react';
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
-import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 
-import { GET } from '@/app/api/tokenRequest';
-import { DELETE, PATCH } from '@/app/api/tokenRequest';
+import { DELETE, GET, PATCH } from '@/app/api/tokenRequest';
 import InfoPopups from '@/app/components/InfoPopups';
-import AchivementsInput from '@/app/components/inputs/AchivementsInput';
-import BacklogInput from '@/app/components/inputs/BacklogInput';
+import GameInputs from '@/app/components/inputs/GameInputs';
 import ImageInput from '@/app/components/inputs/ImageInput';
-import TagInput from '@/app/components/inputs/TagInput';
 
 export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenChange, session }) {
   // Result modal state
@@ -33,7 +29,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
   const eraseForm = async (onClose) => {
     const formURL = `api/user/${session.user.username}/games/${userGame.game.id}`;
     try {
-      await DELETE(formURL, session.user.token, true);
+      await DELETE(formURL, session.user.token);
 
       setGames((prevGames) => prevGames.filter((game) => game !== userGame));
 
@@ -59,7 +55,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
     };
 
     try {
-      const res = await PATCH(formURL, session.user.token, requestBody, true);
+      const res = await PATCH(formURL, session.user.token, requestBody);
 
       setGames((prevGames) => prevGames.map((game) => (game.game.id === res.game.id ? res : game)));
 
@@ -72,26 +68,28 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
 
   const getGrids = async (key) => {
     const formURL = `api/sgdb/getGrids/${key}`;
-    let res = await GET(formURL, session.user.token, true);
+    let res = await GET(formURL, session.user.token);
     let filteredGrids = res.data.filter((item) => item.width === 600 && item.height === 900).map((item) => item.url);
     setGrids(filteredGrids);
     return filteredGrids;
   };
 
   useEffect(() => {
-    // Prevents from calling again if already fetched
-    if (grids.length !== 0) {
-      let index = grids.findIndex((grid) => grid === (userGame.image == null ? userGame.game.image : userGame.image));
-      if (index !== -1) setImageKey(index);
-      else setCustomImage(userGame.image == null ? userGame.game.image : userGame.image);
-    }
+    if (isOpen) {
+      // Prevents from calling again if already fetched
+      if (grids.length !== 0) {
+        let index = grids.findIndex((grid) => grid === (userGame.image == null ? userGame.game.image : userGame.image));
+        if (index !== -1) setImageKey(index);
+        else setCustomImage(userGame.image == null ? userGame.game.image : userGame.image);
+      }
 
-    // Fetch grids
-    getGrids(userGame.game.sgdbId).then((filteredGrids) => {
-      let index = filteredGrids.findIndex((grid) => grid === (userGame.image == null ? userGame.game.image : userGame.image));
-      if (index !== -1) setImageKey(index);
-      else setCustomImage(userGame.image == null ? userGame.game.image : userGame.image);
-    });
+      // Fetch grids
+      getGrids(userGame.game.sgdbId).then((filteredGrids) => {
+        let index = filteredGrids.findIndex((grid) => grid === (userGame.image == null ? userGame.game.image : userGame.image));
+        if (index !== -1) setImageKey(index);
+        else setCustomImage(userGame.image == null ? userGame.game.image : userGame.image);
+      });
+    }
   }, [isOpen]);
 
   useEffect(() => {
@@ -100,54 +98,41 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
 
   const renderModalContent = (onClose) => (
     <>
-      <ModalHeader className="uppercase text-3xl">{userGame.game.name}</ModalHeader>
-      <ModalBody className="grid grid-cols-2">
-        <div className="space-y-4">
-          {/* GAME IMAGE */}
-          <ImageInput customImage={customImage} setCustomImage={setCustomImage} imageKey={imageKey} setImageKey={setImageKey} grids={grids} />
-        </div>
-        <div className="flex flex-col gap-4 w-full">
-          <div className="flex flex-row gap-4 justify-between">
-            {/* FAVORITE */}
-            <Switch size="lg" color="success" startContent={<IoMdHeart />} endContent={<IoMdHeartEmpty />} isSelected={isFavorite} onValueChange={setIsFavorite}>
-              Favorito
-            </Switch>
-
-            {/* FINISHED */}
-            <Switch size="lg" color="success" isSelected={isFinished} onValueChange={setIsFinished}>
-              Terminado
-            </Switch>
+      <ModalHeader className="uppercase sm:text-3xl text-xl">{userGame.game.name}</ModalHeader>
+      <ModalBody className="overflow-auto">
+        <ScrollShadow hideScrollBar className="flex flex-col sm:flex-row gap-5 relative">
+          <div className="space-y-4 flex-shrink">
+            {/* GAME IMAGE */}
+            <ImageInput customImage={customImage} setCustomImage={setCustomImage} imageKey={imageKey} setImageKey={setImageKey} grids={grids} />
           </div>
-
-          {/* BACKLOG */}
-          <BacklogInput backlog={backlog} setBacklog={setBacklog} achievements={achievements} totalAchievements={totalAchievements} />
-
-          {/* ACHIEVEMENTS */}
-          <AchivementsInput achievements={achievements} setAchievements={setAchievements} totalAchievements={totalAchievements} setTotalAchievements={setTotalAchievements} />
-
-          {/* TIME PLAYED */}
-          <Input
-            label="Tiempo jugado"
-            placeholder="Introduce el tiempo jugado en minutos"
-            type="number"
-            variant="bordered"
-            onChange={(e) => setTimePlayed(e.target.value)}
-            value={timePlayed ? timePlayed : 0}
-            endContent={'min'}
-          />
-
-          {/* TAGS */}
-          <TagInput tags={tags} setTags={setTags} />
-        </div>
+          <div className="flex flex-col gap-4 w-full flex-grow">
+            <GameInputs
+              isFavorite={isFavorite}
+              setIsFavorite={setIsFavorite}
+              isFinished={isFinished}
+              setIsFinished={setIsFinished}
+              backlog={backlog}
+              setBacklog={setBacklog}
+              achievements={achievements}
+              setAchievements={setAchievements}
+              totalAchievements={totalAchievements}
+              setTotalAchievements={setTotalAchievements}
+              timePlayed={timePlayed}
+              setTimePlayed={setTimePlayed}
+              tags={tags}
+              setTags={setTags}
+            />
+          </div>
+        </ScrollShadow>
       </ModalBody>
-      <ModalFooter>
-        <Button color="danger" onPress={() => eraseForm(onClose)}>
-          Borrar
+      <ModalFooter className="flex flex-wrap">
+        <Button className="sm:w-auto w-full" color="danger" onPress={() => eraseForm(onClose)}>
+          Eliminar
         </Button>
-        <Button color="warning" onPress={() => editForm(onClose)}>
-          Editar
+        <Button className="sm:w-auto w-full" color="warning" onPress={() => editForm(onClose)}>
+          Guardar
         </Button>
-        <Button color="primary" variant="flat" onPress={onClose}>
+        <Button className="sm:w-auto w-full" color="primary" variant="flat" onPress={onClose}>
           Cerrar
         </Button>
       </ModalFooter>
@@ -156,7 +141,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
 
   return (
     <>
-      <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center">
+      <Modal isOpen={isOpen} size={'5xl'} className=" max-h-[80vh] overflow-hidden" onOpenChange={onOpenChange} placement="top-center">
         <ModalContent>{(onClose) => renderModalContent(onClose)}</ModalContent>
       </Modal>
       <InfoPopups resultModal={resultModal} setResultModal={setResultModal} />

@@ -25,9 +25,8 @@ export default function GroupCreateModal({ setGroups }) {
     const formURL = `api/users/${userId}`;
     try {
       setLoading(true);
-      const res = await GET(formURL, session.user.token, true);
+      const res = await GET(formURL, session.user.token);
       setLoading(false);
-      console.log(res);
 
       if (res === null) {
         throw new Error('Failed to fetch data');
@@ -48,13 +47,12 @@ export default function GroupCreateModal({ setGroups }) {
     };
 
     try {
-      const res = await POST(formURL, session.user.token, requestBody, true);
+      const res = await POST(formURL, session.user.token, requestBody);
 
       setGroups((prevGroups) => ({
         ...prevGroups,
         accepted: [...prevGroups.accepted, res],
       }));
-      console.log(res);
 
       setResultModal('Group creado con exito');
       onClose();
@@ -113,7 +111,7 @@ export default function GroupCreateModal({ setGroups }) {
 
   return (
     <>
-      <button className="h-[4%] w-full p-1" onClick={onOpen}>
+      <button className="min-h-10 w-full p-1" onClick={onOpen}>
         <p className="w-full h-full flex items-center justify-center leading-tight bg-blue-400/20 rounded-full hover:bg-blue-600 ">Crear Grupo</p>
       </button>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center" scrollBehavior="inside">

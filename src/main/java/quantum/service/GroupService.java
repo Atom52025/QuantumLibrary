@@ -59,18 +59,10 @@ public interface GroupService {
     void declineOrExitGroup(String username, Long groupId);
 
     /**
-     * Find a group by id.
-     *
-     * @param id The id of the group to find.
-     * @return The group.
-     */
-    Group findGroupById(Long id);
-
-    /**
      * Create a new group.
      *
      * @param username The username.
-     * @param body The body.
+     * @param body     The body.
      * @return The group.
      */
     GroupResponse postGroup(String username, NewGroupBody body);
@@ -78,9 +70,18 @@ public interface GroupService {
     /**
      * Patch group.
      *
-     * @param id   The id
-     * @param body The body
+     * @param groupId The id
+     * @param body    The body
      */
-    GroupResponse updateGroup(Long id, UpdateGroupBody body);
+    GroupResponse updateGroup(Long groupId, UpdateGroupBody body);
 
+
+    /**
+     * Vote group game.
+     *
+     * @param username The username
+     * @param groupId  The group id
+     * @param gameId   The game id
+     */
+    void voteGroupGame(String username, Long groupId, Long gameId);
 }

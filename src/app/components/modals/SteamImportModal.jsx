@@ -36,7 +36,7 @@ export default function SteamImportModal({ setGames }) {
   const searchUser = async () => {
     const formURL = `api/steam/user/${userId}`;
     try {
-      const res = await GET(formURL, session.user.token, true);
+      const res = await GET(formURL, session.user.token);
       setUser(res.response.players[0]);
     } catch (error) {
       setResultModal('Error al buscar el usuario');
@@ -48,7 +48,7 @@ export default function SteamImportModal({ setGames }) {
     try {
       setSearchLoading(true);
 
-      const res = await GET(formURL, session.user.token, true);
+      const res = await GET(formURL, session.user.token);
       setFoundGames(res.games);
 
       setSearchLoading(false);
@@ -65,7 +65,7 @@ export default function SteamImportModal({ setGames }) {
     };
 
     try {
-      await PATCH(formURL, session.user.token, requestBody, true);
+      await PATCH(formURL, session.user.token, requestBody);
       setResultModal('Imagen de usuario importada con exito');
       await update({ ...session, user: { ...session?.user, image: image } });
     } catch (error) {
@@ -88,7 +88,7 @@ export default function SteamImportModal({ setGames }) {
     try {
       setImportLoading(true);
 
-      const res = await POST(formURL, session.user.token, requestBody, true);
+      const res = await POST(formURL, session.user.token, requestBody);
       setGames((prevGames) => [...prevGames, ...res.games]);
 
       setImportLoading(false);
@@ -141,6 +141,9 @@ export default function SteamImportModal({ setGames }) {
               <Button color="warning" onPress={() => searchGames()}>
                 {searchLoading ? <Spinner /> : 'Buscar juegos'}
               </Button>
+              <Button color="danger" variant="bordered" onClick={() => setUser(null)}>
+                Eliminar usuario
+              </Button>
             </div>
           </div>
         )}
@@ -175,10 +178,10 @@ export default function SteamImportModal({ setGames }) {
       </ModalBody>
       <ModalFooter>
         <Button color="danger" onPress={onClose}>
-          Cancel
+          Cancelar
         </Button>
-        <Button color="primary" onPress={() => importGames(onClose)}>
-          {importLoading ? <Spinner color="default" /> : 'Import'}
+        <Button color="primary" onPress={() => importGames(onClose)} isDisabled={foundGames.length < 1}>
+          {importLoading ? <Spinner color="default" /> : 'Importar'}
         </Button>
       </ModalFooter>
     </>
@@ -186,7 +189,9 @@ export default function SteamImportModal({ setGames }) {
 
   return (
     <>
-      <Button onClick={onOpen}> Importar desde STEAM </Button>
+      <Button onClick={onOpen} className="lg:flex-grow-0 flex-grow ">
+        Importar desde STEAM
+      </Button>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center" scrollBehavior="inside">
         <ModalContent>{(onClose) => renderModalContent(onClose)}</ModalContent>
       </Modal>

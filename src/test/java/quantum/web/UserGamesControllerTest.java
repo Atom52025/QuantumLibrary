@@ -11,20 +11,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import quantum.dto.userGames.NewUserGameBody;
-import quantum.dto.userGames.UpdateUserGameBody;
-import quantum.dto.userGames.UserGameResponse;
-import quantum.dto.userGames.UserGamesListResponse;
+import quantum.dto.userGames.*;
 import quantum.dto.userGames.steamImport.UserGameImport;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
+import quantum.model.UserGame;
 import quantum.service.UserGamesService;
 import quantum.web.rest.UserGamesController;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static quantum.constant.TestConstants.SAMPLE_TOKEN;
 import static quantum.constant.TestConstants.SAMPLE_USERNAME;
-import static quantum.util.TestUtils.stringifyObject;
+import static quantum.utils.TestUtils.stringifyObject;
 
 /**
  * Test for {@link UserGamesController} controller class.
@@ -42,6 +43,7 @@ import static quantum.util.TestUtils.stringifyObject;
 @ContextConfiguration(classes = {UserGamesController.class})
 @WebMvcTest
 @AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
 class UserGamesControllerTest {
     @Autowired
     protected MockMvc mockMvc;
@@ -51,6 +53,7 @@ class UserGamesControllerTest {
 
     /**
      * Test for {@link UserGamesController#getUserGames} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -74,7 +77,32 @@ class UserGamesControllerTest {
     }
 
     /**
+     * Test for {@link UserGamesController#getUserGames} method.
+     *
+     * @throws Exception if any error occurs when performing the test request.
+     */
+    @Test
+    @DisplayName("Test games controller GET (online)")
+    void getOnlineGames() throws Exception {
+
+        when(service.getOnlineGames(any(String.class))).thenReturn(new ArrayList<>());
+
+        // Build the request
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/{username}/onlineGames", SAMPLE_USERNAME)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
+
+        // Perform the request
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(service, times(1)).getOnlineGames(any(String.class));
+    }
+
+    /**
      * Test for {@link UserGamesController#postUserGame} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -105,6 +133,7 @@ class UserGamesControllerTest {
 
     /**
      * Test for {@link UserGamesController#importUserGames} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -114,11 +143,11 @@ class UserGamesControllerTest {
         UserGamesImportList input = UserGamesImportList.builder().games(
                 Collections.nCopies(10,
                         UserGameImport.builder()
-                            .name("name")
-                            .image("image")
-                            .timePlayed(1)
-                            .sgdbId(1L)
-                            .build())
+                                .name("name")
+                                .image("image")
+                                .timePlayed(1)
+                                .sgdbId(1L)
+                                .build())
         ).build();
 
         when(service.importUserGames(any(String.class), any(UserGamesImportList.class))).thenReturn(new UserGamesListResponse());
@@ -139,15 +168,13 @@ class UserGamesControllerTest {
 
     /**
      * Test for {@link UserGamesController#patchUserGame} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
     @DisplayName("Test games controller PATCH")
     void patchGame() throws Exception {
-
-        UpdateUserGameBody input = UpdateUserGameBody.builder()
-                .build();
-
+        UpdateUserGameBody input = UpdateUserGameBody.builder().build();
         when(service.updateUserGame(any(String.class), any(Long.class), any(UpdateUserGameBody.class))).thenReturn(new UserGameResponse());
 
         // Build the request
@@ -166,6 +193,7 @@ class UserGamesControllerTest {
 
     /**
      * Test for {@link UserGamesController#deleteUserGame} method.
+     *
      * @throws Exception if any error occurs when performing the test request.
      */
     @Test
@@ -183,5 +211,28 @@ class UserGamesControllerTest {
                 .andReturn();
 
         verify(service, times(1)).deleteUserGame(any(String.class), any(Long.class));
+    }
+
+    /**
+     * Test for {@link UserGamesController#deleteUserGame} method.
+     *
+     * @throws Exception if any error occurs when performing the test request.
+     */
+    @Test
+    @DisplayName("Test games controller GET (stats)")
+    void getStats() throws Exception {
+        when(service.getStats(any(String.class))).thenReturn(new StatsResponse());
+
+        // Build the request
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/{username}/games/stats", SAMPLE_USERNAME)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
+
+        // Perform the request
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(service, times(1)).getStats(any(String.class));
     }
 }

@@ -14,7 +14,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedMethods("*")
-                        .allowedOrigins("http://localhost:3000")
+                        .allowedOrigins("http://13.37.8.48", "http://localhost:3000", "http://quantum-library.com", "https://quantum-library.com", "https://api.quantum-library.com")
                         .allowCredentials(true)
                         .allowedHeaders("*")
                         .maxAge(-1);

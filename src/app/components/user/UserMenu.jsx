@@ -17,7 +17,7 @@ export default function UserMenu() {
         <Button className="w-1/2 border-2 border-gray-500 rounded-xl" onClick={() => signIn()}>
           Iniciar Sesión
         </Button>
-        <Button className="w-1/2 border-2 border-gray-500 rounded-xl" onClick={() => createUser()}>
+        <Button className="w-1/2 border-2 border-gray-500 rounded-xl" onClick={() => (window.location.href = '/auth/signup')}>
           Registrarse
         </Button>
       </div>

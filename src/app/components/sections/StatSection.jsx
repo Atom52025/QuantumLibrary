@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import Chart from '@/app/components/Chart';
 import GroupListSection from '@/app/components/sections/GroupListSection';
 
-export default function Stats({ data, gData }) {
+export default function StatSection({ data, gData }) {
   const [bl1, setBl1] = useState(true);
   const [bl2, setBl2] = useState(true);
   const [bl3, setBl3] = useState(true);
@@ -61,11 +61,11 @@ export default function Stats({ data, gData }) {
   }, [bl1, bl2, bl3]);
 
   return (
-    <section className="h-full w-full items-center justify-center relative p-5">
-      <h1 className="text-5xl w-full text-center mb-5 uppercase">Estadisticas</h1>
-      <div className="w-full flex items-center justify-center">
-        <Card className="h-fit w-[50%] bg-gray-600/20 p-2">
-          <CardHeader className="text-2xl">Selecciona los backlogs que deseas incluir en las estadisticas</CardHeader>
+    <section className="h-full w-full items-center justify-center relative p-5 overflow-auto overflow-x-hidden">
+      <h1 className="lg:text-5xl text-2xl w-full text-center mb-3 uppercase">Estadisticas</h1>
+      <div className="w-full flex items-center justify-center p-2">
+        <Card className="h-fit w-[50%] bg-gray-600/20 p-2 lg:flex-grow-0 flex-grow">
+          <CardHeader className="lg:text-2xl text-xl">Selecciona los backlogs que deseas incluir en las estadisticas</CardHeader>
           <Divider />
           <CardBody className="flex flex-row justify-evenly">
             <Switch isSelected={bl1} onValueChange={setBl1}>
@@ -80,44 +80,44 @@ export default function Stats({ data, gData }) {
           </CardBody>
         </Card>
       </div>
-      <div className="h-full w-full flex flex-row flex-wrap p-5 gap-5 justify-center">
-        <div className="flex flex-col gap-4 p-2 h-fit w-[25%]">
+      <div className="h-auto w-full flex flex-row flex-wrap gap-2 justify-center">
+        <div className="flex flex-col gap-4 p-2 lg:w-[25%] w-full flex-shrink">
           <Card className="flex flex-col gap-4 p-2 w-full h-fit bg-gray-600/20">
-            <CardHeader className="w-full text-center text-2xl uppercase">Tiempo</CardHeader>
+            <CardHeader className="w-full text-center lg:text-2xl text-xl uppercase">Tiempo</CardHeader>
             <Divider />
             <CardBody>
-              <p className="text-2xl">
+              <p className="lg:text-2xl text-xl">
                 Total: {calculateTime(dataFiltered.numOfTotalTime).hours} h {calculateTime(dataFiltered.numOfTotalTime).minutes} min
               </p>
-              <p className="text-2xl">
+              <p className="lg:text-2xl text-xl">
                 Media por juego: {calculateAverageTime(dataFiltered.numOfTotalTime, dataFiltered.numOfPlayedGames).hours} h{' '}
                 {calculateAverageTime(dataFiltered.numOfTotalTime, dataFiltered.numOfPlayedGames).minutes} min
               </p>
             </CardBody>
           </Card>
           <Card className="flex flex-col gap-4 p-2 w-full bg-gray-600/20 ">
-            <CardHeader className="w-full text-center text-2xl uppercase">Logros</CardHeader>
+            <CardHeader className="w-full text-center lg:text-2xl text-xl uppercase">Logros</CardHeader>
             <Divider />
-            <CardBody>
+            <CardBody className="lg:aspect-auto aspect-square">
               <Chart fullData={dataFiltered.numOfTotalAchivements} obteinedData={dataFiltered.numOfCompletedAchivements} labelObtenied="Desbloqueados" labelFull="Bloqueados" />
             </CardBody>
           </Card>
         </div>
 
-        <div className="flex flex-col gap-4 p-2 h-fit w-[25%]">
+        <div className="flex flex-col gap-4 p-2 lg:w-[25%] w-full flex-shrink">
           <Card className="flex flex-col gap-4 p-2 h-fit bg-gray-600/20">
-            <CardHeader className="w-full text-center text-2xl uppercase">Completacionismo</CardHeader>
+            <CardHeader className="w-full text-center lg:text-2xl text-xl uppercase">Completacionismo</CardHeader>
             <Divider />
             <CardBody>
-              <p className="text-2xl">Juegos Completados: {dataFiltered.numOfCompletedGames}</p>
-              <p className="text-2xl">Juegos Terminados: {dataFiltered.numOfFinishedGames}</p>
+              <p className="lg:text-2xl text-xl">Juegos Completados: {dataFiltered.numOfCompletedGames}</p>
+              <p className="lg:text-2xl text-xl">Juegos Terminados: {dataFiltered.numOfFinishedGames}</p>
             </CardBody>
           </Card>
 
           <Card className="flex flex-col gap-4 p-2 bg-gray-600/20 ">
-            <CardHeader className="w-full text-center text-2xl uppercase">Juegos</CardHeader>
+            <CardHeader className="w-full text-center lg:text-2xl text-xl uppercase">Juegos</CardHeader>
             <Divider />
-            <CardBody>
+            <CardBody className="lg:aspect-auto aspect-square">
               <Chart fullData={dataFiltered.numOfGames} obteinedData={dataFiltered.numOfPlayedGames} labelObtenied="Jugados" labelFull="Sin jugar aun" />
             </CardBody>
           </Card>

@@ -16,7 +16,7 @@ public interface UserService {
      * @param pageable The pageable.
      * @return The users.
      */
-    UserListResponse getUsers(Pageable pageable) throws Exception;
+    UserListResponse getUsers(Pageable pageable);
 
     /**
      * Gets users.

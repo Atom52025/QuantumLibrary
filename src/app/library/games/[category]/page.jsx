@@ -9,7 +9,7 @@ export default async function Page({ params }) {
 
   // Get Games Data
   const url = 'api/user/' + session.user.username + '/games?category=' + params.category;
-  const data = await GET(url, session.user.token);
+  const data = await GET(url, session.user.token, ['games']);
 
   // Get Groups Data
   const urlGroups = 'api/user/' + session.user.username + '/groups';

@@ -36,7 +36,7 @@ import static quantum.constant.TestConstants.SAMPLE_GAME;
  * Test for {@link GameServiceImpl} service class.
  */
 @ExtendWith(MockitoExtension.class)
-public class GameServiceImplTest {
+class GameServiceImplTest {
 
     @Mock
     private GameRepository gameRepository;
@@ -78,19 +78,19 @@ public class GameServiceImplTest {
         List<Game> resultContent = Collections.nCopies(10, SAMPLE_GAME);
         Page<Game> pagedResult = new PageImpl<>(resultContent, pageable, resultContent.size());
 
-        // Mock repository
+        // Mock dependencies
         when(gameRepository.findAll(any(Pageable.class))).thenReturn(pagedResult);
         when(mapper.map(any(Game.class))).thenCallRealMethod();
 
+        // Verify result
         GameListResponse response = service.getGames(pageable);
 
-        // Verify result
         assertEquals(10, response.getGames().size());
-        assertEquals(SAMPLE_GAME.getId(), response.getGames().get(0).getId());
-        assertEquals(SAMPLE_GAME.getName(), response.getGames().get(0).getName());
-        assertEquals(SAMPLE_GAME.getImage(), response.getGames().get(0).getImage());
-        assertEquals(SAMPLE_GAME.getSgdbId(), response.getGames().get(0).getSgdbId());
-        assertEquals(SAMPLE_GAME.getTags().stream().toList(), response.getGames().get(0).getTags());
+        assertEquals(SAMPLE_GAME.getId(), response.getGames().getFirst().getId());
+        assertEquals(SAMPLE_GAME.getName(), response.getGames().getFirst().getName());
+        assertEquals(SAMPLE_GAME.getImage(), response.getGames().getFirst().getImage());
+        assertEquals(SAMPLE_GAME.getSgdbId(), response.getGames().getFirst().getSgdbId());
+        assertEquals(SAMPLE_GAME.getTags().stream().toList(), response.getGames().getFirst().getTags());
     }
 
     /**
@@ -100,11 +100,7 @@ public class GameServiceImplTest {
     @DisplayName("Test getGames method (DatabaseConnectionException)")
     void getGamesDatabaseConnectionException() {
         Pageable pageable = PageRequest.of(0, 10);
-
-        // Mock repository
         when(gameRepository.findAll(any(Pageable.class))).thenThrow(JDBCConnectionException.class);
-
-        // Verify result
         assertThrows(DatabaseConnectionException.class, () -> service.getGames(pageable));
     }
 
@@ -117,11 +113,7 @@ public class GameServiceImplTest {
         Pageable pageable = PageRequest.of(0, 10);
         List<Game> resultContent = Collections.nCopies(0, SAMPLE_GAME);
         Page<Game> pagedResult = new PageImpl<>(resultContent, pageable, resultContent.size());
-
-        // Mock repository
         when(gameRepository.findAll(any(Pageable.class))).thenReturn(pagedResult);
-
-        // Verify result
         assertThrows(EntityNotFoundException.class, () -> service.getGames(pageable));
     }
 
@@ -133,7 +125,7 @@ public class GameServiceImplTest {
     void findGameByIdOK() {
         Optional<Game> resultContent = Optional.of(SAMPLE_GAME);
 
-        // Mock repository (Id)
+        // Mock dependencies (Id)
         when(gameRepository.findById(any(Long.class))).thenReturn(resultContent);
         when(gameRepository.findBySgdbId(any(Long.class))).thenReturn(resultContent);
 
@@ -145,7 +137,7 @@ public class GameServiceImplTest {
         assertEquals(SAMPLE_GAME.getSgdbId(), response.getSgdbId());
         assertEquals(SAMPLE_GAME.getTags(), response.getTags());
 
-        // Mock repository (SgdbId)
+        // Mock dependencies (SgdbId)
         when(gameRepository.findBySgdbId(any(Long.class))).thenReturn(resultContent);
 
         // Verify result (SgdbId)
@@ -164,11 +156,8 @@ public class GameServiceImplTest {
     @Test
     @DisplayName("Test findGameById method (DatabaseConnectionException)")
     void findGameByIdDatabaseConnectionException() {
-        // Mock repository
         when(gameRepository.findById(any(Long.class))).thenThrow(JDBCConnectionException.class);
         when(gameRepository.findBySgdbId(any(Long.class))).thenThrow(JDBCConnectionException.class);
-
-        // Verify result
         assertThrows(DatabaseConnectionException.class, () -> service.findGameById(SAMPLE_GAME.getId(), false));
         assertThrows(DatabaseConnectionException.class, () -> service.findGameById(SAMPLE_GAME.getId(), true));
     }
@@ -179,11 +168,8 @@ public class GameServiceImplTest {
     @Test
     @DisplayName("Test findGameById method (EntityNotFoundException)")
     void findGameByIdEntityNotFoundException() {
-        // Mock repository
         when(gameRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         when(gameRepository.findBySgdbId(any(Long.class))).thenReturn(Optional.empty());
-
-        // Verify result
         assertThrows(EntityNotFoundException.class, () -> service.findGameById(SAMPLE_GAME.getId(), false));
         assertDoesNotThrow(() -> service.findGameById(SAMPLE_GAME.getId(), true));
     }
@@ -194,7 +180,7 @@ public class GameServiceImplTest {
     @Test
     @DisplayName("Test postGame method (OK)")
     void postGameOK() {
-        // Mock repository
+        // Mock dependencies
         when(gameRepository.save(any(Game.class))).then(element -> element.getArgument(0));
         when(mapper.map(any(Game.class))).thenCallRealMethod();
 
@@ -213,17 +199,45 @@ public class GameServiceImplTest {
     @Test
     @DisplayName("Test postGame method (Error on save)")
     void postGameDatabaseConnectionException() {
-        // Mock repository (DatabaseConnectionException)
+        // DataIntegrityViolationException
         when(gameRepository.save(any(Game.class))).thenThrow(DataIntegrityViolationException.class);
-
-        // Verify result (DatabaseConnectionException)
         assertThrows(DatabaseConnectionException.class, () -> service.postGame(SAMPLE_NEW_GAME_BODY, false));
-
-        // Mock repository (JDBCConnectionException)
+        // JDBCConnectionException
         when(gameRepository.save(any(Game.class))).thenThrow(JDBCConnectionException.class);
-
-        // Verify result (JDBCConnectionException)
         assertThrows(DatabaseConnectionException.class, () -> service.postGame(SAMPLE_NEW_GAME_BODY, false));
+    }
+
+    /**
+     * Test for {@link GameServiceImpl#postGames} method.
+     */
+    @Test
+    @DisplayName("Test postGames method (OK)")
+    void postGamesOK() {
+        // Mock dependencies
+        when(gameRepository.saveAll(any(List.class))).then(element -> element.getArgument(0));
+
+        // Verify result
+        assertDoesNotThrow(() -> service.postGames(List.of(SAMPLE_GAME)));
+    }
+
+    /**
+     * Test for {@link GameServiceImpl#postGames} method.
+     */
+    @Test
+    @DisplayName("Test postGames method (DatabaseConnectionException)")
+    void postGamesDatabaseConnectionException() {
+        doThrow(JDBCConnectionException.class).when(gameRepository).saveAll(any(List.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.postGames(List.of(SAMPLE_GAME)));
+    }
+
+    /**
+     * Test for {@link GameServiceImpl#postGames} method.
+     */
+    @Test
+    @DisplayName("Test postGames method (DataIntegrityViolationException)")
+    void postGamesDataIntegrityViolationException() {
+        doThrow(DataIntegrityViolationException.class).when(gameRepository).saveAll(any(List.class));
+        assertThrows(DatabaseConnectionException.class, () -> service.postGames(List.of(SAMPLE_GAME)));
     }
 
     /**
@@ -232,10 +246,10 @@ public class GameServiceImplTest {
     @Test
     @DisplayName("Test updateGame method (OK)")
     void updateGameOK() {
-        // Clone the game so the test doesn't modify the original object
+        // Clone the entity so the test doesn't modify the original object
         Game testGame = new Game(SAMPLE_GAME.getId(), SAMPLE_GAME.getName(), SAMPLE_GAME.getImage(), SAMPLE_GAME.getTags(), SAMPLE_GAME.getSgdbId(), SAMPLE_GAME.getUserGames());
 
-        // Mock repository
+        // Mock dependencies
         when(gameRepository.findById(any(Long.class))).thenReturn(Optional.of(testGame));
         when(gameRepository.save(any(Game.class))).then(element -> element.getArgument(0));
 
@@ -255,11 +269,8 @@ public class GameServiceImplTest {
     @Test
     @DisplayName("Test updateGame method (DatabaseConnectionException)")
     void updateGameDatabaseConnectionException() {
-        // Mock repository
         when(gameRepository.findById(any(Long.class))).thenReturn(Optional.of(SAMPLE_GAME));
         doThrow(JDBCConnectionException.class).when(gameRepository).save(any(Game.class));
-
-        // Verify result
         assertThrows(DatabaseConnectionException.class, () -> service.updateGame(SAMPLE_GAME.getId(), SAMPLE_UPDATE_GAME_BODY));
     }
 
@@ -269,10 +280,7 @@ public class GameServiceImplTest {
     @Test
     @DisplayName("Test updateGame method (EntityNotFoundException)")
     void updateGameEntityNotFoundException() {
-        // Mock repository
         when(gameRepository.findById(any(Long.class))).thenReturn(Optional.empty());
-
-        // Verify result
         assertThrows(EntityNotFoundException.class, () -> service.updateGame(SAMPLE_GAME.getId(), SAMPLE_UPDATE_GAME_BODY));
     }
 
@@ -282,10 +290,10 @@ public class GameServiceImplTest {
     @Test
     @DisplayName("Test deleteGame method (OK)")
     void deleteGameOK() {
-        // Clone the game so the test doesn't modify the original object
+        // Clone the entity so the test doesn't modify the original object
         Game testGame = new Game(SAMPLE_GAME.getId(), SAMPLE_GAME.getName(), SAMPLE_GAME.getImage(), SAMPLE_GAME.getTags(), SAMPLE_GAME.getSgdbId(), SAMPLE_GAME.getUserGames());
 
-        // Mock repository
+        // Mock dependencies
         when(gameRepository.findById(any(Long.class))).thenReturn(Optional.of(testGame));
 
         // Verify result
@@ -298,12 +306,9 @@ public class GameServiceImplTest {
     @Test
     @DisplayName("Test deleteGame method (DatabaseConnectionException)")
     void deleteGameDatabaseConnectionException() {
-        // Mock repository
         when(gameRepository.findById(any(Long.class))).thenReturn(Optional.of(SAMPLE_GAME));
         doThrow(JDBCConnectionException.class).when(gameRepository).delete(any(Game.class));
-
-        // Verify result
         assertThrows(DatabaseConnectionException.class, () -> service.deleteGame(SAMPLE_GAME.getId()));
     }
-    
+
 }

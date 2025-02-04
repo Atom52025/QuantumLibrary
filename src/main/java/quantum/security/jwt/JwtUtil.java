@@ -9,12 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;
+import java.security.GeneralSecurityException;
 import java.util.Base64;
 
 @UtilityClass
 @Slf4j
 public class JwtUtil {
-    private static final String SECRET_KEY = "DAF5B3D55AEC35B676E41B599B31B275237456SDJHFGS32654234FDS";
     SecretKey key = Jwts.SIG.HS256.key().build();
 
     public static TokenPayload decodeToken(String token) {
@@ -26,7 +26,6 @@ public class JwtUtil {
     }
 
     public String getUserNameFromJwtToken(String jwt) {
-        //decodeToken(token).getName();
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload().getSubject();
     }
 
@@ -43,7 +42,7 @@ public class JwtUtil {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt);
             return true;
         } catch (Exception e) {
-            throw new Exception("Could not verify JWT token integrity!", e);
+            throw new GeneralSecurityException("Could not verify JWT token integrity!", e);
         }
     }
 

@@ -28,7 +28,7 @@ public class UserController implements UserApi {
      * @return The list of users
      */
     @Override
-    public ResponseEntity<UserListResponse> getUsers(String token, Pageable pageable) throws Exception {
+    public ResponseEntity<UserListResponse> getUsers(String token, Pageable pageable) {
         log.info("[CONTROLLER] - Searching users");
         UserListResponse result = service.getUsers(pageable);
         return ResponseEntity.ok(result);

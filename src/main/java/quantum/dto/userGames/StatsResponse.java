@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import quantum.model.Game;
 import quantum.model.User;
-
-import java.util.List;
 
 /**
  * Data transfer object for {@link User} entity.
@@ -48,8 +45,6 @@ public class StatsResponse {
     @Schema(example = "1", description = "Number of completed achievements of games.")
     @JsonProperty("numOfCompletedAchivements")
     private BacklogResponse numOfCompletedAchivements;
-
-
 
 
 }

@@ -1,7 +1,11 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const INTERNAL_API_URL = process.env.INTERNAL_API_URL;
-const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
+const INTERNAL_API_URL = process.env.NEXT_PUBLIC_INTERNAL_API_URL;
+const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_URL;
+
+// Detects if its executing on client or in server
+const API_URL = typeof window === 'undefined' ? INTERNAL_API_URL : EXTERNAL_API_URL;
+
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -11,7 +15,7 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
-        const res = await fetch(`${INTERNAL_API_URL}/api/auth/login`, {
+        const res = await fetch(`${API_URL}/api/auth/login`, {
           method: 'POST',
           body: JSON.stringify(credentials),
           headers: { 'Content-Type': 'application/json' },
@@ -40,4 +44,7 @@ export const authOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: '/auth/signin',
+  },
 };

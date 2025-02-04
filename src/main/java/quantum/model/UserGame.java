@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
 import java.util.Set;
 
 /**
