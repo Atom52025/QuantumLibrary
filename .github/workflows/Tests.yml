@@ -9,9 +9,9 @@ on:
 jobs:
   build:
     env:
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+      STEAMDB_API_KEY: ${{ secrets.STEAMDB_API_KEY }}
+      SB_SECURITY_PASSWORD: ${{ secrets.SB_SECURITY_PASSWORD }}
 
     runs-on: ubuntu-latest
 
