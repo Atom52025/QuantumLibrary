@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows:
-      - Compilation and build
       - Tests
     types:
       - completed
@@ -22,35 +21,44 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
+      - name: Install Docker
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Deploy to EC2
         run: |
-          git fetch origin
+          git fetch origin main
           git pull origin main
           echo "${{ secrets.DOCKER_COMPOSE_BUILD_FILE }}" > docker-compose.yml
           docker-compose build
-          docker tag quantumlibrary-frontend atom52025/quantum-library-frontend:latest
-          docker tag quantumlibrary-backend atom52025/quantum-library-backend:latest
-          docker tag quantumlibrary-frontend atom52025/quantum-library-frontend:v0.3
-          docker tag quantumlibrary-backend atom52025/quantum-library-backend:v0.3
           docker push atom52025/quantum-library-backend:latest
           docker push atom52025/quantum-library-frontend:latest
-          docker push atom52025/quantum-library-backend:v0.3
-          docker push atom52025/quantum-library-frontend:v0.3
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd QuantumLibrary/
-          
-            git fetch origin
-            git pull origin main
-
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'          
             echo "${{ secrets.DOCKER_COMPOSE_START_FILE }}" > docker-compose.yml
           
             docker-compose down
-            docker images -q | xargs docker rmi -f
           
-            docker pull atom52025/quantum-library-frontend:latest && docker image prune -f
-            docker pull atom52025/quantum-library-backend:latest && docker image prune -f
+            docker pull atom52025/quantum-library-frontend:latest
+            docker pull atom52025/quantum-library-backend:latest
           
-            docker-compose up -D
+            docker image prune -f
+            docker-compose up -d
           EOF
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
