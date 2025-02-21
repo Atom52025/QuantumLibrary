@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
 import quantum.service.SteamService;
 import quantum.web.rest.SteamController;
-import quantum.web.rest.SteamGridDBController;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;

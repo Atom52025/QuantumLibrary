@@ -19,8 +19,6 @@ import quantum.dto.auth.LogInBody;
 import quantum.dto.auth.SignUpBody;
 import quantum.service.AuthService;
 import quantum.web.rest.AuthController;
-import quantum.web.rest.GroupController;
-import quantum.web.rest.SteamGridDBController;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
