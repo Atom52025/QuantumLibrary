@@ -12,7 +12,7 @@ export default function UserGameCard({ entry, setGames, random, noModal = false 
   // Modal state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   // Get Session
-  const { data: session } = useSession({ required: true });
+  const { data: session } = useSession();
 
   useEffect(() => {
     if (random === entry.id) {

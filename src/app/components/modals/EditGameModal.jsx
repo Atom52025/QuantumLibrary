@@ -71,14 +71,14 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
         let index = grids.findIndex((grid) => grid === game.image);
         if (index !== -1) setImageKey(index);
         else setCustomImage(game.image);
+      } else {
+        // Fetch grids
+        getGrids(game.sgdbId).then((filteredGrids) => {
+          let index = filteredGrids.findIndex((grid) => grid === game.image);
+          if (index !== -1) setImageKey(index);
+          else setCustomImage(game.image);
+        });
       }
-
-      // Fetch grids
-      getGrids(game.sgdbId).then((filteredGrids) => {
-        let index = filteredGrids.findIndex((grid) => grid === game.image);
-        if (index !== -1) setImageKey(index);
-        else setCustomImage(game.image);
-      });
     }
   }, [isOpen]);
 
