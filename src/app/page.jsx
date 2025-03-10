@@ -22,10 +22,10 @@ export default async function Page() {
         </div>
       </div>
 
-      <div className=" flex md:flex-row flex-col max-w-[80%] max-h-[50%] py-5 gap-5">
-        <Card className="max-w-2xl ">
+      <div className=" flex md:flex-row flex-col max-w-[80%] md:max-h-[50%] h-auto py-5 gap-5 overflow-y-auto scrollbar-hide">
+        <Card className="max-w-2xl md:overflow-hidden overflow-visible">
           <CardHeader className="text-xl text-gray-300">Contexto de Quantum Library</CardHeader>
-          <CardBody className="text-gray-500 flex gap-4">
+          <CardBody className="text-gray-500 flex gap-4 md:overflow-y-auto overflow-visible">
             <p>
               Antiguamente se utilizaban estanterías y otros medios físicos para mostrar y almacenar todo el contenido que consumíamos y disfrutamos. Todo lo que hoy disfrutamos digitalmente alguna
               vez tuvo una existencia tangible: DVD para películas, libros, vinilos para música, cartuchos y discos para videojuegos.
@@ -36,9 +36,9 @@ export default async function Page() {
             </p>
           </CardBody>
         </Card>
-        <Card className="max-w-2xl ">
+        <Card className="max-w-2xl md:overflow-hidden overflow-visible">
           <CardHeader className="text-xl text-gray-300">Características de Quantum Library</CardHeader>
-          <CardBody className="text-gray-500 flex gap-4">
+          <CardBody className="text-gray-500 flex gap-4 md:overflow-y-auto overflow-visible">
             <p>
               Quantum Library se presenta como una solución innovadora que aborda la necesidad de organizar y acceder fácilmente a todo el contenido multimedia consumido. La implementación inicial se
               ha centrado en los videojuegos, generando una gran cantidad de datos relevantes para los usuarios.
@@ -53,9 +53,9 @@ export default async function Page() {
             </p>
           </CardBody>
         </Card>
-        <Card className="max-w-2xl ">
+        <Card className="max-w-2xl md:overflow-hidden overflow-visible">
           <CardHeader className="text-xl text-gray-300">Estadísticas y Grupos</CardHeader>
-          <CardBody className="text-gray-500 flex gap-4">
+          <CardBody className="text-gray-500 flex gap-4 md:overflow-y-auto overflow-visible">
             <p>Para los completacionistas, se ha diseñado una sección de estadísticas que mostrará gráficos relevantes, como el porcentaje de juegos completados y la media de logros obtenidos.</p>
             <p>
               Quantum Library también permite crear grupos donde los amigos pueden votar por los títulos a jugar, facilitando la toma de decisiones en grupo. La integración con APIs, como la de Steam,

@@ -44,7 +44,7 @@ export default function UserMenu() {
             <Button className="w-full" onClick={() => profile()}>
               Perfil
             </Button>
-            <Button className="w-full" onClick={() => signOut()}>
+            <Button className="w-full" onClick={() => signOut({ callbackUrl: '/' })}>
               Cerrar Sesión
             </Button>
           </PopoverContent>

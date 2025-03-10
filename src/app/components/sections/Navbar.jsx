@@ -18,7 +18,7 @@ export default function Navbar() {
   const isActive = (path) => pathname === path;
 
   return (
-    <NextUINavbar maxWidth="full" className="lg:h-[9vh] h-[5vh] bg-gray-800 items-center align-bottom font-russo py-5 justify-normal relative" onMenuOpenChange={setIsMenuOpen}>
+    <NextUINavbar maxWidth="full" className="lg:h-[9vh] h-[5vh] bg-gray-800 items-center align-bottom font-russo py-5 justify-normal relative" isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent className="flex-shrink" justify="start">
         <NavbarMenuToggle aria-label="Toggle menu" className="lg:hidden" />
         <NavbarBrand className="flex-grow-0">
@@ -89,7 +89,7 @@ export default function Navbar() {
               </Link>
             </NavbarMenuItem>
             <NavbarMenuItem>
-              <Link className={`w-full text-center`} href="" onClick={() => signOut()}>
+              <Link className={`w-full text-center`} href="" onClick={() => signOut({ callbackUrl: '/' })}>
                 Cerrar Sesión
               </Link>
             </NavbarMenuItem>

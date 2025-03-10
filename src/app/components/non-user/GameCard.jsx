@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 import EditGameModal from '@/app/components/modals/EditGameModal';
 
-export default function UserGameCard({ entry, setGames, random, noModal = false }) {
+export default function UserGameCard({ entry, setGames, random, setRandom, noModal = false }) {
   // Modal state
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   // Get Session
@@ -19,6 +19,12 @@ export default function UserGameCard({ entry, setGames, random, noModal = false 
       onOpen();
     }
   }, [random]);
+
+  useEffect(() => {
+    if (!isOpen && random === entry.id) {
+      setRandom(-1);
+    }
+  }, [isOpen]);
 
   return (
     <>
