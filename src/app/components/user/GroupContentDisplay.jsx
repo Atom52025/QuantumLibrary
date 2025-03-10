@@ -61,15 +61,15 @@ export default function GroupContentDisplay({ data, group, gData }) {
 
   // Function to get a random game
   const randomGame = () => {
-    // Step 1: Find the maximum number of votes
+    // Find the maximum number of votes
     const maxVotes = Math.max(...filteredGames.map((game) => game.votes.length));
 
-    // Step 2: Filter the games that have the maximum number of votes
+    // Filter the games that have the maximum number of votes
     const mostVotedGames = filteredGames.filter((game) => game.votes.length === maxVotes);
 
-    // Step 3: Pick a random game from the filtered list
+    // Pick a random game from the filtered list
     const randomIndex = Math.floor(Math.random() * mostVotedGames.length);
-    setRandom(mostVotedGames[randomIndex]?.id); // Safely set the random game's id
+    setRandom(mostVotedGames[randomIndex]?.id);
   };
 
   // Function to vote for a game
@@ -99,6 +99,12 @@ export default function GroupContentDisplay({ data, group, gData }) {
     }
   };
 
+  const getVoteBorderClass = (votes, username) => {
+    if (votes.includes(username)) return 'border-5 border-orange-400';
+    if (votes.length > 0) return 'border-5 border-blue-600';
+    return '';
+  };
+
   useEffect(() => {
     filterGames();
   }, [games, selectedTags, searchParam]);
@@ -115,11 +121,13 @@ export default function GroupContentDisplay({ data, group, gData }) {
           <ScrollShadow className="h-full w-full shadow-inner overflow-y-scroll">
             <div className="md:px-10 px-5 py-5 grid lg:grid-cols-6 sm:grid-cols-5 grid-cols-3 gap-3">
               {filteredGames?.map((entry) => (
-                <div
+                <button
                   key={entry.id}
-                  className={`aspect-[6/9] bg-gray-600 rounded-xl overflow-hidden relative ${entry.votes.length > 0 ? 'border-5 border-blue-600' : ''}`}
-                  onClick={() => voteGame(entry.id)}>
-                  <GameCard entry={entry} setGames={setGames} random={random} noModal={true} />
+                  className={`aspect-[6/9] bg-gray-600 rounded-xl overflow-hidden relative ${getVoteBorderClass(entry.votes, session.user.username)}`}
+                  onClick={() => {
+                    if (random !== entry.id) voteGame(entry.id);
+                  }}>
+                  <GameCard entry={entry} setGames={setGames} random={random} setRandom={setRandom} noModal={true} />
                   <div className="absolute top-1 right-1 p-1 rounded-bl-xl z-30">
                     <AvatarGroup isBordered>
                       {entry.votes.map((user, index) => {
@@ -128,7 +136,7 @@ export default function GroupContentDisplay({ data, group, gData }) {
                       })}
                     </AvatarGroup>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </ScrollShadow>

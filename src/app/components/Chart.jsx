@@ -8,7 +8,7 @@ const Doughnut = dynamic(() => import('react-chartjs-2').then((mod) => mod.Dough
   ssr: false,
 });
 
-export default function Chart({ obteinedData, fullData, labelObtenied, labelFull }) {
+export default function Chart({ obteinedData, fullData, labelObtenied, labelFull, games }) {
   const data = {
     labels: [labelFull, labelObtenied],
     datasets: [
@@ -37,7 +37,7 @@ export default function Chart({ obteinedData, fullData, labelObtenied, labelFull
         <Doughnut data={data} options={options} />
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <p className="text-center text-2xl">
-            Total: <br /> {fullData}
+            Total: <br /> {games ? fullData : obteinedData}
           </p>
         </div>
       </div>

@@ -62,10 +62,10 @@ export default function StatSection({ data, gData }) {
 
   return (
     <section className="h-full w-full items-center justify-center relative p-5 overflow-auto overflow-x-hidden">
-      <h1 className="lg:text-5xl text-2xl w-full text-center mb-3 uppercase">Estadisticas</h1>
+      <h1 className="lg:text-5xl text-2xl w-full text-center mb-3 uppercase">Estadísticas</h1>
       <div className="w-full flex items-center justify-center p-2">
         <Card className="h-fit w-[50%] bg-gray-600/20 p-2 lg:flex-grow-0 flex-grow">
-          <CardHeader className="lg:text-2xl text-xl">Selecciona los backlogs que deseas incluir en las estadisticas</CardHeader>
+          <CardHeader className="lg:text-2xl text-xl">Selecciona los backlogs que deseas incluir en las estadísticas</CardHeader>
           <Divider />
           <CardBody className="flex flex-row justify-evenly">
             <Switch isSelected={bl1} onValueChange={setBl1}>
@@ -87,7 +87,8 @@ export default function StatSection({ data, gData }) {
             <Divider />
             <CardBody>
               <p className="lg:text-2xl text-xl">
-                Total: {calculateTime(dataFiltered.numOfTotalTime).hours} h {calculateTime(dataFiltered.numOfTotalTime).minutes} min
+                Total: {calculateTime(dataFiltered.numOfTotalTime).hours} h {calculateTime(dataFiltered.numOfTotalTime).minutes} min{' '}
+                {dataFiltered.numOfTotalTime / 60 / 24 > 1 ? `(${Math.floor(dataFiltered.numOfTotalTime / 60 / 24)} días)` : ''}
               </p>
               <p className="lg:text-2xl text-xl">
                 Media por juego: {calculateAverageTime(dataFiltered.numOfTotalTime, dataFiltered.numOfPlayedGames).hours} h{' '}
@@ -118,7 +119,7 @@ export default function StatSection({ data, gData }) {
             <CardHeader className="w-full text-center lg:text-2xl text-xl uppercase">Juegos</CardHeader>
             <Divider />
             <CardBody className="lg:aspect-auto aspect-square">
-              <Chart fullData={dataFiltered.numOfGames} obteinedData={dataFiltered.numOfPlayedGames} labelObtenied="Jugados" labelFull="Sin jugar aun" />
+              <Chart fullData={dataFiltered.numOfGames} obteinedData={dataFiltered.numOfPlayedGames} labelObtenied="Jugados" labelFull="Sin jugar aun" games />
             </CardBody>
           </Card>
         </div>

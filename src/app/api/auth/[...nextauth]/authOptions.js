@@ -33,7 +33,7 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      if (trigger == 'update') {
+      if (trigger === 'update') {
         return { ...token, ...session.user };
       }
       return { ...token, ...user };
@@ -46,5 +46,6 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/auth/signin',
+    signOut: '/',
   },
 };
