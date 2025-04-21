@@ -9,6 +9,7 @@ import quantum.dto.group.GroupResponse;
 import quantum.dto.group.NewGroupBody;
 import quantum.dto.group.UpdateGroupBody;
 import quantum.dto.userGroups.UserGroupsListResponse;
+import quantum.security.jwt.JwtUtil;
 import quantum.service.GroupService;
 import quantum.web.api.GroupApi;
 
@@ -22,22 +23,6 @@ import quantum.web.api.GroupApi;
 public class GroupController implements GroupApi {
 
     private final GroupService service;
-
-    /**
-     * PATCH to /api/groups/{groupId} to edit a group.
-     *
-     * @param token   The token with the authentication information.
-     * @param groupId The group id.
-     * @param body    The group body.
-     * @return The edited group.
-     */
-    @Override
-    public ResponseEntity<GroupResponse> patchGroup(String token, Long groupId, UpdateGroupBody body) {
-        log.info("[CONTROLLER] - Updating group");
-        service.updateGroup(groupId, body);
-        return ResponseEntity.noContent().build();
-    }
-
 
     /**
      * GET to /api/groups/{group_id} to fetch a user group list.
@@ -54,29 +39,46 @@ public class GroupController implements GroupApi {
     }
 
     /**
-     * GET to /api/user/{username}/groups to fetch a user group list.
+     * PATCH to /api/groups/{groupId} to edit a group.
      *
-     * @param token    The token with the authentication information.
-     * @param username The username.
+     * @param token   The token with the authentication information.
+     * @param groupId The group id.
+     * @param body    The group body.
+     * @return The edited group.
+     */
+    @Override
+    public ResponseEntity<GroupResponse> patchGroup(String token, Long groupId, UpdateGroupBody body) {
+        log.info("[CONTROLLER] - Updating group");
+        service.updateGroup(groupId, body);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * GET to /api/user/groups to fetch a user group list.
+     *
+     * @param token The token with the authentication information.
      * @return The list of groups the user is in or is invited.
      */
     @Override
-    public ResponseEntity<UserGroupsListResponse> getUserGroups(String token, String username) {
+    public ResponseEntity<UserGroupsListResponse> getUserGroups(String token) {
+        String username = JwtUtil.getUserDetails().getUsername();
+
         log.info("[CONTROLLER] - Searching user groups");
         UserGroupsListResponse result = service.getUserGroups(username);
         return ResponseEntity.ok(result);
     }
 
     /**
-     * POST to /api/user/{username}/groups to create a group.
+     * POST to /api/user/group to create a group.
      *
-     * @param token    The token with the authentication information.
-     * @param username The username.
-     * @param body     The group body.
+     * @param token The token with the authentication information.
+     * @param body  The group body.
      * @return The new group.
      */
     @Override
-    public ResponseEntity<GroupResponse> postGroup(String token, String username, NewGroupBody body) {
+    public ResponseEntity<GroupResponse> postGroup(String token, NewGroupBody body) {
+        String username = JwtUtil.getUserDetails().getUsername();
+
         log.info("[CONTROLLER] - Creating group");
         GroupResponse result = service.postGroup(username, body);
         return ResponseEntity.ok(result);
@@ -97,28 +99,30 @@ public class GroupController implements GroupApi {
     }
 
     /**
-     * PATCH to /api/user/{username}/groups/{group_id} to accept a group invitation from a user.
+     * PATCH to /api/user/groups/{group_id} to accept a group invitation from a user.
      *
-     * @param token    The token with the authentication information.
-     * @param username The username.
-     * @param groupId  The group id.
+     * @param token   The token with the authentication information.
+     * @param groupId The group id.
      */
     @Override
-    public ResponseEntity<Void> joinGroup(String token, String username, Long groupId) {
+    public ResponseEntity<Void> joinGroup(String token, Long groupId) {
+        String username = JwtUtil.getUserDetails().getUsername();
+
         log.info("[CONTROLLER] - Accepting group invitation");
         service.joinGroup(username, groupId);
         return ResponseEntity.noContent().build();
     }
 
     /**
-     * DELETE to /api/user/{username}/groups/{groupId} to delete a group from a user.
+     * DELETE to /api/user/groups/{groupId} to delete a group from a user.
      *
-     * @param token    The token with the authentication information.
-     * @param username The username.
-     * @param groupId  The group id.
+     * @param token   The token with the authentication information.
+     * @param groupId The group id.
      */
     @Override
-    public ResponseEntity<Void> deleteUserGroup(String token, String username, Long groupId) {
+    public ResponseEntity<Void> deleteUserGroup(String token, Long groupId) {
+        String username = JwtUtil.getUserDetails().getUsername();
+
         log.info("[CONTROLLER] - Declining or exiting group");
         service.declineOrExitGroup(username, groupId);
         return ResponseEntity.noContent().build();
@@ -126,15 +130,16 @@ public class GroupController implements GroupApi {
 
 
     /**
-     * PATCH to /api/user/{username}/groups/{group_id}/game/{game_id} to vote a group game by a user.
+     * PATCH to /api/user/groups/{group_id}/game/{game_id} to vote a group game by a user.
      *
-     * @param token    The token with the authentication information.
-     * @param username The username.
-     * @param groupId  The group id.
-     * @param gameId   The game id.
+     * @param token   The token with the authentication information.
+     * @param groupId The group id.
+     * @param gameId  The game id.
      */
     @Override
-    public ResponseEntity<Void> voteGroupGame(String token, String username, Long groupId, Long gameId) {
+    public ResponseEntity<Void> voteGroupGame(String token, Long groupId, Long gameId) {
+        String username = JwtUtil.getUserDetails().getUsername();
+
         log.info("[CONTROLLER] - Voting game");
         service.voteGroupGame(username, groupId, gameId);
         return ResponseEntity.noContent().build();

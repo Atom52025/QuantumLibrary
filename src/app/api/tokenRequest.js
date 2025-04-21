@@ -7,9 +7,6 @@ const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_URL;
 const API_URL = typeof window === 'undefined' ? INTERNAL_API_URL : EXTERNAL_API_URL;
 
 export async function GET(url, token, tags = null) {
-  // Create Query String
-  const completeUrl = `${API_URL}/${url}`;
-
   // Fetch Data
   const res = await fetch(`${API_URL}/${url}`, {
     headers: {
@@ -37,11 +34,11 @@ export async function POST(url, token, body) {
     },
     body: JSON.stringify(body),
   });
-  if (!res.ok) {
+  if (!(res.ok || res.status === 204)) {
     console.log('Failed to fetch data');
     throw new Error(`Failed to fetch data: ${res.status}`);
   }
-  return res?.json();
+  return res.status === 204 ? null : res.json();
 }
 
 export async function DELETE(url, token) {

@@ -19,10 +19,10 @@ import quantum.model.User;
  */
 
 @Validated
-@RequestMapping("/api/auth")
+@RequestMapping("/api")
 public interface AuthApi {
     /**
-     * POST to /api/auth/login to log in.
+     * POST to /api/login to log in.
      *
      * @return The user that logged in
      */
@@ -40,7 +40,7 @@ public interface AuthApi {
     );
 
     /**
-     * POST to /api/auth/login to sign up.
+     * POST to /api/signup to sign up.
      *
      * @return The user that signed up
      */

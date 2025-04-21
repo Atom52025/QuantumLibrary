@@ -22,7 +22,7 @@ export default function GroupCreateModal({ setGroups }) {
   const [loading, setLoading] = useState(false);
 
   const searchUser = async () => {
-    const formURL = `api/users/${userId}`;
+    const formURL = `api/user/${userId}`;
     try {
       setLoading(true);
       const res = await GET(formURL, session.user.token);
@@ -39,7 +39,7 @@ export default function GroupCreateModal({ setGroups }) {
   };
 
   const createGroup = async (onClose) => {
-    const formURL = `api/user/${session.user.username}/groups`;
+    const formURL = `api/user/groups`;
 
     const requestBody = {
       name: name,

@@ -1,34 +1,32 @@
 package quantum.security.jwt;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import quantum.exceptions.QuantumLibraryGenericException;
 
 import javax.crypto.SecretKey;
 import java.security.GeneralSecurityException;
-import java.util.Base64;
 
 @UtilityClass
 @Slf4j
 public class JwtUtil {
     SecretKey key = Jwts.SIG.HS256.key().build();
 
-    public static TokenPayload decodeToken(String token) {
-        String[] chunks = token.split("\\.");
 
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-
-        return TokenPayload.fromJsonString(new String(decoder.decode(chunks[1])));
-    }
-
+    /**
+     * Get the username from the JWT token.
+     */
     public String getUserNameFromJwtToken(String jwt) {
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload().getSubject();
     }
 
+    /**
+     * Generate a JWT token for the given user.
+     */
     public String generateJwtToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
@@ -36,6 +34,9 @@ public class JwtUtil {
                 .compact();
     }
 
+    /**
+     * Verify the integrity of the JWT token.
+     */
     public boolean verifyToken(String jwt) throws Exception {
         log.info("Verifying JWT token integrity: {}", jwt);
         try {
@@ -46,28 +47,33 @@ public class JwtUtil {
         }
     }
 
+    /**
+     * Get the user details from the security context.
+     */
+    public UserDetails getUserDetails() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    @Getter
-    public class TokenPayload {
-        @JsonProperty("sub")
-        private String sub;
-        @JsonProperty("name")
-        private String name;
-        @JsonProperty("iat")
-        private long iat; // Puedes cambiar el tipo según tus necesidades
-
-        // Getters y setters
-
-        public static TokenPayload fromJsonString(String jsonString) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.readValue(jsonString, TokenPayload.class);
-            } catch (Exception e) {
-                e.printStackTrace(); // Manejo de errores, podrías lanzar una excepción personalizada aquí
-                return null;
-            }
+        if (principal instanceof UserDetails) {
+            return (UserDetails) principal;
+        } else {
+            throw new IllegalStateException("The object in the security context is not a User.");
         }
-
-        // También puedes agregar métodos específicos según tus necesidades
     }
+
+    /**
+     * Get the user details from the security context.
+     */
+    public void userIsAdmin() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails userDetails) {
+            if (!userDetails.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
+                throw new QuantumLibraryGenericException("Unauthorized", "You don´t have enough permission to make this request", HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            throw new IllegalStateException("The object in the security context is not a User.");
+        }
+    }
+
+
 }

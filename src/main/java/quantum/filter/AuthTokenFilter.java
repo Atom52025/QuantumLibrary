@@ -43,30 +43,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                // Perform additional check for URLs with the user in the path
-                String requestUri = request.getRequestURI();
-                if (requestUri.matches("/api/user/[^/]+/.*")) {
-                    String pathUsername = extractUsernameFromPath(requestUri);
-                    if (!username.equals(pathUsername)) {
-                        log.warn("Authenticated user '{}' attempted to access data for another user '{}'", username, pathUsername);
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not allowed to access this resource.");
-                        return;
-                    }
-                }
             }
         } catch (Exception e) {
             log.error("Cannot set user authentication: {}", e.getLocalizedMessage());
         }
         filterChain.doFilter(request, response);
-    }
-
-    private String extractUsernameFromPath(String requestUri) {
-        String[] parts = requestUri.split("/");
-        if (parts.length > 3) {
-            return parts[3];
-        }
-        return null;
     }
 
     private String parseJwt(HttpServletRequest request) {

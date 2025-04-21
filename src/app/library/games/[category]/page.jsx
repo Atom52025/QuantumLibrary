@@ -8,11 +8,11 @@ export default async function Page({ params }) {
   const session = await getServerSession(authOptions);
 
   // Get Games Data
-  const url = 'api/user/' + session.user.username + '/games?category=' + params.category;
+  const url = 'api/user/games?category=' + params.category;
   const data = await GET(url, session.user.token, ['games']);
 
   // Get Groups Data
-  const urlGroups = 'api/user/' + session.user.username + '/groups';
+  const urlGroups = 'api/user/groups';
   const dataGroups = await GET(urlGroups, session.user.token);
 
   return <UserContentDisplay data={data.games} gData={dataGroups || { accepted: [], pending: [] }} />;

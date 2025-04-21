@@ -27,7 +27,7 @@ export default function Page() {
   }, [confirmPassword, password]);
 
   const register = async () => {
-    const formURL = `api/users`;
+    const formURL = `api/signup`;
 
     if (!username || !email || !password || !confirmPassword) {
       setError('Complete todos los campos');

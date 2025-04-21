@@ -16,7 +16,7 @@ export default function GroupExitModal({ groupId }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const exit = async (onClose) => {
-    const formURL = `api/user/${session.user.username}/groups/${groupId}`;
+    const formURL = `api/user/group/${groupId}`;
 
     try {
       await DELETE(formURL, session.user.token);

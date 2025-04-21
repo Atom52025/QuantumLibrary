@@ -19,6 +19,7 @@ import quantum.model.User;
  */
 
 @Validated
+@RequestMapping("/api")
 public interface UserApi {
 
     /**
@@ -38,7 +39,7 @@ public interface UserApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(value = "/api/users", produces = "application/json")
+    @GetMapping(value = "/users", produces = "application/json")
     ResponseEntity<UserListResponse> getUsers(
             @RequestHeader("Authorization")
             String token,
@@ -47,19 +48,18 @@ public interface UserApi {
     );
 
     /**
-     * GET to /api/users/{username} to fetch a user.
+     * GET to /api/user/{username} to fetch a user.
      *
-     * @param username The user id.
      * @return The list of users
      */
-    @Operation(summary = "Get users list", description = "Get user")
+    @Operation(summary = "Get user", description = "Get user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "The user"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(value = "/api/users/{username}", produces = "application/json")
+    @GetMapping(value = "/user/{username}", produces = "application/json")
     ResponseEntity<UserResponse> getUser(
             @RequestHeader("Authorization")
             String token,
@@ -81,17 +81,16 @@ public interface UserApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/api/users", produces = "application/json")
+    @PostMapping(value = "/user", produces = "application/json")
     ResponseEntity<UserResponse> postUser(
             @Valid @RequestBody
             NewUserBody body
     );
 
     /**
-     * PATCH to /api/users/{username} to edit a user.
+     * PATCH to /api/users to edit a user.
      *
-     * @param username The user id.
-     * @param body     The user body.
+     * @param body The user body.
      * @return The edited user.
      */
     @Operation(summary = "Edit a user", description = "Edit a user")
@@ -101,22 +100,18 @@ public interface UserApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping(value = "/api/users/{username}", produces = "application/json")
+    @PatchMapping(value = "/user", produces = "application/json")
     ResponseEntity<UserResponse> patchUser(
             @RequestHeader("Authorization")
             String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")
-            @PathVariable("username")
-            String username,
             @Valid @RequestBody
             UpdateUserBody body
     );
 
     /**
-     * PATCH to /api/users/{username}/password to edit a user.
+     * PATCH to /api/users/password to edit a user.
      *
-     * @param username The user id.
-     * @param body     The user body.
+     * @param body The user body.
      * @return The edited user.
      */
     @Operation(summary = "Update user password", description = "Update user password")
@@ -126,21 +121,16 @@ public interface UserApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping(value = "/api/users/{username}/password", produces = "application/json")
+    @PatchMapping(value = "/user/password", produces = "application/json")
     ResponseEntity<UserResponse> patchUserPassword(
             @RequestHeader("Authorization")
             String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")
-            @PathVariable("username")
-            String username,
             @Valid @RequestBody
             UpdatePasswordBody body
     );
 
     /**
-     * DELETE to /api/users/{username} to delete a user.
-     *
-     * @param username The user id
+     * DELETE to /api/users to delete a user.
      */
     @Operation(summary = "Delete a user", description = "Delete a user")
     @ApiResponses(value = {
@@ -149,12 +139,9 @@ public interface UserApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping(value = "/api/users/{username}", produces = "application/json")
+    @DeleteMapping(value = "/user", produces = "application/json")
     ResponseEntity<Void> deleteUser(
             @RequestHeader("Authorization")
-            String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The user id")
-            @PathVariable("username")
-            String username
+            String token
     );
 }

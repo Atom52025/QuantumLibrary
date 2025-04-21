@@ -55,7 +55,7 @@ export default function AddUserGameModal({ setGames }) {
       return;
     }
 
-    const formURL = `api/user/${session.user.username}/games/${newGame.key}`;
+    const formURL = `api/user/games/${newGame.key}`;
 
     const requestBody = {
       name: newGame.name,

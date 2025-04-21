@@ -16,7 +16,7 @@ export default function GroupListSection({ gData, open, setOpen }) {
   const [groups, setGroups] = useState(gData);
 
   const acceptGroup = async (group) => {
-    const url = 'api/user/' + session.user.username + '/groups/' + group.id;
+    const url = 'api/user/group/' + group.id;
     await PATCH(url, session.user.token, null);
     const updatedGroup = {
       ...group,
@@ -30,11 +30,11 @@ export default function GroupListSection({ gData, open, setOpen }) {
   };
 
   const declineGroup = async (group) => {
-    const url = 'api/user/' + session.user.username + '/groups/' + group.id;
+    const url = 'api/user/group/' + group.id;
     await DELETE(url, session.user.token);
     setGroups((prevGroups) => ({
       ...prevGroups,
-      pending: prevGroups.pending.filter((userGroup) => userGroup.group.id !== group.id),
+      pending: prevGroups.pending.filter((userGroup) => userGroup.id !== group.id),
     }));
   };
 

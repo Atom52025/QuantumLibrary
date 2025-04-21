@@ -3,13 +3,16 @@ package quantum.web.rest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import quantum.dto.game.GameListResponse;
 import quantum.dto.game.GameResponse;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
+import quantum.exceptions.QuantumLibraryGenericException;
 import quantum.model.Game;
+import quantum.security.jwt.JwtUtil;
 import quantum.service.GameService;
 import quantum.web.api.GameApi;
 
@@ -45,6 +48,9 @@ public class GameController implements GameApi {
      */
     @Override
     public ResponseEntity<GameResponse> postGame(NewGameBody body) {
+        // Check if the user is an admin
+        JwtUtil.userIsAdmin();
+
         log.info("[CONTROLLER] - Creating game");
         GameResponse result = (GameResponse) service.postGame(body, false);
         return ResponseEntity.ok(result);
@@ -59,6 +65,9 @@ public class GameController implements GameApi {
      */
     @Override
     public ResponseEntity<GameResponse> patchGame(Long id, UpdateGameBody body) {
+        // Check if the user is an admin
+        JwtUtil.userIsAdmin();
+
         log.info("[CONTROLLER] - Updating game");
         GameResponse result = service.updateGame(id, body);
         return ResponseEntity.ok(result);
@@ -72,6 +81,9 @@ public class GameController implements GameApi {
      */
     @Override
     public ResponseEntity<Void> deleteGame(Long id) {
+        // Check if the user is an admin
+        JwtUtil.userIsAdmin();
+
         log.info("[CONTROLLER] - Deleting game");
         service.deleteGame(id);
         return ResponseEntity.noContent().build();

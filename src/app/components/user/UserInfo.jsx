@@ -48,11 +48,11 @@ export default function UserMenu() {
   };
 
   const sendRequest = async () => {
-    const formURL = `api/users/${session.user.username}`;
+    const formURL = `api/user`;
 
     const requestBody = {
       email: email,
-      image: image
+      image: image,
     };
 
     try {
@@ -87,11 +87,9 @@ export default function UserMenu() {
             </div>
             <div className="flex flex-col gap-4 p-2 h-fit sm:w-1/2 ">
               <Input label="Nombre de usuario" value={session.user.username} variant="bordered" disabled />
-              <Input label="Correo" value={email} placeholder="No hay ningún email definido" variant="bordered"
-                     disabled={!isEditMode} onChange={(e) => setEmail(e.target.value)} />
+              <Input label="Correo" value={email} placeholder="No hay ningún email definido" variant="bordered" disabled={!isEditMode} onChange={(e) => setEmail(e.target.value)} />
               <Input label="Password actual" value={undefined} variant="bordered" placeholder="*********" disabled />
-              {isEditMode && <Input label="New image" variant="bordered" placeholder="https://..." value={imageUrl}
-                                    onChange={(e) => setImageUrl(e.target.value)} />}
+              {isEditMode && <Input label="New image" variant="bordered" placeholder="https://..." value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />}
             </div>
           </div>
         </CardBody>
