@@ -1,5 +1,6 @@
 package quantum.web;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,15 +12,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import quantum.dto.user.*;
+import quantum.model.User;
 import quantum.service.UserService;
 import quantum.web.rest.SteamController;
 import quantum.web.rest.UserController;
+
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -42,6 +49,25 @@ class UserControllerTest {
 
     @MockBean
     protected UserService service;
+
+    @BeforeEach
+    void setUpSecurityContext() {
+        UserDetails mockUser = new User(
+                1L,
+                "user",
+                "email",
+                "password",
+                "role",
+                "image",
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
 
     /**
      * Test for {@link UserController#getUsers} method.
@@ -77,11 +103,10 @@ class UserControllerTest {
     @DisplayName("Test users controller GET")
     void getUser() throws Exception {
 
-        when(service.getUsers(any(Pageable.class))).thenReturn(new UserListResponse());
+        when(service.getUser(any(String.class))).thenReturn(new UserResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/users/{username}", "user")
-                .param("page", "1")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/{username}", "User")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
@@ -111,7 +136,7 @@ class UserControllerTest {
         when(service.postUser(any(NewUserBody.class))).thenReturn(new UserResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/users")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/user")
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
@@ -141,7 +166,7 @@ class UserControllerTest {
         when(service.updateUser(any(String.class), any(UpdateUserBody.class))).thenReturn(new UserResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/users/{username}", "user")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/user")
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
@@ -171,7 +196,7 @@ class UserControllerTest {
         when(service.updatePassword(any(String.class), any(UpdatePasswordBody.class))).thenReturn(new UserResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/users/{username}/password", "user")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/user/password")
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
@@ -194,7 +219,7 @@ class UserControllerTest {
     void deleteUser() throws Exception {
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/api/users/{username}", "user")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/api/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
