@@ -1,5 +1,6 @@
 package quantum.web;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,11 +23,13 @@ import quantum.dto.game.GameListResponse;
 import quantum.dto.game.GameResponse;
 import quantum.dto.game.NewGameBody;
 import quantum.dto.game.UpdateGameBody;
+import quantum.model.User;
 import quantum.service.GameService;
 import quantum.web.rest.AuthController;
 import quantum.web.rest.GameController;
 import quantum.web.rest.SteamGridDBController;
 
+import java.util.Collections;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -45,6 +51,25 @@ class GameControllerTest {
 
     @MockBean
     protected GameService service;
+
+    @BeforeEach
+    void setUpSecurityContext() {
+        UserDetails mockUser = new User(
+                1L,
+                "user",
+                "email",
+                "password",
+                "ROLE_ADMIN",
+                "image",
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
 
     /**
      * Test for {@link GameController#getGames} method.

@@ -1,5 +1,6 @@
 package quantum.web;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +12,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import quantum.dto.userGames.*;
 import quantum.dto.userGames.steamImport.UserGameImport;
 import quantum.dto.userGames.steamImport.UserGamesImportList;
+import quantum.model.User;
 import quantum.model.UserGame;
 import quantum.service.UserGamesService;
 import quantum.web.rest.UserGamesController;
@@ -51,6 +56,25 @@ class UserGamesControllerTest {
     @MockBean
     protected UserGamesService service;
 
+    @BeforeEach
+    void setUpSecurityContext() {
+        UserDetails mockUser = new User(
+                1L,
+                "user",
+                "email",
+                "password",
+                "role",
+                "image",
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
     /**
      * Test for {@link UserGamesController#getUserGames} method.
      *
@@ -63,7 +87,7 @@ class UserGamesControllerTest {
         when(service.getUserGames(any(String.class), any(String.class), any(Pageable.class))).thenReturn(new UserGamesListResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/{username}/games", SAMPLE_USERNAME)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/games", SAMPLE_USERNAME)
                 .param("page", "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
@@ -88,7 +112,7 @@ class UserGamesControllerTest {
         when(service.getOnlineGames(any(String.class))).thenReturn(new ArrayList<>());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/{username}/onlineGames", SAMPLE_USERNAME)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/onlineGames", SAMPLE_USERNAME)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
@@ -118,7 +142,7 @@ class UserGamesControllerTest {
         when(service.postUserGame(any(String.class), any(Long.class), any(NewUserGameBody.class))).thenReturn(new UserGameResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/user/{username}/games/{game_sgdb_id}", SAMPLE_USERNAME, 1L)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/user/games/{game_sgdb_id}", 1L)
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
@@ -153,7 +177,7 @@ class UserGamesControllerTest {
         when(service.importUserGames(any(String.class), any(UserGamesImportList.class))).thenReturn(new UserGamesListResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/user/{username}/games/import", SAMPLE_USERNAME)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/user/games/import", SAMPLE_USERNAME)
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
@@ -178,7 +202,7 @@ class UserGamesControllerTest {
         when(service.updateUserGame(any(String.class), any(Long.class), any(UpdateUserGameBody.class))).thenReturn(new UserGameResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/user/{username}/games/{game_sgdb_id}", SAMPLE_USERNAME, 1L)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/user/games/{game_sgdb_id}", 1L)
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
@@ -201,7 +225,7 @@ class UserGamesControllerTest {
     void deleteGame() throws Exception {
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/api/user/{username}/games/{game_sgdb_id}", SAMPLE_USERNAME, 1L)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/api/user/games/{game_sgdb_id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
@@ -224,7 +248,7 @@ class UserGamesControllerTest {
         when(service.getStats(any(String.class))).thenReturn(new StatsResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/{username}/games/stats", SAMPLE_USERNAME)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/games/stats")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 

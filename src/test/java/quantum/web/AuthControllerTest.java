@@ -53,7 +53,7 @@ class AuthControllerTest {
 
         when(service.logIn(any(LogInBody.class))).thenReturn(new AuthResponse());
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/login")
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -76,7 +76,7 @@ class AuthControllerTest {
 
         when(service.signUp(any(SignUpBody.class))).thenReturn(new AuthResponse());
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/signup")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/signup")
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON);
 

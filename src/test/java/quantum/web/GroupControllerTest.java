@@ -1,8 +1,10 @@
 package quantum.web;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +12,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,11 +22,14 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import quantum.dto.group.*;
 import quantum.dto.userGroups.UserGroupsListResponse;
+import quantum.model.User;
 import quantum.model.UserGroup;
+import quantum.security.jwt.JwtUtil;
 import quantum.service.GroupService;
 import quantum.web.rest.GroupController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -46,6 +54,25 @@ class GroupControllerTest {
     @MockBean
     protected GroupService service;
 
+    @BeforeEach
+    void setUpSecurityContext() {
+        UserDetails mockUser = new User(
+                1L,
+                "user",
+                "email",
+                "password",
+                "role",
+                "image",
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
     @Test
     @DisplayName("Test group controller PATCH")
     void patchGroup() throws Exception {
@@ -58,7 +85,7 @@ class GroupControllerTest {
         when(service.updateGroup(any(Long.class), any(UpdateGroupBody.class))).thenReturn(new GroupResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/groups/{groupId}", 1L)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/group/{groupId}", 1L)
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
@@ -79,7 +106,7 @@ class GroupControllerTest {
         when(service.getGroupGames(any(Long.class))).thenReturn(new GroupGamesResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/groups/{group_id}", 1L)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/group/{group_id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
@@ -99,7 +126,7 @@ class GroupControllerTest {
         when(service.getUserGroups(any(String.class))).thenReturn(new UserGroupsListResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/{username}/groups", "user")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/user/groups")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
@@ -123,7 +150,7 @@ class GroupControllerTest {
         when(service.postGroup(any(String.class), any(NewGroupBody.class))).thenReturn(new GroupResponse());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/user/{username}/groups", "user")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/user/group")
                 .content(stringifyObject(input))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
@@ -144,7 +171,7 @@ class GroupControllerTest {
         when(service.sendInvite(any(String.class), any(Long.class))).thenReturn(new UserGroup());
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/groups/{group_id}/invite/{username}", 1L, "user")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/group/{group_id}/invite/{username}", 1L, "user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
@@ -164,7 +191,7 @@ class GroupControllerTest {
         doNothing().when(service).joinGroup(any(String.class), any(Long.class));
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/user/{username}/groups/{group_id}", "user", 1L)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/user/group/{group_id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
@@ -184,7 +211,7 @@ class GroupControllerTest {
         doNothing().when(service).declineOrExitGroup(any(String.class), any(Long.class));
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/api/user/{username}/groups/{groupId}", "user", 1L)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/api/user/group/{groupId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
@@ -204,7 +231,7 @@ class GroupControllerTest {
         doNothing().when(service).voteGroupGame(any(String.class), any(Long.class), any(Long.class));
 
         // Build the request
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/user/{username}/groups/{group_id}/game/{game_id}", "user", 1L, 1L)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/api/user/group/{group_id}/game/{game_id}", 1L, 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + SAMPLE_TOKEN);
 
