@@ -30,7 +30,7 @@ export default function ChangePasswordModal({ user }) {
   }, [newPassword, confirmPassword]);
 
   const sendRequest = async (onClose) => {
-    const formURL = `api/users/${user.username}/password`;
+    const formURL = `api/user/password`;
 
     const requestBody = {
       oldPassword: oldPassword,

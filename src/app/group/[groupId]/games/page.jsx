@@ -9,11 +9,11 @@ export default async function Page({ params }) {
   const session = await getServerSession(authOptions);
 
   // Get Group Data
-  const url = 'api/groups/' + params.groupId;
+  const url = 'api/group/' + params.groupId;
   const data = await GET(url, session.user.token);
 
   // Get Groups Data
-  const urlGroups = 'api/user/' + session.user.username + '/groups';
+  const urlGroups = 'api/user/groups';
   const dataGroups = await GET(urlGroups, session.user.token);
 
   return (

@@ -74,7 +74,7 @@ export default function GroupContentDisplay({ data, group, gData }) {
 
   // Function to vote for a game
   const voteGame = async (gameId) => {
-    const formURL = `api/user/${session.user.username}/groups/${group.id}/game/${gameId}`;
+    const formURL = `api/user/group/${group.id}/game/${gameId}`;
 
     try {
       await PATCH(formURL, session.user.token);
