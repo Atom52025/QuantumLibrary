@@ -27,7 +27,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
   const [grids, setGrids] = useState([]);
 
   const eraseForm = async (onClose) => {
-    const formURL = `api/user/${session.user.username}/games/${userGame.game.id}`;
+    const formURL = `api/user/games/${userGame.game.id}`;
     try {
       await DELETE(formURL, session.user.token);
 
@@ -41,7 +41,7 @@ export default function EditUserGameModal({ userGame, setGames, isOpen, onOpenCh
   };
 
   const editForm = async (onClose) => {
-    const formURL = `api/user/${session.user.username}/games/${userGame.game.id}`;
+    const formURL = `api/user/games/${userGame.game.id}`;
 
     const requestBody = {
       tags: tags,

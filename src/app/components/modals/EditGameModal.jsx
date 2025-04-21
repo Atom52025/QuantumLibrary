@@ -32,7 +32,7 @@ export default function EditGameModal({ game, setGames, isOpen, onOpenChange, se
   const [grids, setGrids] = useState([]);
 
   const saveGame = async (onClose) => {
-    const formURL = `api/user/${session.user.username}/games/${game.sgdbId}`;
+    const formURL = `api/user/games/${game.sgdbId}`;
 
     const requestBody = {
       name: game.name,

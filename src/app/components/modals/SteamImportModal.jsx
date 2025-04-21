@@ -58,7 +58,7 @@ export default function SteamImportModal({ setGames }) {
   };
 
   const importImg = async (image) => {
-    const formURL = `api/users/${session.user.username}`;
+    const formURL = `api/user`;
 
     const requestBody = {
       image: image,
@@ -79,7 +79,7 @@ export default function SteamImportModal({ setGames }) {
       return;
     }
 
-    const formURL = `api/user/${session.user.username}/games/import`;
+    const formURL = `api/user/games/import`;
 
     const requestBody = {
       games: groupSelected,

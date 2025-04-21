@@ -23,7 +23,7 @@ export default function GroupInviteModal({ groupId, setGroups }) {
 
   // Search user
   const searchUser = async () => {
-    const formURL = `api/users/${userId}`;
+    const formURL = `api/user/${userId}`;
     try {
       setLoading(true);
 
@@ -32,7 +32,10 @@ export default function GroupInviteModal({ groupId, setGroups }) {
       if (res === null) {
         setResultModal('Error: No se pudo encontrar al usuario');
       } else {
-        setFoundUsers((prevFoundUsers) => [...prevFoundUsers, res]);
+        setFoundUsers((prevFoundUsers) => {
+          const exists = prevFoundUsers.some((user) => user.username === res.username);
+          return exists ? prevFoundUsers : [...prevFoundUsers, res];
+        });
       }
 
       setLoading(false);
@@ -43,10 +46,10 @@ export default function GroupInviteModal({ groupId, setGroups }) {
 
   // Invite user to group
   const invite = async (onClose) => {
-    const formURL = `api/groups/${groupId}/invite/`;
+    const formURL = `api/group/${groupId}/invite/`;
     try {
       for (const user of foundUsers) {
-        const res = await POST(formURL + user.username, session.user.token, true);
+        await POST(formURL + user.username, session.user.token, true);
       }
       setResultModal('Invitacion enviada con exito');
       onClose();
@@ -85,9 +88,8 @@ export default function GroupInviteModal({ groupId, setGroups }) {
         {foundUsers.length !== 0 && (
           <div className="flex flex-col gap-3 ">
             {foundUsers.map((user) => (
-              <div className="flex flex-row justify-between gap-5">
+              <div key={user.username} className="flex flex-row justify-between gap-5">
                 <User
-                  key={user.username}
                   name={user.username}
                   avatarProps={{
                     src: user.image,

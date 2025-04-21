@@ -36,8 +36,8 @@ export default function Chart({ obteinedData, fullData, labelObtenied, labelFull
       <div className="relative">
         <Doughnut data={data} options={options} />
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <p className="text-center text-2xl">
-            Total: <br /> {games ? fullData : obteinedData}
+          <p className="text-center text-xl">
+            {games ? 'Total:' : 'Obtenido:'} <br /> {games ? fullData : (obteinedData / fullData) * 100 + '%'}
           </p>
         </div>
       </div>
