@@ -25,10 +25,9 @@ import java.util.List;
 public interface UserGamesApi {
 
     /**
-     * GET to /api/user/{username}/games to fetch a user game list.
+     * GET to /api/user/games to fetch a user game list.
      *
      * @param token    The token with the authentication information.
-     * @param username The username.
      * @param category The category.
      * @param pageable The pageable.
      * @return The list of games
@@ -44,13 +43,10 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(value = "/api/user/{username}/games", produces = "application/json")
+    @GetMapping(value = "/api/user/games", produces = "application/json")
     ResponseEntity<UserGamesListResponse> getUserGames(
             @RequestHeader("Authorization")
             String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
-            @PathVariable("username")
-            String username,
             @RequestParam(value = "category", required = false, defaultValue = "all")
             String category,
             @PageableDefault(value = Integer.MAX_VALUE)
@@ -58,10 +54,9 @@ public interface UserGamesApi {
     );
 
     /**
-     * GET to /api/user/{username}/onlineGames to fetch a user game online list.
+     * GET to /api/user/onlineGames to fetch a user game online list.
      *
-     * @param token    The token with the authentication information.
-     * @param username The username.
+     * @param token The token with the authentication information.
      * @return The list of games
      */
     @Operation(summary = "Get online games list", description = "Get online games list")
@@ -71,20 +66,16 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(value = "/api/user/{username}/onlineGames", produces = "application/json")
+    @GetMapping(value = "/api/user/onlineGames", produces = "application/json")
     ResponseEntity<List<UserGame>> getOnlineGames(
             @RequestHeader("Authorization")
-            String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
-            @PathVariable("username")
-            String username
+            String token
     );
 
     /**
-     * POST to /api/user/{username}/games/{game_sgdb_id} add a game to a user
+     * POST to /api/user/games/{game_sgdb_id} add a game to a user
      *
      * @param token      The token with the authentication information.
-     * @param username   The username.
      * @param gameSgdbId The SGDB game id.
      * @param body       The user game body.
      * @return The new user game.
@@ -96,13 +87,10 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/api/user/{username}/games/{game_sgdb_id}", produces = "application/json")
+    @PostMapping(value = "/api/user/games/{game_sgdb_id}", produces = "application/json")
     ResponseEntity<UserGameResponse> postUserGame(
             @RequestHeader("Authorization")
             String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
-            @PathVariable("username")
-            String username,
             @PathVariable("game_sgdb_id")
             Long gameSgdbId,
             @Valid @RequestBody
@@ -110,11 +98,10 @@ public interface UserGamesApi {
     );
 
     /**
-     * POST to /api/user/{username}/games/import to import a list of games to a user.
+     * POST to /api/user/games/import to import a list of games to a user.
      *
-     * @param token    The token with the authentication information.
-     * @param username The username.
-     * @param body     Import list body.
+     * @param token The token with the authentication information.
+     * @param body  Import list body.
      * @return The new user games.
      */
     @Operation(summary = "Import user games", description = "Import user games")
@@ -124,22 +111,18 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/api/user/{username}/games/import", produces = "application/json")
+    @PostMapping(value = "/api/user/games/import", produces = "application/json")
     ResponseEntity<UserGamesListResponse> importUserGames(
             @RequestHeader("Authorization")
             String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
-            @PathVariable("username")
-            String username,
             @Valid @RequestBody
             UserGamesImportList body
     );
 
     /**
-     * PATCH to /api/user/{username}/games/{game_sgdb_id} to edit a game from a user.
+     * PATCH to /api/user/games/{game_sgdb_id} to edit a game from a user.
      *
      * @param token      The token with the authentication information.
-     * @param username   The username.
      * @param gameSgdbId The game id.
      * @param body       The user game body.
      * @return The edited user game.
@@ -151,13 +134,10 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping(value = "/api/user/{username}/games/{game_sgdb_id}", produces = "application/json")
+    @PatchMapping(value = "/api/user/games/{game_sgdb_id}", produces = "application/json")
     ResponseEntity<UserGameResponse> patchUserGame(
             @RequestHeader("Authorization")
             String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
-            @PathVariable("username")
-            String username,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The sgdb game id")
             @PathVariable("game_sgdb_id")
             Long gameSgdbId,
@@ -166,10 +146,9 @@ public interface UserGamesApi {
     );
 
     /**
-     * DELETE to /api/user/{username}/games/{game_sgdb_id} to delete a game from a user.
+     * DELETE to /api/user/games/{game_sgdb_id} to delete a game from a user.
      *
      * @param token      The token with the authentication information.
-     * @param username   The username.
      * @param gameSgdbId The game id.
      */
     @Operation(summary = "Delete a user game", description = "Delete a user game")
@@ -179,23 +158,19 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping(value = "/api/user/{username}/games/{game_sgdb_id}", produces = "application/json")
+    @DeleteMapping(value = "/api/user/games/{game_sgdb_id}", produces = "application/json")
     ResponseEntity<Void> deleteUserGame(
             @RequestHeader("Authorization")
             String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
-            @PathVariable("username")
-            String username,
             @Parameter(in = ParameterIn.PATH, required = true, description = "The sgdb game id")
             @PathVariable("game_sgdb_id")
             Long gameSgdbId
     );
 
     /**
-     * GET to /api/user/{username}/games/stats to fetch a user game stats.
+     * GET to /api/user/games/stats to fetch a user game stats.
      *
-     * @param token    The token with the authentication information.
-     * @param username The username.
+     * @param token The token with the authentication information.
      * @return The stats
      */
     @Operation(summary = "Get user games stats", description = "Get user games stats")
@@ -205,12 +180,9 @@ public interface UserGamesApi {
             @ApiResponse(responseCode = "404", description = "No results found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping(value = "/api/user/{username}/games/stats", produces = "application/json")
+    @GetMapping(value = "/api/user/games/stats", produces = "application/json")
     ResponseEntity<StatsResponse> getStats(
             @RequestHeader("Authorization")
-            String token,
-            @Parameter(in = ParameterIn.PATH, required = true, description = "The username")
-            @PathVariable("username")
-            String username
+            String token
     );
 }

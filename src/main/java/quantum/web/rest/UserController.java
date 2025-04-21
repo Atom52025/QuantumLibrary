@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import quantum.dto.user.*;
 import quantum.model.User;
+import quantum.security.jwt.JwtUtil;
 import quantum.service.UserService;
 import quantum.web.api.UserApi;
 
@@ -35,9 +36,9 @@ public class UserController implements UserApi {
     }
 
     /**
-     * GET to /api/users to fetch users list.
+     * GET to /api/user/{username} to fetch users list.
      *
-     * @param username The username of the user to update.
+     * @param username The username
      * @return The list of users
      */
     @Override
@@ -48,7 +49,7 @@ public class UserController implements UserApi {
     }
 
     /**
-     * POST to /api/users to create a user.
+     * POST to /api/user to create a user.
      *
      * @param body The user body.
      * @return The new user.
@@ -61,41 +62,44 @@ public class UserController implements UserApi {
     }
 
     /**
-     * PUT to /api/users/{username} to update a user.
+     * PUT to /api/user to update a user.
      *
-     * @param username The username of the user to update.
-     * @param body     The user body.
+     * @param body The user body.
      * @return The updated user.
      */
     @Override
-    public ResponseEntity<UserResponse> patchUser(String token, String username, UpdateUserBody body) {
+    public ResponseEntity<UserResponse> patchUser(String token, UpdateUserBody body) {
+        String username = JwtUtil.getUserDetails().getUsername();
+
         log.info("[CONTROLLER] - Updating user");
         UserResponse result = service.updateUser(username, body);
         return ResponseEntity.ok(result);
     }
 
     /**
-     * PUT to /api/users/{username}/password to update a user.
+     * PUT to /api/user/password to update a user.
      *
-     * @param username The username of the user to update.
-     * @param body     The user body.
+     * @param body The user body.
      * @return The updated user.
      */
     @Override
-    public ResponseEntity<UserResponse> patchUserPassword(String token, String username, UpdatePasswordBody body) {
+    public ResponseEntity<UserResponse> patchUserPassword(String token, UpdatePasswordBody body) {
+        String username = JwtUtil.getUserDetails().getUsername();
+
         log.info("[CONTROLLER] - Updating user password");
         UserResponse result = service.updatePassword(username, body);
         return ResponseEntity.ok(result);
     }
 
     /**
-     * DELETE to /api/users/{username} to delete a user.
+     * DELETE to /api/user to delete a user.
      *
-     * @param username The username of the user to delete.
      * @return The deleted user.
      */
     @Override
-    public ResponseEntity<Void> deleteUser(String token, String username) {
+    public ResponseEntity<Void> deleteUser(String token) {
+        String username = JwtUtil.getUserDetails().getUsername();
+
         log.info("[CONTROLLER] - Deleting user");
         service.deleteUser(username);
         return ResponseEntity.noContent().build();
