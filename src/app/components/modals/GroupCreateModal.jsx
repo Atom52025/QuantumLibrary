@@ -1,4 +1,15 @@
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, User, useDisclosure } from '@nextui-org/react';
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spinner,
+  User,
+  useDisclosure
+} from '@nextui-org/react';
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 import { PiArrowBendDownRightBold } from 'react-icons/pi';
@@ -39,11 +50,11 @@ export default function GroupCreateModal({ setGroups }) {
   };
 
   const createGroup = async (onClose) => {
-    const formURL = `api/user/groups`;
+    const formURL = `api/user/group`;
 
     const requestBody = {
       name: name,
-      invited_users: foundUsers.map((user) => user.username),
+      invited_users: foundUsers.map((user) => user.username)
     };
 
     try {
@@ -51,7 +62,7 @@ export default function GroupCreateModal({ setGroups }) {
 
       setGroups((prevGroups) => ({
         ...prevGroups,
-        accepted: [...prevGroups.accepted, res],
+        accepted: [...prevGroups.accepted, res]
       }));
 
       setResultModal('Group creado con exito');
@@ -91,7 +102,7 @@ export default function GroupCreateModal({ setGroups }) {
                 key={user.username}
                 name={user.username}
                 avatarProps={{
-                  src: user.image,
+                  src: user.image
                 }}
               />
             ))}
@@ -112,7 +123,9 @@ export default function GroupCreateModal({ setGroups }) {
   return (
     <>
       <button className="min-h-10 w-full p-1" onClick={onOpen}>
-        <p className="w-full h-full flex items-center justify-center leading-tight bg-blue-400/20 rounded-full hover:bg-blue-600 ">Crear Grupo</p>
+        <p
+          className="w-full h-full flex items-center justify-center leading-tight bg-blue-400/20 rounded-full hover:bg-blue-600 ">Crear
+          Grupo</p>
       </button>
       <Modal isOpen={isOpen} size={'3xl'} onOpenChange={onOpenChange} placement="top-center" scrollBehavior="inside">
         <ModalContent>{(onClose) => renderModalContent(onClose)}</ModalContent>
